@@ -1,0 +1,13 @@
+mongodb:
+  host: malo.evyys.mongodb.net
+  port: 27017
+  database: malo
+  user: mongoadmin
+  pass: mongoadmin
+
+encryption:
+  signning_method: HS256
+  jwt_secret: malo_system
+  jwt_exp: 2
+  jwt_pol: 59a795909e65177c27fcdd87
+  refresh_token_ttl: 1440 # 1440 hours = 60 days
