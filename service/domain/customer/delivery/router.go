@@ -6,6 +6,10 @@ import (
 
 func (c *CustomerHandler) InternalCustomerAPIRoute(router fiber.Router) {
 	router.Get("/customer", c.GetCustomer)
+	router.Delete("/customer", c.DeleteCustomer)
+	router.Post("/customer", c.CreateCustomer)
+	router.Put("/customer", c.UpdateCustomer)
+	router.Get("/customer/list", c.ListCustomer)
 }
 
 func (c *CustomerHandler) ManagementCustomerAPIRoute(router fiber.Router) {

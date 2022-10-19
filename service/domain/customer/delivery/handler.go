@@ -29,3 +29,61 @@ func (c *CustomerHandler) GetCustomer(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(customer)
 }
+
+func (c *CustomerHandler) ListCustomer(ctx *fiber.Ctx) error {
+	req := new(dto.ListCustomerRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	customers, err := c.customerUseCase.ListCustomer(ctx, req.Limit, req.Offset)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(customers)
+}
+
+func (c *CustomerHandler) DeleteCustomer(ctx *fiber.Ctx) error {
+	req := new(dto.GetCustomerByIDRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	err := c.customerUseCase.DeleteCustomerByID(ctx, req.CustomerID)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(dto.DefaultResponse{
+		StatusCode: fiber.StatusOK,
+	})
+}
+
+func (c *CustomerHandler) UpdateCustomer(ctx *fiber.Ctx) error {
+	req := new(dto.Customer)
+	if err := ctx.BodyParser(req); err != nil {
+		return err
+	}
+
+	customer, err := c.customerUseCase.UpdateCustomer(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(customer)
+}
+
+func (c *CustomerHandler) CreateCustomer(ctx *fiber.Ctx) error {
+	req := new(dto.Customer)
+	if err := ctx.BodyParser(req); err != nil {
+		return err
+	}
+
+	customer, err := c.customerUseCase.CreateCustomer(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(customer)
+}
