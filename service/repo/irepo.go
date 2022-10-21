@@ -17,6 +17,8 @@ func NewRepo(mgo *mongo.Client) IRepo {
 type IRepo interface {
 	NewCustomerRepo() ICustomerRepo
 	NewUserRepo() IUserRepo
+	NewProductRepo() IProductRepo
+	NewOrderRepo() IOrderRepo
 }
 
 func (r repo) NewCustomerRepo() ICustomerRepo {
@@ -25,4 +27,12 @@ func (r repo) NewCustomerRepo() ICustomerRepo {
 
 func (r repo) NewUserRepo() IUserRepo {
 	return NewUserRepo(r.mgo)
+}
+
+func (r repo) NewProductRepo() IProductRepo {
+	return NewProductRepo(r.mgo)
+}
+
+func (r repo) NewOrderRepo() IOrderRepo {
+	return NewOrderRepo(r.mgo)
 }
