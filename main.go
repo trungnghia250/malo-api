@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/trungnghia250/malo-api/config"
 	"github.com/trungnghia250/malo-api/database"
 	customer_delivery "github.com/trungnghia250/malo-api/service/domain/customer/delivery"
@@ -16,8 +17,6 @@ import (
 	user_uc "github.com/trungnghia250/malo-api/service/domain/user/usecase"
 	crm_repo "github.com/trungnghia250/malo-api/service/repo"
 	"log"
-
-	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
@@ -58,5 +57,8 @@ func main() {
 	productHandler.InternalProductAPIRoute(router)
 	orderHandler.InternalOrderAPIRoute(router)
 
-	_ = router.Listen(":3000")
+	router.Use(cors.New())
+
+	portNumber := "3000"
+	_ = router.Listen(":" + portNumber)
 }
