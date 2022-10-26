@@ -21,7 +21,7 @@ type Customer struct {
 	Gender         string    `bson:"gender,omitempty" json:"gender,omitempty"`
 	PhoneNumber    string    `bson:"phone_number,omitempty" json:"phone_number,omitempty"`
 	Email          string    `bson:"email,omitempty" json:"email,omitempty"`
-	Address        []string  `json:"address,omitempty" bson:"address,omitempty"`
+	Address        string    `json:"address,omitempty" bson:"address,omitempty"`
 	DateOfBirth    time.Time `json:"date_of_birth,omitempty" bson:"date_of_birth,omitempty"`
 	Company        Company   `json:"company,omitempty" bson:"company,omitempty"`
 	CustomerType   string    `json:"customer_type,omitempty" bson:"customer_type,omitempty"`

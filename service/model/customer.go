@@ -12,7 +12,7 @@ type Customer struct {
 	Gender         string             `bson:"gender" json:"gender"`
 	PhoneNumber    string             `bson:"phone_number" json:"phone_number"`
 	Email          string             `bson:"email" json:"email"`
-	Address        []string           `json:"address" bson:"address"`
+	Address        string             `json:"address" bson:"address"`
 	DateOfBirth    time.Time          `json:"date_of_birth" bson:"date_of_birth"`
 	Company        Company            `json:"company,omitempty" bson:"company,omitempty"`
 	CustomerType   string             `json:"customer_type" bson:"customer_type"`
