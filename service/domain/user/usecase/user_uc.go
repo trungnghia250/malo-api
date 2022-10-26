@@ -75,7 +75,7 @@ func (c *userUseCase) UserLogout(ctx *fiber.Ctx, email string) error {
 		return err
 	}
 
-	err = c.repo.NewUserRepo().RemoveUserData(ctx, user.UserID, bson.M{"token": ""})
+	err = c.repo.NewUserRepo().RemoveUserData(ctx, user.UserID, bson.M{"token": "", "refresh_token": ""})
 	if err != nil {
 		return err
 	}

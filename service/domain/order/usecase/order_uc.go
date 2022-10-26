@@ -5,6 +5,7 @@ import (
 	"github.com/trungnghia250/malo-api/service/model"
 	"github.com/trungnghia250/malo-api/service/model/dto"
 	"github.com/trungnghia250/malo-api/service/repo"
+	"time"
 )
 
 type IOrderUseCase interface {
@@ -57,6 +58,7 @@ func (o *orderUseCase) CreateOrder(ctx *fiber.Ctx, data *dto.Order) (*model.Orde
 }
 
 func (o *orderUseCase) UpdateOrder(ctx *fiber.Ctx, data *dto.Order) (*model.Order, error) {
+	data.ModifiedAt = time.Now()
 	err := o.repo.NewOrderRepo().UpdateOrderByID(ctx, data)
 	if err != nil {
 		return nil, err

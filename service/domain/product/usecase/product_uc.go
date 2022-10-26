@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/model"
 	"github.com/trungnghia250/malo-api/service/repo"
+	"time"
 )
 
 type IProductUseCase interface {
@@ -47,6 +48,7 @@ func (p *productUseCase) ListProduct(ctx *fiber.Ctx, limit, offset int32) ([]mod
 }
 
 func (p *productUseCase) CreateProduct(ctx *fiber.Ctx, data *model.Product) (*model.Product, error) {
+	data.CreatedAt = time.Now()
 	err := p.repo.NewProductRepo().CreateProduct(ctx, data)
 	if err != nil {
 		return nil, err
@@ -56,6 +58,7 @@ func (p *productUseCase) CreateProduct(ctx *fiber.Ctx, data *model.Product) (*mo
 }
 
 func (p *productUseCase) UpdateProduct(ctx *fiber.Ctx, data *model.Product) (*model.Product, error) {
+	data.ModifiedAt = time.Now()
 	err := p.repo.NewProductRepo().UpdateProductByID(ctx, data)
 	if err != nil {
 		return nil, err

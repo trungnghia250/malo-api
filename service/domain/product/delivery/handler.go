@@ -1,6 +1,8 @@
 package delivery
 
 import (
+	"errors"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/domain/product/usecase"
 	"github.com/trungnghia250/malo-api/service/model"
@@ -62,11 +64,20 @@ func (p *ProductHandler) DeleteProduct(ctx *fiber.Ctx) error {
 }
 
 func (p *ProductHandler) UpdateProduct(ctx *fiber.Ctx) error {
+	reqToken := ctx.GetReqHeaders()["X-Access-Token"]
+	if reqToken == "" {
+		return errors.New("token is required")
+	}
+	token, err := jwt.Parse(reqToken, nil)
+	if token == nil {
+		return errors.New("token not valid")
+	}
+	claims, _ := token.Claims.(jwt.MapClaims)
 	req := new(model.Product)
 	if err := ctx.BodyParser(req); err != nil {
 		return err
 	}
-
+	req.ModifiedBy = claims["noc"].(string)
 	product, err := p.productUseCase.UpdateProduct(ctx, req)
 	if err != nil {
 		return err

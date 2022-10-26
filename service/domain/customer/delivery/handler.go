@@ -1,7 +1,9 @@
 package delivery
 
 import (
+	"errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt"
 	"github.com/trungnghia250/malo-api/service/domain/customer/usecase"
 	"github.com/trungnghia250/malo-api/service/model/dto"
 )
@@ -45,6 +47,7 @@ func (c *CustomerHandler) ListCustomer(ctx *fiber.Ctx) error {
 }
 
 func (c *CustomerHandler) DeleteCustomer(ctx *fiber.Ctx) error {
+
 	req := new(dto.GetCustomerByIDRequest)
 	if err := ctx.QueryParser(req); err != nil {
 		return err
@@ -61,11 +64,21 @@ func (c *CustomerHandler) DeleteCustomer(ctx *fiber.Ctx) error {
 }
 
 func (c *CustomerHandler) UpdateCustomer(ctx *fiber.Ctx) error {
+	reqToken := ctx.GetReqHeaders()["X-Access-Token"]
+	if reqToken == "" {
+		return errors.New("token is required")
+	}
+	token, err := jwt.Parse(reqToken, nil)
+	if token == nil {
+		return errors.New("token not valid")
+	}
+	claims, _ := token.Claims.(jwt.MapClaims)
 	req := new(dto.Customer)
 	if err := ctx.BodyParser(req); err != nil {
 		return err
 	}
 
+	req.ModifiedBy = claims["noc"].(string)
 	customer, err := c.customerUseCase.UpdateCustomer(ctx, req)
 	if err != nil {
 		return err

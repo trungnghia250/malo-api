@@ -1,6 +1,8 @@
 package delivery
 
 import (
+	"errors"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/domain/order/usecase"
 	"github.com/trungnghia250/malo-api/service/model/dto"
@@ -61,11 +63,21 @@ func (o *OrderHandler) DeleteOrder(ctx *fiber.Ctx) error {
 }
 
 func (o *OrderHandler) UpdateOrder(ctx *fiber.Ctx) error {
+	reqToken := ctx.GetReqHeaders()["X-Access-Token"]
+	if reqToken == "" {
+		return errors.New("token is required")
+	}
+	token, err := jwt.Parse(reqToken, nil)
+	if token == nil {
+		return errors.New("token not valid")
+	}
+	claims, _ := token.Claims.(jwt.MapClaims)
+
 	req := new(dto.Order)
 	if err := ctx.BodyParser(req); err != nil {
 		return err
 	}
-
+	req.ModifiedBy = claims["noc"].(string)
 	order, err := o.orderUseCase.UpdateOrder(ctx, req)
 	if err != nil {
 		return err

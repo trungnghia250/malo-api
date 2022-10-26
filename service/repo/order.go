@@ -7,6 +7,7 @@ import (
 	"github.com/trungnghia250/malo-api/service/model/dto"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"time"
 )
 
 type IOrderRepo interface {
@@ -40,6 +41,7 @@ func (o *orderRepo) GetOrderByID(ctx *fiber.Ctx, orderID string) (resp *model.Or
 }
 
 func (o *orderRepo) CreateOrder(ctx *fiber.Ctx, data *dto.Order) error {
+	data.CreateAt = time.Now()
 	_, err := o.getCollection().InsertOne(ctx.Context(), data)
 	if err != nil {
 		return err
@@ -49,6 +51,7 @@ func (o *orderRepo) CreateOrder(ctx *fiber.Ctx, data *dto.Order) error {
 }
 
 func (o *orderRepo) UpdateOrderByID(ctx *fiber.Ctx, data *dto.Order) error {
+	data.ModifiedAt = time.Now()
 	_, err := o.getCollection().UpdateOne(ctx.Context(), bson.M{"order_id": data.OrderID}, bson.M{
 		"$set": data,
 	})

@@ -5,6 +5,7 @@ import (
 	"github.com/trungnghia250/malo-api/service/model"
 	"github.com/trungnghia250/malo-api/service/model/dto"
 	"github.com/trungnghia250/malo-api/service/repo"
+	"time"
 )
 
 type ICustomerUseCase interface {
@@ -48,6 +49,8 @@ func (c *customerUseCase) ListCustomer(ctx *fiber.Ctx, limit, offset int32) ([]m
 }
 
 func (c *customerUseCase) CreateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*model.Customer, error) {
+	data.CreatedAt = time.Now()
+
 	err := c.repo.NewCustomerRepo().CreateCustomer(ctx, data)
 	if err != nil {
 		return nil, err
@@ -57,6 +60,8 @@ func (c *customerUseCase) CreateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*m
 }
 
 func (c *customerUseCase) UpdateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*model.Customer, error) {
+	data.ModifiedAt = time.Now()
+
 	err := c.repo.NewCustomerRepo().UpdateCustomerByID(ctx, data)
 	if err != nil {
 		return nil, err
