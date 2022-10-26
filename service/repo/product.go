@@ -14,6 +14,7 @@ type IProductRepo interface {
 	CreateProduct(ctx *fiber.Ctx, data *model.Product) error
 	UpdateProductByID(ctx *fiber.Ctx, data *model.Product) error
 	DeleteProductByID(ctx *fiber.Ctx, id string) error
+	CountProduct(ctx *fiber.Ctx) (int32, error)
 }
 
 func NewProductRepo(mgo *mongo.Client) IProductRepo {
@@ -89,4 +90,13 @@ func (p *productRepo) ListProduct(ctx *fiber.Ctx, limit, offset int32) ([]model.
 	}
 
 	return products, nil
+}
+
+func (p *productRepo) CountProduct(ctx *fiber.Ctx) (int32, error) {
+	value, err := p.getCollection().CountDocuments(ctx.Context(), bson.M{})
+	if err != nil {
+		return 0, err
+	}
+
+	return int32(value), nil
 }

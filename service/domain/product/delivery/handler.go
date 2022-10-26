@@ -44,7 +44,17 @@ func (p *ProductHandler) ListProduct(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.JSON(products)
+	count, err := p.productUseCase.CountProduct(ctx)
+	if err != nil {
+		return err
+	}
+
+	response := dto.ListProductResponse{
+		Count: count,
+		Data:  products,
+	}
+
+	return ctx.JSON(response)
 }
 
 func (p *ProductHandler) DeleteProduct(ctx *fiber.Ctx) error {

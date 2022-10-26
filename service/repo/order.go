@@ -16,6 +16,7 @@ type IOrderRepo interface {
 	UpdateOrderByID(ctx *fiber.Ctx, data *dto.Order) error
 	DeleteOrderByID(ctx *fiber.Ctx, id string) error
 	ListOrder(ctx *fiber.Ctx, limit, offset int32) ([]model.Order, error)
+	CountOrder(ctx *fiber.Ctx) (int32, error)
 }
 
 func NewOrderRepo(mgo *mongo.Client) IOrderRepo {
@@ -93,4 +94,13 @@ func (o *orderRepo) ListOrder(ctx *fiber.Ctx, limit, offset int32) ([]model.Orde
 	}
 
 	return orders, nil
+}
+
+func (o *orderRepo) CountOrder(ctx *fiber.Ctx) (int32, error) {
+	value, err := o.getCollection().CountDocuments(ctx.Context(), bson.M{})
+	if err != nil {
+		return 0, err
+	}
+
+	return int32(value), nil
 }

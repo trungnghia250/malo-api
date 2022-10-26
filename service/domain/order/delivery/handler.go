@@ -43,7 +43,17 @@ func (o *OrderHandler) ListOrder(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.JSON(orders)
+	count, err := o.orderUseCase.CountOrder(ctx)
+	if err != nil {
+		return err
+	}
+
+	response := dto.ListOrderResponse{
+		Count: count,
+		Data:  orders,
+	}
+
+	return ctx.JSON(response)
 }
 
 func (o *OrderHandler) DeleteOrder(ctx *fiber.Ctx) error {

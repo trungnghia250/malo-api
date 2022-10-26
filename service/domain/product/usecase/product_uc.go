@@ -13,6 +13,7 @@ type IProductUseCase interface {
 	ListProduct(ctx *fiber.Ctx, limit, offset int32) ([]model.Product, error)
 	CreateProduct(ctx *fiber.Ctx, data *model.Product) (*model.Product, error)
 	UpdateProduct(ctx *fiber.Ctx, data *model.Product) (*model.Product, error)
+	CountProduct(ctx *fiber.Ctx) (int32, error)
 }
 
 type productUseCase struct {
@@ -65,4 +66,13 @@ func (p *productUseCase) UpdateProduct(ctx *fiber.Ctx, data *model.Product) (*mo
 	}
 
 	return nil, nil
+}
+
+func (p *productUseCase) CountProduct(ctx *fiber.Ctx) (int32, error) {
+	value, err := p.repo.NewProductRepo().CountProduct(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	return value, nil
 }

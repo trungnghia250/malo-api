@@ -43,7 +43,17 @@ func (c *CustomerHandler) ListCustomer(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.JSON(customers)
+	count, err := c.customerUseCase.CountCustomer(ctx)
+	if err != nil {
+		return err
+	}
+
+	response := dto.ListCustomerResponse{
+		Count: count,
+		Data:  customers,
+	}
+
+	return ctx.JSON(response)
 }
 
 func (c *CustomerHandler) DeleteCustomer(ctx *fiber.Ctx) error {

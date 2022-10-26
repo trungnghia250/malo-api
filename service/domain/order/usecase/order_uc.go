@@ -14,6 +14,7 @@ type IOrderUseCase interface {
 	ListOrder(ctx *fiber.Ctx, limit, offset int32) ([]model.Order, error)
 	CreateOrder(ctx *fiber.Ctx, data *dto.Order) (*model.Order, error)
 	UpdateOrder(ctx *fiber.Ctx, data *dto.Order) (*model.Order, error)
+	CountOrder(ctx *fiber.Ctx) (int32, error)
 }
 
 type orderUseCase struct {
@@ -65,4 +66,13 @@ func (o *orderUseCase) UpdateOrder(ctx *fiber.Ctx, data *dto.Order) (*model.Orde
 	}
 
 	return nil, nil
+}
+
+func (o *orderUseCase) CountOrder(ctx *fiber.Ctx) (int32, error) {
+	value, err := o.repo.NewOrderRepo().CountOrder(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	return value, nil
 }

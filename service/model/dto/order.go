@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"github.com/trungnghia250/malo-api/service/model"
+	"time"
+)
 
 type GetOrderByIDRequest struct {
 	OrderID string `json:"order_id" query:"order_id"`
@@ -33,4 +36,9 @@ type Item struct {
 	TotalDiscount  int32  `json:"total_discount,omitempty" bson:"total_discount,omitempty"`
 	TotalTaxAmount int32  `json:"total_tax_amount,omitempty" bson:"total_tax_amount,omitempty"`
 	SubTotal       int32  `json:"sub_total,omitempty" bson:"sub_total,omitempty"`
+}
+
+type ListOrderResponse struct {
+	Count int32         `json:"count"`
+	Data  []model.Order `json:"data"`
 }

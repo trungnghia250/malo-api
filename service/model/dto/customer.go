@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"github.com/trungnghia250/malo-api/service/model"
 	"time"
 )
 
@@ -35,4 +36,9 @@ type Customer struct {
 type ListCustomerRequest struct {
 	Limit  int32 `json:"limit,omitempty"`
 	Offset int32 `json:"offset,omitempty"`
+}
+
+type ListCustomerResponse struct {
+	Count int32            `json:"count"`
+	Data  []model.Customer `json:"data"`
 }

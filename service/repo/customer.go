@@ -15,6 +15,7 @@ type ICustomerRepo interface {
 	UpdateCustomerByID(ctx *fiber.Ctx, data *dto.Customer) error
 	DeleteCustomerByID(ctx *fiber.Ctx, id string) error
 	ListCustomer(ctx *fiber.Ctx, limit, offset int32) ([]model.Customer, error)
+	CountCustomer(ctx *fiber.Ctx) (int32, error)
 }
 
 func NewCustomerRepo(mgo *mongo.Client) ICustomerRepo {
@@ -90,4 +91,13 @@ func (c *customerRepo) ListCustomer(ctx *fiber.Ctx, limit, offset int32) ([]mode
 	}
 
 	return customers, nil
+}
+
+func (c *customerRepo) CountCustomer(ctx *fiber.Ctx) (int32, error) {
+	value, err := c.getCollection().CountDocuments(ctx.Context(), bson.M{})
+	if err != nil {
+		return 0, err
+	}
+
+	return int32(value), nil
 }
