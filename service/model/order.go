@@ -12,6 +12,8 @@ type Order struct {
 	PhoneNumber          string             `json:"phone_number" bson:"phone_number"`
 	Email                string             `json:"email" bson:"email"`
 	Address              string             `json:"address" bson:"address"`
+	Source               string             `json:"source" bson:"source"`
+	Status               string             `json:"status" bson:"status"`
 	Items                []Item             `json:"line_items" bson:"line_items"`
 	VoucherCode          string             `json:"voucher_code" bson:"voucher_code"`
 	TotalLineItemsAmount int32              `json:"total_line_items_amount" bson:"total_line_items_amount"`
