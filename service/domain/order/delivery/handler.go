@@ -33,19 +33,19 @@ func (o *OrderHandler) GetOrder(ctx *fiber.Ctx) error {
 }
 
 func (o *OrderHandler) ListOrder(ctx *fiber.Ctx) error {
-	req := new(dto.ListCustomerRequest)
+	req := new(dto.ListOrderRequest)
 	if err := ctx.QueryParser(req); err != nil {
 		return err
 	}
 
-	orders, err := o.orderUseCase.ListOrder(ctx, req.Limit, req.Offset)
+	orders, err := o.orderUseCase.ListOrder(ctx, *req)
 	if err != nil {
 		return err
 	}
 
-	count, err := o.orderUseCase.CountOrder(ctx)
-	if err != nil {
-		return err
+	count := int32(0)
+	if len(orders) > 0 {
+		count = orders[0].TotalCount
 	}
 
 	response := dto.ListOrderResponse{

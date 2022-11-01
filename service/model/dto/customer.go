@@ -34,8 +34,16 @@ type Customer struct {
 }
 
 type ListCustomerRequest struct {
-	Limit  int32 `json:"limit,omitempty"`
-	Offset int32 `json:"offset,omitempty"`
+	Limit        int32    `json:"limit,omitempty"`
+	Offset       int32    `json:"offset,omitempty"`
+	CustomerName []string `json:"customer_name,omitempty" query:"customer_name,omitempty"`
+	Phone        string   `json:"phone,omitempty"`
+	Address      string   `json:"address,omitempty"`
+	CustomerType []string `json:"customer_type,omitempty" query:"customer_type,omitempty"`
+	Tags         []string `json:"tags,omitempty" query:"tags,omitempty"`
+	Gender       string   `json:"gender,omitempty"`
+	Email        string   `json:"email,omitempty"`
+	Source       []string `json:"source,omitempty" query:"source,omitempty"`
 }
 
 type ListCustomerResponse struct {

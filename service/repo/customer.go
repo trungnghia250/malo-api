@@ -6,6 +6,7 @@ import (
 	"github.com/trungnghia250/malo-api/service/model"
 	"github.com/trungnghia250/malo-api/service/model/dto"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -14,7 +15,7 @@ type ICustomerRepo interface {
 	CreateCustomer(ctx *fiber.Ctx, data *dto.Customer) error
 	UpdateCustomerByID(ctx *fiber.Ctx, data *dto.Customer) error
 	DeleteCustomerByID(ctx *fiber.Ctx, id string) error
-	ListCustomer(ctx *fiber.Ctx, limit, offset int32) ([]model.Customer, error)
+	ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest) ([]model.Customer, error)
 	CountCustomer(ctx *fiber.Ctx) (int32, error)
 }
 
@@ -71,14 +72,58 @@ func (c *customerRepo) DeleteCustomerByID(ctx *fiber.Ctx, id string) error {
 	return nil
 }
 
-func (c *customerRepo) ListCustomer(ctx *fiber.Ctx, limit, offset int32) ([]model.Customer, error) {
+func (c *customerRepo) ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest) ([]model.Customer, error) {
 	matching := bson.M{}
+	customerNameQuery := bson.A{}
+	for _, name := range req.CustomerName {
+		customerNameQuery = append(customerNameQuery, primitive.Regex{Pattern: name})
+	}
+	if len(req.CustomerName) > 0 {
+		matching["customer_name"] = bson.D{
+			{"$in", customerNameQuery},
+		}
+	}
+
+	if len(req.Phone) > 0 {
+		matching["phone_number"] = req.Phone
+	}
+
+	if len(req.Address) > 0 {
+		matching["address"] = primitive.Regex{Pattern: req.Address}
+	}
+
+	if len(req.CustomerType) > 0 {
+		matching["customer_type"] = bson.M{
+			"$in": req.CustomerType,
+		}
+	}
+
+	if len(req.Tags) > 0 {
+		matching["tags"] = bson.M{
+			"$in": req.Tags,
+		}
+	}
+
+	if len(req.Gender) > 0 {
+		matching["gender"] = req.Gender
+	}
+
+	if len(req.Email) > 0 {
+		matching["email"] = req.Email
+	}
+
+	if len(req.Source) > 0 {
+		matching["customer_source"] = bson.M{
+			"$in": req.Source,
+		}
+	}
 
 	cursor, err := c.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},
-		bson.D{{"$skip", offset}},
-		bson.D{{"$limit", limit}},
+		bson.D{{"$setWindowFields", bson.D{{"output", bson.D{{"totalCount", bson.D{{"$count", bson.M{}}}}}}}}},
+		bson.D{{"$skip", req.Offset}},
+		bson.D{{"$limit", req.Limit}},
 	})
 
 	if err != nil {

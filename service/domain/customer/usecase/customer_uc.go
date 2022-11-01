@@ -11,7 +11,7 @@ import (
 type ICustomerUseCase interface {
 	GetCustomerByID(ctx *fiber.Ctx, customerID string) (*model.Customer, error)
 	DeleteCustomerByID(ctx *fiber.Ctx, customerID string) error
-	ListCustomer(ctx *fiber.Ctx, limit, offset int32) ([]model.Customer, error)
+	ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest) ([]model.Customer, error)
 	CreateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*model.Customer, error)
 	UpdateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*model.Customer, error)
 	CountCustomer(ctx *fiber.Ctx) (int32, error)
@@ -41,8 +41,8 @@ func (c *customerUseCase) DeleteCustomerByID(ctx *fiber.Ctx, customerID string) 
 	return err
 }
 
-func (c *customerUseCase) ListCustomer(ctx *fiber.Ctx, limit, offset int32) ([]model.Customer, error) {
-	customers, err := c.repo.NewCustomerRepo().ListCustomer(ctx, limit, offset)
+func (c *customerUseCase) ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest) ([]model.Customer, error) {
+	customers, err := c.repo.NewCustomerRepo().ListCustomer(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -71,8 +71,8 @@ func (c *customerUseCase) UpdateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*m
 	return nil, nil
 }
 
-func (p *customerUseCase) CountCustomer(ctx *fiber.Ctx) (int32, error) {
-	value, err := p.repo.NewCustomerRepo().CountCustomer(ctx)
+func (c *customerUseCase) CountCustomer(ctx *fiber.Ctx) (int32, error) {
+	value, err := c.repo.NewCustomerRepo().CountCustomer(ctx)
 	if err != nil {
 		return 0, err
 	}

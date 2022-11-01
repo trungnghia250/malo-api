@@ -38,14 +38,14 @@ func (c *CustomerHandler) ListCustomer(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	customers, err := c.customerUseCase.ListCustomer(ctx, req.Limit, req.Offset)
+	customers, err := c.customerUseCase.ListCustomer(ctx, *req)
 	if err != nil {
 		return err
 	}
 
-	count, err := c.customerUseCase.CountCustomer(ctx)
-	if err != nil {
-		return err
+	count := int32(0)
+	if len(customers) > 0 {
+		count = customers[0].TotalCount
 	}
 
 	response := dto.ListCustomerResponse{

@@ -25,6 +25,7 @@ type Order struct {
 	CreateAt             time.Time          `json:"create_at" bson:"create_at"`
 	ModifiedAt           time.Time          `json:"modified_at" bson:"modified_at"`
 	ModifiedBy           string             `json:"modified_by" bson:"modified_by"`
+	TotalCount           int32              `json:"totalCount"`
 }
 
 type Item struct {

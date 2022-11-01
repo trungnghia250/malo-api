@@ -17,7 +17,6 @@ import (
 	user_uc "github.com/trungnghia250/malo-api/service/domain/user/usecase"
 	crm_repo "github.com/trungnghia250/malo-api/service/repo"
 	"log"
-	"os"
 )
 
 func main() {
@@ -60,11 +59,11 @@ func main() {
 
 	router.Use(cors.New())
 
-	port := os.Getenv("PORT")
-	if err != nil {
-		port = "3000"
-	}
-
-	_ = router.Listen(":" + port)
-	//_ = router.Listen(":3000")
+	//port := os.Getenv("PORT")
+	//if err != nil {
+	//	port = "3000"
+	//}
+	//
+	//_ = router.Listen(":" + port)
+	_ = router.Listen(":3000")
 }

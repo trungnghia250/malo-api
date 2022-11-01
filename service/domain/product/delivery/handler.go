@@ -39,14 +39,14 @@ func (p *ProductHandler) ListProduct(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	products, err := p.productUseCase.ListProduct(ctx, req.Limit, req.Offset)
+	products, err := p.productUseCase.ListProduct(ctx, *req)
 	if err != nil {
 		return err
 	}
 
-	count, err := p.productUseCase.CountProduct(ctx)
-	if err != nil {
-		return err
+	count := int32(0)
+	if len(products) > 0 {
+		count = products[0].TotalCount
 	}
 
 	response := dto.ListProductResponse{

@@ -4,13 +4,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/database"
 	"github.com/trungnghia250/malo-api/service/model"
+	"github.com/trungnghia250/malo-api/service/model/dto"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type IProductRepo interface {
 	GetProductByID(ctx *fiber.Ctx, productID string) (resp *model.Product, err error)
-	ListProduct(ctx *fiber.Ctx, limit, offset int32) ([]model.Product, error)
+	ListProduct(ctx *fiber.Ctx, req dto.ListProductRequest) ([]model.Product, error)
 	CreateProduct(ctx *fiber.Ctx, data *model.Product) error
 	UpdateProductByID(ctx *fiber.Ctx, data *model.Product) error
 	DeleteProductByID(ctx *fiber.Ctx, id string) error
@@ -70,14 +72,32 @@ func (p *productRepo) DeleteProductByID(ctx *fiber.Ctx, id string) error {
 	return nil
 }
 
-func (p *productRepo) ListProduct(ctx *fiber.Ctx, limit, offset int32) ([]model.Product, error) {
+func (p *productRepo) ListProduct(ctx *fiber.Ctx, req dto.ListProductRequest) ([]model.Product, error) {
 	matching := bson.M{}
+	if len(req.SKU) > 0 {
+		matching["sku"] = req.SKU
+	}
+	if len(req.Category) > 0 {
+		matching["category"] = bson.M{
+			"$in": req.Category,
+		}
+	}
 
+	productNameQuery := bson.A{}
+	for _, name := range req.Name {
+		productNameQuery = append(productNameQuery, primitive.Regex{Pattern: name})
+	}
+	if len(req.Name) > 0 {
+		matching["product_name"] = bson.D{
+			{"$in", productNameQuery},
+		}
+	}
 	cursor, err := p.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},
-		bson.D{{"$skip", offset}},
-		bson.D{{"$limit", limit}},
+		bson.D{{"$setWindowFields", bson.D{{"output", bson.D{{"totalCount", bson.D{{"$count", bson.M{}}}}}}}}},
+		bson.D{{"$skip", req.Offset}},
+		bson.D{{"$limit", req.Limit}},
 	})
 
 	if err != nil {

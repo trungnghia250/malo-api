@@ -6,6 +6,7 @@ import (
 	"github.com/trungnghia250/malo-api/service/model"
 	"github.com/trungnghia250/malo-api/service/model/dto"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"
 )
@@ -15,7 +16,7 @@ type IOrderRepo interface {
 	CreateOrder(ctx *fiber.Ctx, data *dto.Order) error
 	UpdateOrderByID(ctx *fiber.Ctx, data *dto.Order) error
 	DeleteOrderByID(ctx *fiber.Ctx, id string) error
-	ListOrder(ctx *fiber.Ctx, limit, offset int32) ([]model.Order, error)
+	ListOrder(ctx *fiber.Ctx, req dto.ListOrderRequest) ([]model.Order, error)
 	CountOrder(ctx *fiber.Ctx) (int32, error)
 }
 
@@ -74,14 +75,75 @@ func (o *orderRepo) DeleteOrderByID(ctx *fiber.Ctx, id string) error {
 	return nil
 }
 
-func (o *orderRepo) ListOrder(ctx *fiber.Ctx, limit, offset int32) ([]model.Order, error) {
+func (o *orderRepo) ListOrder(ctx *fiber.Ctx, req dto.ListOrderRequest) ([]model.Order, error) {
 	matching := bson.M{}
-
+	customerNameQuery := bson.A{}
+	for _, name := range req.CustomerName {
+		customerNameQuery = append(customerNameQuery, primitive.Regex{Pattern: name})
+	}
+	if len(req.CustomerName) > 0 {
+		matching["customer_name"] = bson.D{
+			{"$in", customerNameQuery},
+		}
+	}
+	if len(req.Email) > 0 {
+		matching["email"] = req.Email
+	}
+	if len(req.Source) > 0 {
+		matching["source"] = bson.M{
+			"$in": req.Source,
+		}
+	}
+	if len(req.TotalLineItemsAmount) > 0 {
+		matching["total_line_items_amount"] = bson.M{
+			"$gte": req.TotalLineItemsAmount[0],
+			"$lte": req.TotalLineItemsAmount[1],
+		}
+	}
+	if len(req.TotalDiscount) > 0 {
+		matching["total_discount"] = bson.M{
+			"$gte": req.TotalDiscount[0],
+			"$lte": req.TotalDiscount[1],
+		}
+	}
+	if len(req.TotalOrderAmount) > 0 {
+		matching["total_order_amount"] = bson.M{
+			"$gte": req.TotalOrderAmount[0],
+			"$lte": req.TotalOrderAmount[1],
+		}
+	}
+	if len(req.Phone) > 0 {
+		matching["phone_number"] = req.Phone
+	}
+	if len(req.Address) > 0 {
+		matching["address"] = primitive.Regex{Pattern: req.Address}
+	}
+	if len(req.VoucherCode) > 0 {
+		matching["voucher_code"] = req.VoucherCode
+	}
+	if len(req.ShippingPrice) > 0 {
+		matching["shipping_price"] = bson.M{
+			"$gte": req.ShippingPrice[0],
+			"$lte": req.ShippingPrice[1],
+		}
+	}
+	if len(req.TotalTax) > 0 {
+		matching["total_tax_amount"] = bson.M{
+			"$gte": req.TotalTax[0],
+			"$lte": req.TotalTax[1],
+		}
+	}
+	if len(req.Status) > 0 {
+		matching["status"] = bson.M{
+			"$in": req.Status,
+		}
+	}
 	cursor, err := o.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},
-		bson.D{{"$skip", offset}},
-		bson.D{{"$limit", limit}},
+		bson.D{{"$setWindowFields", bson.D{{"output", bson.D{{"totalCount", bson.D{{"$count", bson.M{}}}}}}}}},
+		bson.D{{"$skip", req.Offset}},
+		bson.D{{"$limit", req.Limit}},
 	})
 
 	if err != nil {

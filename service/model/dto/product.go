@@ -7,8 +7,11 @@ type GetProductByIDRequest struct {
 }
 
 type ListProductRequest struct {
-	Limit  int32 `json:"limit,omitempty"`
-	Offset int32 `json:"offset,omitempty"`
+	Limit    int32    `json:"limit,omitempty"`
+	Offset   int32    `json:"offset,omitempty"`
+	SKU      string   `json:"sku,omitempty"`
+	Category []string `json:"category,omitempty"`
+	Name     []string `json:"name,omitempty"`
 }
 
 type ListProductResponse struct {

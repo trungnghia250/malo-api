@@ -3,6 +3,7 @@ package usecase
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/model"
+	"github.com/trungnghia250/malo-api/service/model/dto"
 	"github.com/trungnghia250/malo-api/service/repo"
 	"time"
 )
@@ -10,7 +11,7 @@ import (
 type IProductUseCase interface {
 	GetProductByID(ctx *fiber.Ctx, productID string) (*model.Product, error)
 	DeleteProductByID(ctx *fiber.Ctx, productID string) error
-	ListProduct(ctx *fiber.Ctx, limit, offset int32) ([]model.Product, error)
+	ListProduct(ctx *fiber.Ctx, req dto.ListProductRequest) ([]model.Product, error)
 	CreateProduct(ctx *fiber.Ctx, data *model.Product) (*model.Product, error)
 	UpdateProduct(ctx *fiber.Ctx, data *model.Product) (*model.Product, error)
 	CountProduct(ctx *fiber.Ctx) (int32, error)
@@ -40,8 +41,8 @@ func (p *productUseCase) DeleteProductByID(ctx *fiber.Ctx, productID string) err
 	return err
 }
 
-func (p *productUseCase) ListProduct(ctx *fiber.Ctx, limit, offset int32) ([]model.Product, error) {
-	products, err := p.repo.NewProductRepo().ListProduct(ctx, limit, offset)
+func (p *productUseCase) ListProduct(ctx *fiber.Ctx, req dto.ListProductRequest) ([]model.Product, error) {
+	products, err := p.repo.NewProductRepo().ListProduct(ctx, req)
 	if err != nil {
 		return nil, err
 	}
