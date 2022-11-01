@@ -37,7 +37,7 @@ type Item struct {
 	UnitPrice      int32  `json:"unit_price,omitempty" bson:"unit_price,omitempty"`
 	TotalDiscount  int32  `json:"total_discount,omitempty" bson:"total_discount,omitempty"`
 	TotalTaxAmount int32  `json:"total_tax_amount,omitempty" bson:"total_tax_amount,omitempty"`
-	SubTotal       int32  `json:"sub_total,omitempty" bson:"sub_total,omitempty"`
+	Subtotal       int32  `json:"subtotal,omitempty" bson:"subtotal,omitempty"`
 }
 
 type ListOrderResponse struct {

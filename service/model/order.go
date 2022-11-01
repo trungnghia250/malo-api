@@ -35,5 +35,5 @@ type Item struct {
 	UnitPrice      int32  `json:"unit_price" bson:"unit_price"`
 	TotalDiscount  int32  `json:"total_discount" bson:"total_discount"`
 	TotalTaxAmount int32  `json:"total_tax_amount" bson:"total_tax_amount"`
-	SubTotal       int32  `json:"sub_total" bson:"sub_total"`
+	Subtotal       int32  `json:"subtotal" bson:"subtotal"`
 }
