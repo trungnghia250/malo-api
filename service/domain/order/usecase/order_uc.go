@@ -191,6 +191,17 @@ func (o *orderUseCase) CheckOrderImport(ctx *fiber.Ctx, data []dto.Order, action
 
 	}
 
+	if len(orderIDs) == 0 {
+		return dto.ImportOrderResponse{
+			Scan:    int32(len(data)),
+			Success: totalInsert + totalUpdate,
+			Insert:  totalInsert,
+			Update:  totalUpdate,
+			Ignore:  totalIgnore,
+			Data:    nil,
+		}, nil
+	}
+
 	orders, err := o.repo.NewOrderRepo().ListOrder(ctx, dto.ListOrderRequest{
 		OrderIDs: orderIDs,
 		Limit:    100,
