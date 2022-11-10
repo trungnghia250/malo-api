@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/domain/order/usecase"
 	"github.com/trungnghia250/malo-api/service/model/dto"
+	"strings"
 )
 
 type OrderHandler struct {
@@ -108,4 +109,23 @@ func (o *OrderHandler) CreateOrder(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON(order)
+}
+
+func (o *OrderHandler) ImportOrder(ctx *fiber.Ctx) error {
+	req := new(dto.ImportOrderRequest)
+	if err := ctx.BodyParser(req); err != nil {
+		return err
+	}
+	req.CheckDupCol = strings.Split(req.CheckDupCol[0], ",")
+	file, err := ctx.FormFile("file")
+	if err != nil {
+		return errors.New("upload file failed")
+	}
+	req.File = file
+	result, err := o.orderUseCase.ImportOrder(ctx, *req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(result)
 }

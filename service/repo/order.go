@@ -8,16 +8,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
 type IOrderRepo interface {
 	GetOrderByID(ctx *fiber.Ctx, orderID string) (resp *model.Order, err error)
-	CreateOrder(ctx *fiber.Ctx, data *dto.Order) error
+	CreateOrder(ctx *fiber.Ctx, data *dto.Order) (int32, error)
 	UpdateOrderByID(ctx *fiber.Ctx, data *dto.Order) error
 	DeleteOrderByID(ctx *fiber.Ctx, id string) error
 	ListOrder(ctx *fiber.Ctx, req dto.ListOrderRequest) ([]model.Order, error)
 	CountOrder(ctx *fiber.Ctx) (int32, error)
+	CheckOrderExist(ctx *fiber.Ctx, query bson.M) (bool, error)
+	UpsertOrder(ctx *fiber.Ctx, query bson.M, order dto.Order) (int32, int32, error)
 }
 
 func NewOrderRepo(mgo *mongo.Client) IOrderRepo {
@@ -42,14 +45,17 @@ func (o *orderRepo) GetOrderByID(ctx *fiber.Ctx, orderID string) (resp *model.Or
 	return resp, nil
 }
 
-func (o *orderRepo) CreateOrder(ctx *fiber.Ctx, data *dto.Order) error {
+func (o *orderRepo) CreateOrder(ctx *fiber.Ctx, data *dto.Order) (int32, error) {
 	data.CreateAt = time.Now()
-	_, err := o.getCollection().InsertOne(ctx.Context(), data)
+	res, err := o.getCollection().InsertOne(ctx.Context(), data)
 	if err != nil {
-		return err
+		return 0, err
+	}
+	if len(res.InsertedID.(primitive.ObjectID).Hex()) > 0 {
+		return 1, nil
 	}
 
-	return nil
+	return 0, nil
 }
 
 func (o *orderRepo) UpdateOrderByID(ctx *fiber.Ctx, data *dto.Order) error {
@@ -138,6 +144,11 @@ func (o *orderRepo) ListOrder(ctx *fiber.Ctx, req dto.ListOrderRequest) ([]model
 			"$in": req.Status,
 		}
 	}
+	if len(req.OrderIDs) > 0 {
+		matching["order_id"] = bson.M{
+			"$in": req.OrderIDs,
+		}
+	}
 	cursor, err := o.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},
@@ -165,4 +176,29 @@ func (o *orderRepo) CountOrder(ctx *fiber.Ctx) (int32, error) {
 	}
 
 	return int32(value), nil
+}
+
+func (o *orderRepo) CheckOrderExist(ctx *fiber.Ctx, query bson.M) (bool, error) {
+	option := options.CountOptions{}
+	option.SetLimit(1)
+	value, err := o.getCollection().CountDocuments(ctx.Context(), query, &option)
+	if err != nil {
+		return false, err
+	}
+
+	if value > 0 {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func (o *orderRepo) UpsertOrder(ctx *fiber.Ctx, query bson.M, order dto.Order) (int32, int32, error) {
+	opts := options.Update().SetUpsert(true)
+	result, err := o.getCollection().UpdateOne(ctx.Context(), query, order, opts)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return int32(result.UpsertedCount), int32(result.ModifiedCount), nil
 }

@@ -2,6 +2,7 @@ package dto
 
 import (
 	"github.com/trungnghia250/malo-api/service/model"
+	"mime/multipart"
 	"time"
 )
 
@@ -60,4 +61,20 @@ type ListOrderRequest struct {
 	ShippingPrice        []int32  `json:"shipping_price,omitempty" query:"shipping_price,omitempty"`
 	TotalTax             []int32  `json:"total_tax,omitempty" query:"total_tax,omitempty"`
 	Status               []string `json:"status"`
+	OrderIDs             []string
+}
+
+type ImportOrderRequest struct {
+	CheckDupCol []string              `form:"check_dup_col"`
+	Action      string                `form:"action"`
+	File        *multipart.FileHeader `form:"file"`
+}
+
+type ImportOrderResponse struct {
+	Scan    int32         `json:"scan"`
+	Success int32         `json:"success"`
+	Insert  int32         `json:"insert"`
+	Update  int32         `json:"update"`
+	Ignore  int32         `json:"ignore"`
+	Data    []model.Order `json:"data"`
 }

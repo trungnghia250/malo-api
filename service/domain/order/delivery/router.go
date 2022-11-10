@@ -10,4 +10,5 @@ func (o *OrderHandler) InternalOrderAPIRoute(router fiber.Router) {
 	router.Post("/order", o.CreateOrder)
 	router.Put("/order", o.UpdateOrder)
 	router.Get("/order/list", o.ListOrder)
+	router.Post("/order/import", o.ImportOrder)
 }
