@@ -11,12 +11,12 @@ type LoginResponse struct {
 }
 
 type UserInfo struct {
-	UserID       string `json:"user_id"`
-	Name         string `json:"name"`
-	Email        string `json:"email"`
-	Role         string `json:"role"`
-	Token        string `json:"token"`
-	RefreshToken string `json:"refresh_token"`
+	UserID       string `json:"user_id,omitempty"`
+	Name         string `json:"name,omitempty"`
+	Email        string `json:"email,omitempty"`
+	Role         string `json:"role,omitempty"`
+	Token        string `json:"token,omitempty"`
+	RefreshToken string `json:"refresh_token,omitempty"`
 }
 
 type ListUserRequest struct {
