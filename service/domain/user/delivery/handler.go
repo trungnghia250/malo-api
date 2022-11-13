@@ -156,3 +156,17 @@ func (u *UserHandler) DeleteUsers(ctx *fiber.Ctx) error {
 		StatusCode: fiber.StatusOK,
 	})
 }
+
+func (u *UserHandler) GetUserDetail(ctx *fiber.Ctx) error {
+	req := new(dto.GetUserDetailRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	user, err := u.userUseCase.UserDetail(ctx, req.UserID)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(user)
+}

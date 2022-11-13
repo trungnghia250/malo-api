@@ -16,6 +16,7 @@ type IUserRepo interface {
 	ListUser(ctx *fiber.Ctx, req dto.ListUserRequest) ([]model.User, error)
 	CreateUser(ctx *fiber.Ctx, data *model.User) error
 	DeleteUsers(ctx *fiber.Ctx, IDs []string) error
+	GetUserByID(ctx *fiber.Ctx, id string) (resp *model.User, err error)
 }
 
 func NewUserRepo(mgo *mongo.Client) IUserRepo {
@@ -34,6 +35,14 @@ func (u *userRepo) getCollection() *mongo.Collection {
 
 func (u *userRepo) GetUserByEmail(ctx *fiber.Ctx, email string) (resp *model.User, err error) {
 	if err := u.getCollection().FindOne(ctx.Context(), bson.M{"email": email}).Decode(&resp); err != nil {
+		return &model.User{}, err
+	}
+
+	return resp, nil
+}
+
+func (u *userRepo) GetUserByID(ctx *fiber.Ctx, id string) (resp *model.User, err error) {
+	if err := u.getCollection().FindOne(ctx.Context(), bson.M{"user_id": id}).Decode(&resp); err != nil {
 		return &model.User{}, err
 	}
 

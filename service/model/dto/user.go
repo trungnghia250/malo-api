@@ -32,3 +32,7 @@ type ListUserResponse struct {
 type DeleteUsersRequest struct {
 	UserIDs []string `json:"user_ids" query:"user_ids"`
 }
+
+type GetUserDetailRequest struct {
+	UserID string `json:"user_id" query:"user_id"`
+}

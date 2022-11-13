@@ -13,5 +13,5 @@ type User struct {
 	CreatedAt    time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	ModifiedAt   time.Time `json:"modified_at,omitempty" bson:"modified_at,omitempty"`
 	ModifiedBy   string    `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
-	TotalCount   int32     `json:"totalCount,omitempty"`
+	TotalCount   int32     `json:"totalCount,omitempty" bson:"totalCount,omitempty"`
 }

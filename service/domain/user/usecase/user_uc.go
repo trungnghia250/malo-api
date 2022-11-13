@@ -21,6 +21,7 @@ type IUserUseCase interface {
 	CreateUser(ctx *fiber.Ctx, data *model.User) (*model.User, error)
 	UpdateUser(ctx *fiber.Ctx, req model.User) error
 	DeleteUsers(ctx *fiber.Ctx, userIDs []string) error
+	UserDetail(ctx *fiber.Ctx, id string) (dto.UserInfo, error)
 }
 
 type userUseCase struct {
@@ -120,4 +121,14 @@ func (u *userUseCase) DeleteUsers(ctx *fiber.Ctx, userIDs []string) error {
 	err := u.repo.NewUserRepo().DeleteUsers(ctx, userIDs)
 
 	return err
+}
+
+func (u *userUseCase) UserDetail(ctx *fiber.Ctx, id string) (dto.UserInfo, error) {
+	user, err := u.repo.NewUserRepo().GetUserByID(ctx, id)
+	if err != nil {
+		return dto.UserInfo{}, errors.New(fmt.Sprintf("User with id %s does not exists", id))
+	}
+
+	userInfo := transform.UserToUserInfo(user)
+	return userInfo, nil
 }

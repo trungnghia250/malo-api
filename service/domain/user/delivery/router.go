@@ -11,4 +11,5 @@ func (u *UserHandler) InternalUserAPIRoute(router fiber.Router) {
 	router.Post("/user", u.CreateUser)
 	router.Put("/user", u.UpdateUser)
 	router.Delete("/user", u.DeleteUsers)
+	router.Get("/user/detail", u.GetUserDetail)
 }
