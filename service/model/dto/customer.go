@@ -54,3 +54,8 @@ type ListCustomerResponse struct {
 type DeleteCustomersRequest struct {
 	CustomerIDs []string `json:"customer_id" query:"customer_ids"`
 }
+
+type UpdateListCustomerRequest struct {
+	CustomerIDs []string `json:"customer_ids" query:"customer_ids"`
+	Tags        []string `json:"tags" query:"tags"`
+}

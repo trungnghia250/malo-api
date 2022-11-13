@@ -109,3 +109,19 @@ func (c *CustomerHandler) CreateCustomer(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(customer)
 }
+
+func (c *CustomerHandler) UpdateList(ctx *fiber.Ctx) error {
+	req := new(dto.UpdateListCustomerRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	err := c.customerUseCase.UpdateCustomerTags(ctx, *req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(dto.DefaultResponse{
+		StatusCode: fiber.StatusOK,
+	})
+}

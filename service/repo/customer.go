@@ -17,6 +17,7 @@ type ICustomerRepo interface {
 	DeleteCustomersByID(ctx *fiber.Ctx, ids []string) error
 	ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest) ([]model.Customer, error)
 	CountCustomer(ctx *fiber.Ctx) (int32, error)
+	UpdateListCustomers(ctx *fiber.Ctx, req dto.UpdateListCustomerRequest) error
 }
 
 func NewCustomerRepo(mgo *mongo.Client) ICustomerRepo {
@@ -147,4 +148,22 @@ func (c *customerRepo) CountCustomer(ctx *fiber.Ctx) (int32, error) {
 	}
 
 	return int32(value), nil
+}
+
+func (c *customerRepo) UpdateListCustomers(ctx *fiber.Ctx, req dto.UpdateListCustomerRequest) error {
+	_, err := c.getCollection().UpdateMany(ctx.Context(),
+		bson.M{
+			"customer_id": bson.M{"$in": req.CustomerIDs},
+		},
+		bson.M{"$push": bson.M{
+			"tags": bson.M{
+				"$each": req.Tags,
+			},
+		}})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

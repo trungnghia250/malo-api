@@ -10,6 +10,7 @@ func (c *CustomerHandler) InternalCustomerAPIRoute(router fiber.Router) {
 	router.Post("/customer", c.CreateCustomer)
 	router.Put("/customer", c.UpdateCustomer)
 	router.Get("/customer/list", c.ListCustomer)
+	router.Put("/customer/add_tags", c.UpdateList)
 }
 
 func (c *CustomerHandler) ManagementCustomerAPIRoute(router fiber.Router) {

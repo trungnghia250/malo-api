@@ -15,6 +15,7 @@ type ICustomerUseCase interface {
 	CreateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*model.Customer, error)
 	UpdateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*model.Customer, error)
 	CountCustomer(ctx *fiber.Ctx) (int32, error)
+	UpdateCustomerTags(ctx *fiber.Ctx, data dto.UpdateListCustomerRequest) error
 }
 
 type customerUseCase struct {
@@ -78,4 +79,13 @@ func (c *customerUseCase) CountCustomer(ctx *fiber.Ctx) (int32, error) {
 	}
 
 	return value, nil
+}
+
+func (c *customerUseCase) UpdateCustomerTags(ctx *fiber.Ctx, data dto.UpdateListCustomerRequest) error {
+	err := c.repo.NewCustomerRepo().UpdateListCustomers(ctx, data)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
