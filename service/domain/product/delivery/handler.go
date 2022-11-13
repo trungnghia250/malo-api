@@ -109,3 +109,17 @@ func (p *ProductHandler) CreateProduct(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(product)
 }
+
+func (p *ProductHandler) ExportProduct(ctx *fiber.Ctx) error {
+	req := new(dto.ExportProductRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	file, err := p.productUseCase.ExportProduct(ctx, *req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.SendFile(file)
+}

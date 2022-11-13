@@ -121,6 +121,12 @@ func (c *customerRepo) ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest)
 		}
 	}
 
+	if len(req.CustomerIDs) > 0 {
+		matching["customer_id"] = bson.M{
+			"$in": req.CustomerIDs,
+		}
+	}
+
 	cursor, err := c.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},

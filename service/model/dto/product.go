@@ -7,11 +7,12 @@ type GetProductByIDRequest struct {
 }
 
 type ListProductRequest struct {
-	Limit    int32    `json:"limit,omitempty"`
-	Offset   int32    `json:"offset,omitempty"`
-	SKU      string   `json:"sku,omitempty"`
-	Category []string `json:"category,omitempty"`
-	Name     []string `json:"name,omitempty"`
+	Limit      int32    `json:"limit,omitempty"`
+	Offset     int32    `json:"offset,omitempty"`
+	SKU        string   `json:"sku,omitempty"`
+	Category   []string `json:"category,omitempty"`
+	Name       []string `json:"name,omitempty"`
+	ProductIDs []string `query:"product_ids,omitempty"`
 }
 
 type ListProductResponse struct {
@@ -20,5 +21,9 @@ type ListProductResponse struct {
 }
 
 type DeleteProductsRequest struct {
+	ProductIDs []string `json:"product_ids" query:"product_ids"`
+}
+
+type ExportProductRequest struct {
 	ProductIDs []string `json:"product_ids" query:"product_ids"`
 }

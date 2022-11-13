@@ -94,6 +94,11 @@ func (p *productRepo) ListProduct(ctx *fiber.Ctx, req dto.ListProductRequest) ([
 			{"$in", productNameQuery},
 		}
 	}
+	if len(req.ProductIDs) > 0 {
+		matching["product_id"] = bson.M{
+			"$in": req.ProductIDs,
+		}
+	}
 	cursor, err := p.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},

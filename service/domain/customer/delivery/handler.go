@@ -125,3 +125,17 @@ func (c *CustomerHandler) UpdateList(ctx *fiber.Ctx) error {
 		StatusCode: fiber.StatusOK,
 	})
 }
+
+func (c *CustomerHandler) ExportCustomer(ctx *fiber.Ctx) error {
+	req := new(dto.ExportCustomerRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	file, err := c.customerUseCase.ExportCustomer(ctx, *req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.SendFile(file)
+}

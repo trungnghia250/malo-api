@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/model"
 	"github.com/trungnghia250/malo-api/service/model/dto"
@@ -20,6 +21,7 @@ type IOrderUseCase interface {
 	UpdateOrder(ctx *fiber.Ctx, data *dto.Order) (*model.Order, error)
 	CountOrder(ctx *fiber.Ctx) (int32, error)
 	ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (dto.ImportOrderResponse, error)
+	ExportOrder(ctx *fiber.Ctx, req dto.ExportOrderRequest) (string, error)
 }
 
 type orderUseCase struct {
@@ -231,4 +233,92 @@ func dataEndLine(data []string) string {
 		return ""
 	}
 	return data[22]
+}
+
+func (o *orderUseCase) ExportOrder(ctx *fiber.Ctx, req dto.ExportOrderRequest) (string, error) {
+	orders, err := o.repo.NewOrderRepo().ListOrder(ctx, dto.ListOrderRequest{
+		OrderIDs: req.OrderIDs,
+		Limit:    int32(len(req.OrderIDs)),
+	})
+	if err != nil {
+		return "", err
+	}
+
+	f := excelize.NewFile()
+	categories := map[string]string{
+		"A1": "STT",
+		"B1": "Mã đơn hàng",
+		"C1": "Nguồn đơn hàng",
+		"D1": "Tên khách hàng",
+		"E1": "Giới tính",
+		"F1": "Số điện thoại",
+		"G1": "Email",
+		"H1": "Địa chỉ",
+		"I1": "Mã SKU",
+		"J1": "Tên sản phẩm",
+		"K1": "Số lượng",
+		"L1": "Đơn giá",
+		"M1": "Giảm giá",
+		"N1": "Thuế",
+		"O1": "Thành tiền",
+		"P1": "Mã giảm giá",
+		"Q1": "Tổng giá trị sản phẩm",
+		"R1": "Phí vận chuyển",
+		"S1": "Tổng giảm giá",
+		"T1": "Tổng thuế",
+		"U1": "Giá trị đơn hàng",
+		"V1": "Trạng thái",
+		"W1": "Ghi Chú",
+	}
+	for k, v := range categories {
+		f.SetCellValue("Sheet1", k, v)
+	}
+	index := 1
+	for number, order := range orders {
+		index++
+		f.SetCellValue("Sheet1", fmt.Sprintf("A%d", index), number+1)
+		f.SetCellValue("Sheet1", fmt.Sprintf("B%d", index), order.OrderID)
+		f.SetCellValue("Sheet1", fmt.Sprintf("C%d", index), order.Source)
+		f.SetCellValue("Sheet1", fmt.Sprintf("D%d", index), order.CustomerName)
+		f.SetCellValue("Sheet1", fmt.Sprintf("E%d", index), order.Gender)
+		f.SetCellValue("Sheet1", fmt.Sprintf("F%d", index), order.PhoneNumber)
+		f.SetCellValue("Sheet1", fmt.Sprintf("G%d", index), order.Email)
+		f.SetCellValue("Sheet1", fmt.Sprintf("H%d", index), order.Address)
+		f.SetCellValue("Sheet1", fmt.Sprintf("I%d", index), order.Items[0].SKU)
+		f.SetCellValue("Sheet1", fmt.Sprintf("J%d", index), order.Items[0].ProductName)
+		f.SetCellValue("Sheet1", fmt.Sprintf("K%d", index), order.Items[0].Quantity)
+		f.SetCellValue("Sheet1", fmt.Sprintf("L%d", index), order.Items[0].UnitPrice)
+		f.SetCellValue("Sheet1", fmt.Sprintf("M%d", index), order.Items[0].TotalDiscount)
+		f.SetCellValue("Sheet1", fmt.Sprintf("N%d", index), order.Items[0].TotalTaxAmount)
+		f.SetCellValue("Sheet1", fmt.Sprintf("O%d", index), order.Items[0].Subtotal)
+		f.SetCellValue("Sheet1", fmt.Sprintf("P%d", index), order.VoucherCode)
+		f.SetCellValue("Sheet1", fmt.Sprintf("Q%d", index), order.TotalLineItemsAmount)
+		f.SetCellValue("Sheet1", fmt.Sprintf("R%d", index), order.ShippingPrice)
+		f.SetCellValue("Sheet1", fmt.Sprintf("S%d", index), order.TotalDiscount)
+		f.SetCellValue("Sheet1", fmt.Sprintf("T%d", index), order.TotalTaxAmount)
+		f.SetCellValue("Sheet1", fmt.Sprintf("U%d", index), order.TotalOrderAmount)
+		f.SetCellValue("Sheet1", fmt.Sprintf("V%d", index), order.Status)
+		f.SetCellValue("Sheet1", fmt.Sprintf("W%d", index), order.Note)
+
+		if len(order.Items) > 1 {
+			for _, item := range order.Items[1:] {
+				index++
+				f.SetCellValue("Sheet1", fmt.Sprintf("I%d", index), item.SKU)
+				f.SetCellValue("Sheet1", fmt.Sprintf("J%d", index), item.ProductName)
+				f.SetCellValue("Sheet1", fmt.Sprintf("K%d", index), item.Quantity)
+				f.SetCellValue("Sheet1", fmt.Sprintf("L%d", index), item.UnitPrice)
+				f.SetCellValue("Sheet1", fmt.Sprintf("M%d", index), item.TotalDiscount)
+				f.SetCellValue("Sheet1", fmt.Sprintf("N%d", index), item.TotalTaxAmount)
+				f.SetCellValue("Sheet1", fmt.Sprintf("O%d", index), item.Subtotal)
+			}
+		}
+	}
+
+	f.SetActiveSheet(0)
+	if err := f.SaveAs("order.xlsx"); err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	return f.Path, nil
 }

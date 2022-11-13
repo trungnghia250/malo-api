@@ -26,6 +26,7 @@ type Order struct {
 	TotalTaxAmount       int32     `json:"total_tax_amount,omitempty" bson:"total_tax_amount,omitempty"`
 	TotalOrderAmount     int32     `json:"total_order_amount,omitempty" bson:"total_order_amount,omitempty"`
 	Note                 string    `json:"note,omitempty" bson:"note,omitempty"`
+	Gender               string    `json:"gender,omitempty" bson:"gender,omitempty"`
 	CreateAt             time.Time `json:"create_at,omitempty" bson:"create_at,omitempty"`
 	ModifiedAt           time.Time `json:"modified_at,omitempty" bson:"modified_at,omitempty"`
 	ModifiedBy           string    `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
@@ -60,8 +61,8 @@ type ListOrderRequest struct {
 	VoucherCode          string   `json:"voucher_code,omitempty" query:"voucher_code,omitempty"`
 	ShippingPrice        []int32  `json:"shipping_price,omitempty" query:"shipping_price,omitempty"`
 	TotalTax             []int32  `json:"total_tax,omitempty" query:"total_tax,omitempty"`
-	Status               []string `json:"status"`
-	OrderIDs             []string
+	Status               []string `json:"status,omitempty" query:"status,omitempty"`
+	OrderIDs             []string `json:"order_ids,omitempty" query:"order_ids,omitempty"`
 }
 
 type ImportOrderRequest struct {
@@ -81,4 +82,12 @@ type ImportOrderResponse struct {
 
 type DeleteOrdersRequest struct {
 	OrderIDs []string `json:"order_ids" query:"order_ids"`
+}
+
+type ExportOrderRequest struct {
+	OrderIDs []string `json:"order_ids" query:"order_ids"`
+}
+
+type ExportOrderResponse struct {
+	FileOrderURL string `json:"file_order_url"`
 }

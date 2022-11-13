@@ -129,3 +129,17 @@ func (o *OrderHandler) ImportOrder(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(result)
 }
+
+func (o *OrderHandler) ExportOrder(ctx *fiber.Ctx) error {
+	req := new(dto.ExportOrderRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	file, err := o.orderUseCase.ExportOrder(ctx, *req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.SendFile(file)
+}

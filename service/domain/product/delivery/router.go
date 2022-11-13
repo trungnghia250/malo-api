@@ -8,4 +8,5 @@ func (p *ProductHandler) InternalProductAPIRoute(router fiber.Router) {
 	router.Post("/product", p.CreateProduct)
 	router.Put("/product", p.UpdateProduct)
 	router.Get("/product/list", p.ListProduct)
+	router.Get("/product/export", p.ExportProduct)
 }

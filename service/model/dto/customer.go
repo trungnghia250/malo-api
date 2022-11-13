@@ -44,6 +44,7 @@ type ListCustomerRequest struct {
 	Gender       string   `json:"gender,omitempty"`
 	Email        string   `json:"email,omitempty"`
 	Source       []string `json:"source,omitempty" query:"source,omitempty"`
+	CustomerIDs  []string `json:"customer_ids,omitempty" query:"customer_ids,omitempty"`
 }
 
 type ListCustomerResponse struct {
@@ -58,4 +59,8 @@ type DeleteCustomersRequest struct {
 type UpdateListCustomerRequest struct {
 	CustomerIDs []string `json:"customer_ids" query:"customer_ids"`
 	Tags        []string `json:"tags" query:"tags"`
+}
+
+type ExportCustomerRequest struct {
+	CustomerIDs []string `json:"customer_ids" query:"customer_ids"`
 }
