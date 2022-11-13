@@ -58,12 +58,12 @@ func (p *ProductHandler) ListProduct(ctx *fiber.Ctx) error {
 }
 
 func (p *ProductHandler) DeleteProduct(ctx *fiber.Ctx) error {
-	req := new(dto.GetProductByIDRequest)
+	req := new(dto.DeleteProductsRequest)
 	if err := ctx.QueryParser(req); err != nil {
 		return err
 	}
 
-	err := p.productUseCase.DeleteProductByID(ctx, req.ProductID)
+	err := p.productUseCase.DeleteProductByID(ctx, req.ProductIDs)
 	if err != nil {
 		return err
 	}

@@ -16,7 +16,7 @@ type IOrderRepo interface {
 	GetOrderByID(ctx *fiber.Ctx, orderID string) (resp *model.Order, err error)
 	CreateOrder(ctx *fiber.Ctx, data *dto.Order) (int32, error)
 	UpdateOrderByID(ctx *fiber.Ctx, data *dto.Order) error
-	DeleteOrderByID(ctx *fiber.Ctx, id string) error
+	DeleteOrderByID(ctx *fiber.Ctx, ids []string) error
 	ListOrder(ctx *fiber.Ctx, req dto.ListOrderRequest) ([]model.Order, error)
 	CountOrder(ctx *fiber.Ctx) (int32, error)
 	CheckOrderExist(ctx *fiber.Ctx, query bson.M) (bool, error)
@@ -70,9 +70,11 @@ func (o *orderRepo) UpdateOrderByID(ctx *fiber.Ctx, data *dto.Order) error {
 	return nil
 }
 
-func (o *orderRepo) DeleteOrderByID(ctx *fiber.Ctx, id string) error {
-	_, err := o.getCollection().DeleteOne(ctx.Context(), bson.M{
-		"order_id": id,
+func (o *orderRepo) DeleteOrderByID(ctx *fiber.Ctx, ids []string) error {
+	_, err := o.getCollection().DeleteMany(ctx.Context(), bson.M{
+		"order_id": bson.M{
+			"$in": ids,
+		},
 	})
 	if err != nil {
 		return err

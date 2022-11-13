@@ -10,7 +10,7 @@ import (
 
 type IProductUseCase interface {
 	GetProductByID(ctx *fiber.Ctx, productID string) (*model.Product, error)
-	DeleteProductByID(ctx *fiber.Ctx, productID string) error
+	DeleteProductByID(ctx *fiber.Ctx, productIDs []string) error
 	ListProduct(ctx *fiber.Ctx, req dto.ListProductRequest) ([]model.Product, error)
 	CreateProduct(ctx *fiber.Ctx, data *model.Product) (*model.Product, error)
 	UpdateProduct(ctx *fiber.Ctx, data *model.Product) (*model.Product, error)
@@ -35,8 +35,8 @@ func (p *productUseCase) GetProductByID(ctx *fiber.Ctx, productID string) (*mode
 	return product, nil
 }
 
-func (p *productUseCase) DeleteProductByID(ctx *fiber.Ctx, productID string) error {
-	err := p.repo.NewProductRepo().DeleteProductByID(ctx, productID)
+func (p *productUseCase) DeleteProductByID(ctx *fiber.Ctx, productIDs []string) error {
+	err := p.repo.NewProductRepo().DeleteProductByID(ctx, productIDs)
 
 	return err
 }

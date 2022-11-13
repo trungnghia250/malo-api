@@ -58,12 +58,12 @@ func (o *OrderHandler) ListOrder(ctx *fiber.Ctx) error {
 }
 
 func (o *OrderHandler) DeleteOrder(ctx *fiber.Ctx) error {
-	req := new(dto.GetOrderByIDRequest)
+	req := new(dto.DeleteOrdersRequest)
 	if err := ctx.QueryParser(req); err != nil {
 		return err
 	}
 
-	err := o.orderUseCase.DeleteOrderByID(ctx, req.OrderID)
+	err := o.orderUseCase.DeleteOrderByID(ctx, req.OrderIDs)
 	if err != nil {
 		return err
 	}

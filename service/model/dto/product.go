@@ -18,3 +18,7 @@ type ListProductResponse struct {
 	Count int32           `json:"count"`
 	Data  []model.Product `json:"data"`
 }
+
+type DeleteProductsRequest struct {
+	ProductIDs []string `json:"product_ids" query:"product_ids"`
+}

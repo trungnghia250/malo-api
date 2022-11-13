@@ -78,3 +78,7 @@ type ImportOrderResponse struct {
 	Ignore  int32         `json:"ignore"`
 	Data    []model.Order `json:"data"`
 }
+
+type DeleteOrdersRequest struct {
+	OrderIDs []string `json:"order_ids" query:"order_ids"`
+}

@@ -50,3 +50,7 @@ type ListCustomerResponse struct {
 	Count int32            `json:"count"`
 	Data  []model.Customer `json:"data"`
 }
+
+type DeleteCustomersRequest struct {
+	CustomerIDs []string `json:"customer_id" query:"customer_ids"`
+}

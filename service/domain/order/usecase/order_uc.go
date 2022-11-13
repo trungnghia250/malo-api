@@ -14,7 +14,7 @@ import (
 
 type IOrderUseCase interface {
 	GetOrderByID(ctx *fiber.Ctx, orderID string) (*model.Order, error)
-	DeleteOrderByID(ctx *fiber.Ctx, orderID string) error
+	DeleteOrderByID(ctx *fiber.Ctx, orderIDs []string) error
 	ListOrder(ctx *fiber.Ctx, req dto.ListOrderRequest) ([]model.Order, error)
 	CreateOrder(ctx *fiber.Ctx, data *dto.Order) (*model.Order, error)
 	UpdateOrder(ctx *fiber.Ctx, data *dto.Order) (*model.Order, error)
@@ -40,8 +40,8 @@ func (o *orderUseCase) GetOrderByID(ctx *fiber.Ctx, orderID string) (*model.Orde
 	return order, nil
 }
 
-func (o *orderUseCase) DeleteOrderByID(ctx *fiber.Ctx, orderID string) error {
-	err := o.repo.NewOrderRepo().DeleteOrderByID(ctx, orderID)
+func (o *orderUseCase) DeleteOrderByID(ctx *fiber.Ctx, orderIDs []string) error {
+	err := o.repo.NewOrderRepo().DeleteOrderByID(ctx, orderIDs)
 
 	return err
 }

@@ -57,13 +57,12 @@ func (c *CustomerHandler) ListCustomer(ctx *fiber.Ctx) error {
 }
 
 func (c *CustomerHandler) DeleteCustomer(ctx *fiber.Ctx) error {
-
-	req := new(dto.GetCustomerByIDRequest)
+	req := new(dto.DeleteCustomersRequest)
 	if err := ctx.QueryParser(req); err != nil {
 		return err
 	}
 
-	err := c.customerUseCase.DeleteCustomerByID(ctx, req.CustomerID)
+	err := c.customerUseCase.DeleteCustomersByID(ctx, req.CustomerIDs)
 	if err != nil {
 		return err
 	}

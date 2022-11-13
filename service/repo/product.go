@@ -15,7 +15,7 @@ type IProductRepo interface {
 	ListProduct(ctx *fiber.Ctx, req dto.ListProductRequest) ([]model.Product, error)
 	CreateProduct(ctx *fiber.Ctx, data *model.Product) error
 	UpdateProductByID(ctx *fiber.Ctx, data *model.Product) error
-	DeleteProductByID(ctx *fiber.Ctx, id string) error
+	DeleteProductByID(ctx *fiber.Ctx, ids []string) error
 	CountProduct(ctx *fiber.Ctx) (int32, error)
 }
 
@@ -61,9 +61,11 @@ func (p *productRepo) UpdateProductByID(ctx *fiber.Ctx, data *model.Product) err
 	return nil
 }
 
-func (p *productRepo) DeleteProductByID(ctx *fiber.Ctx, id string) error {
-	_, err := p.getCollection().DeleteOne(ctx.Context(), bson.M{
-		"product_id": id,
+func (p *productRepo) DeleteProductByID(ctx *fiber.Ctx, ids []string) error {
+	_, err := p.getCollection().DeleteMany(ctx.Context(), bson.M{
+		"product_id": bson.M{
+			"$in": ids,
+		},
 	})
 	if err != nil {
 		return err

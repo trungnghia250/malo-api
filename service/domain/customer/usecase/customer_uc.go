@@ -10,7 +10,7 @@ import (
 
 type ICustomerUseCase interface {
 	GetCustomerByID(ctx *fiber.Ctx, customerID string) (*model.Customer, error)
-	DeleteCustomerByID(ctx *fiber.Ctx, customerID string) error
+	DeleteCustomersByID(ctx *fiber.Ctx, customerIDs []string) error
 	ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest) ([]model.Customer, error)
 	CreateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*model.Customer, error)
 	UpdateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*model.Customer, error)
@@ -35,8 +35,8 @@ func (c *customerUseCase) GetCustomerByID(ctx *fiber.Ctx, customerID string) (*m
 	return customer, nil
 }
 
-func (c *customerUseCase) DeleteCustomerByID(ctx *fiber.Ctx, customerID string) error {
-	err := c.repo.NewCustomerRepo().DeleteCustomerByID(ctx, customerID)
+func (c *customerUseCase) DeleteCustomersByID(ctx *fiber.Ctx, customerIDs []string) error {
+	err := c.repo.NewCustomerRepo().DeleteCustomersByID(ctx, customerIDs)
 
 	return err
 }
