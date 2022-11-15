@@ -146,10 +146,10 @@ func (o *OrderHandler) ExportOrder(ctx *fiber.Ctx) error {
 
 func (o *OrderHandler) SyncOrder(ctx *fiber.Ctx) error {
 	req := new(dto.SyncOrderRequest)
-	if err := ctx.QueryParser(req); err != nil {
+	if err := ctx.BodyParser(req); err != nil {
 		return err
 	}
-
+	req.ArrayCol = strings.Split(req.CheckDupCol, ",")
 	resp, err := o.orderUseCase.SyncOrder(ctx, *req)
 	if err != nil {
 		return err

@@ -369,7 +369,7 @@ func (o *orderUseCase) SyncOrder(ctx *fiber.Ctx, req dto.SyncOrderRequest) (dto.
 		}
 		maloOrders := transform.ConvertSapoOrder(result.Orders)
 
-		resp, err := o.CheckOrderImport(ctx, maloOrders, req.Action, req.CheckDupCol)
+		resp, err := o.CheckOrderImport(ctx, maloOrders, req.Action, req.ArrayCol)
 		if err != nil {
 			return dto.ImportOrderResponse{}, err
 		}

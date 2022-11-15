@@ -93,11 +93,12 @@ type ExportOrderResponse struct {
 }
 
 type SyncOrderRequest struct {
-	Source      string   `json:"source,omitempty" query:"source,omitempty"`
-	StartTime   string   `query:"start_time,omitempty"`
-	EndTime     string   `query:"end_time,omitempty"`
-	CheckDupCol []string `query:"check_dup_col"`
-	Action      string   `query:"action"`
+	Source      string `json:"source,omitempty"`
+	StartTime   string `query:"start_time,omitempty"`
+	EndTime     string `query:"end_time,omitempty"`
+	CheckDupCol string `json:"check_dup_col"`
+	ArrayCol    []string
+	Action      string `json:"action"`
 }
 
 type SapoOrdersResponse struct {
