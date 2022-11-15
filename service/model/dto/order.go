@@ -27,7 +27,7 @@ type Order struct {
 	TotalOrderAmount     int32     `json:"total_order_amount,omitempty" bson:"total_order_amount,omitempty"`
 	Note                 string    `json:"note,omitempty" bson:"note,omitempty"`
 	Gender               string    `json:"gender,omitempty" bson:"gender,omitempty"`
-	CreateAt             time.Time `json:"create_at,omitempty" bson:"create_at,omitempty"`
+	CreatedAt            time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	ModifiedAt           time.Time `json:"modified_at,omitempty" bson:"modified_at,omitempty"`
 	ModifiedBy           string    `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
 }

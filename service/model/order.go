@@ -22,7 +22,7 @@ type Order struct {
 	TotalTaxAmount       int32              `json:"total_tax_amount" bson:"total_tax_amount"`
 	TotalOrderAmount     int32              `json:"total_order_amount" bson:"total_order_amount"`
 	Note                 string             `json:"note" bson:"note"`
-	CreateAt             time.Time          `json:"create_at" bson:"create_at"`
+	CreatedAt            time.Time          `json:"created_at" bson:"created_at"`
 	ModifiedAt           time.Time          `json:"modified_at" bson:"modified_at"`
 	ModifiedBy           string             `json:"modified_by" bson:"modified_by"`
 	TotalCount           int32              `json:"totalCount"`

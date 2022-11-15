@@ -161,7 +161,7 @@ func (o *orderUseCase) ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (
 			TotalTaxAmount:       convertStringToInt32(row[19]),
 			TotalOrderAmount:     convertStringToInt32(row[20]),
 			Note:                 dataEndLine(row),
-			CreateAt:             time.Now(),
+			CreatedAt:            time.Now(),
 			ModifiedAt:           time.Now(),
 		}
 		tempOrder = thisOrder

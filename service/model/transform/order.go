@@ -56,7 +56,7 @@ func ConvertSapoOrder(sapoOrders []model.SapoOrder) []dto.Order {
 			TotalTaxAmount:       0,
 			TotalOrderAmount:     int32(order.TotalPrice),
 			Note:                 order.Note,
-			CreateAt:             order.CreatedOn,
+			CreatedAt:            order.CreatedOn,
 		})
 	}
 

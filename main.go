@@ -9,6 +9,8 @@ import (
 	"github.com/trungnghia250/malo-api/database"
 	customer_delivery "github.com/trungnghia250/malo-api/service/domain/customer/delivery"
 	customer_uc "github.com/trungnghia250/malo-api/service/domain/customer/usecase"
+	integrate_delivery "github.com/trungnghia250/malo-api/service/domain/integrate/delivery"
+	integrate_uc "github.com/trungnghia250/malo-api/service/domain/integrate/usecase"
 	order_delivery "github.com/trungnghia250/malo-api/service/domain/order/delivery"
 	order_uc "github.com/trungnghia250/malo-api/service/domain/order/usecase"
 	product_delivery "github.com/trungnghia250/malo-api/service/domain/product/delivery"
@@ -43,12 +45,14 @@ func main() {
 	userUseCase := user_uc.NewUserUseCase(repo)
 	productUseCase := product_uc.NewProductUseCase(repo)
 	orderUseCase := order_uc.NewOrderUseCase(repo)
+	integrateUseCase := integrate_uc.NewIntegrateUseCase(repo)
 
 	//handler
 	customerHandler := customer_delivery.NewCustomerHandler(customerUseCase)
 	userHandler := user_delivery.NewUserHandler(userUseCase)
 	productHandler := product_delivery.NewProductHandler(productUseCase)
 	orderHandler := order_delivery.NewOrderHandler(orderUseCase)
+	integrateHandler := integrate_delivery.NewIntegrateHandler(integrateUseCase)
 
 	//router
 	router := fiber.New()
@@ -57,6 +61,7 @@ func main() {
 	userHandler.InternalUserAPIRoute(router)
 	productHandler.InternalProductAPIRoute(router)
 	orderHandler.InternalOrderAPIRoute(router)
+	integrateHandler.InternalIntegrateAPIRoute(router)
 
 	router.Use(cors.New())
 

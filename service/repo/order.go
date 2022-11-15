@@ -46,7 +46,7 @@ func (o *orderRepo) GetOrderByID(ctx *fiber.Ctx, orderID string) (resp *model.Or
 }
 
 func (o *orderRepo) CreateOrder(ctx *fiber.Ctx, data *dto.Order) (int32, error) {
-	data.CreateAt = time.Now()
+	data.CreatedAt = time.Now()
 	res, err := o.getCollection().InsertOne(ctx.Context(), data)
 	if err != nil {
 		return 0, err
