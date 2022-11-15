@@ -23,7 +23,7 @@ type counterRepo struct {
 }
 
 func (c *counterRepo) getCollection() *mongo.Collection {
-	return c.mgo.Database(database.DatabaseMalo).Collection(database.CollectionCustomer)
+	return c.mgo.Database(database.DatabaseMalo).Collection(database.CollectionCounter)
 }
 
 func (c *counterRepo) GetSequenceNextValue(ctx *fiber.Ctx, seqName string) (int32, error) {
