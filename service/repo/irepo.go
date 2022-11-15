@@ -19,6 +19,7 @@ type IRepo interface {
 	NewUserRepo() IUserRepo
 	NewProductRepo() IProductRepo
 	NewOrderRepo() IOrderRepo
+	NewCounterRepo() ICounterRepo
 }
 
 func (r repo) NewCustomerRepo() ICustomerRepo {
@@ -35,4 +36,8 @@ func (r repo) NewProductRepo() IProductRepo {
 
 func (r repo) NewOrderRepo() IOrderRepo {
 	return NewOrderRepo(r.mgo)
+}
+
+func (r repo) NewCounterRepo() ICounterRepo {
+	return NewCounterRepo(r.mgo)
 }

@@ -55,8 +55,12 @@ func (c *customerUseCase) ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerReque
 
 func (c *customerUseCase) CreateCustomer(ctx *fiber.Ctx, data *dto.Customer) (*model.Customer, error) {
 	data.CreatedAt = time.Now()
-
-	err := c.repo.NewCustomerRepo().CreateCustomer(ctx, data)
+	customerID, err := c.repo.NewCounterRepo().GetSequenceNextValue(ctx, "customer_id")
+	if err != nil {
+		return nil, err
+	}
+	data.CustomerID = fmt.Sprintf("C%d", customerID)
+	err = c.repo.NewCustomerRepo().CreateCustomer(ctx, data)
 	if err != nil {
 		return nil, err
 	}

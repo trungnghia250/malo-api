@@ -17,6 +17,7 @@ const (
 	CollectionUser     = "user"
 	CollectionProduct  = "product"
 	CollectionOrder    = "order"
+	CollectionCounter  = "counter"
 )
 
 func ConnectMongo(user, pass, host string) *mongo.Client {

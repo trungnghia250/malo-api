@@ -99,8 +99,12 @@ func (u *userUseCase) ListUser(ctx *fiber.Ctx, req dto.ListUserRequest) ([]model
 
 func (u *userUseCase) CreateUser(ctx *fiber.Ctx, data *model.User) (*model.User, error) {
 	data.CreatedAt = time.Now()
-
-	err := u.repo.NewUserRepo().CreateUser(ctx, data)
+	userID, err := u.repo.NewCounterRepo().GetSequenceNextValue(ctx, "user_id")
+	if err != nil {
+		return nil, err
+	}
+	data.UserID = fmt.Sprintf("U%d", userID)
+	err = u.repo.NewUserRepo().CreateUser(ctx, data)
 	if err != nil {
 		return nil, err
 	}

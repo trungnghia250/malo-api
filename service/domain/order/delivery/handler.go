@@ -143,3 +143,17 @@ func (o *OrderHandler) ExportOrder(ctx *fiber.Ctx) error {
 
 	return ctx.SendFile(file)
 }
+
+func (o *OrderHandler) SyncOrder(ctx *fiber.Ctx) error {
+	req := new(dto.SyncOrderRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	resp, err := o.orderUseCase.SyncOrder(ctx, *req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(resp)
+}

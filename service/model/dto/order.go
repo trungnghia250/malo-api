@@ -91,3 +91,15 @@ type ExportOrderRequest struct {
 type ExportOrderResponse struct {
 	FileOrderURL string `json:"file_order_url"`
 }
+
+type SyncOrderRequest struct {
+	Source      string   `json:"source,omitempty" query:"source,omitempty"`
+	StartTime   string   `query:"start_time,omitempty"`
+	EndTime     string   `query:"end_time,omitempty"`
+	CheckDupCol []string `query:"check_dup_col"`
+	Action      string   `query:"action"`
+}
+
+type SapoOrdersResponse struct {
+	Orders []model.SapoOrder `json:"orders"`
+}

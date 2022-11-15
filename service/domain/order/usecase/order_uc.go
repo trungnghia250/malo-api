@@ -1,14 +1,17 @@
 package usecase
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/model"
 	"github.com/trungnghia250/malo-api/service/model/dto"
+	"github.com/trungnghia250/malo-api/service/model/transform"
 	"github.com/trungnghia250/malo-api/service/repo"
 	"github.com/trungnghia250/malo-api/utils"
 	"github.com/xuri/excelize/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -22,6 +25,7 @@ type IOrderUseCase interface {
 	CountOrder(ctx *fiber.Ctx) (int32, error)
 	ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (dto.ImportOrderResponse, error)
 	ExportOrder(ctx *fiber.Ctx, req dto.ExportOrderRequest) (string, error)
+	SyncOrder(ctx *fiber.Ctx, req dto.SyncOrderRequest) (dto.ImportOrderResponse, error)
 }
 
 type orderUseCase struct {
@@ -57,7 +61,12 @@ func (o *orderUseCase) ListOrder(ctx *fiber.Ctx, req dto.ListOrderRequest) ([]mo
 }
 
 func (o *orderUseCase) CreateOrder(ctx *fiber.Ctx, data *dto.Order) (*model.Order, error) {
-	_, err := o.repo.NewOrderRepo().CreateOrder(ctx, data)
+	orderID, err := o.repo.NewCounterRepo().GetSequenceNextValue(ctx, "order_id")
+	if err != nil {
+		return nil, err
+	}
+	data.OrderID = fmt.Sprintf("O%d", orderID)
+	_, err = o.repo.NewOrderRepo().CreateOrder(ctx, data)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +125,16 @@ func (o *orderUseCase) ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (
 		if tempOrder.OrderID != "" {
 			listOrder = append(listOrder, tempOrder)
 		}
-
+		status := ""
+		if row[21] == "open" {
+			status = "processing"
+		}
+		if row[21] == "closed" {
+			status = "success"
+		}
+		if row[21] == "cancelled" {
+			status = "cancel"
+		}
 		thisOrder := dto.Order{
 			OrderID:      row[1],
 			CustomerName: row[3],
@@ -124,7 +142,7 @@ func (o *orderUseCase) ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (
 			Email:        row[6],
 			Address:      row[7],
 			Source:       row[2],
-			Status:       row[21],
+			Status:       status,
 			Items: []dto.Item{
 				{
 					ProductName:    row[9],
@@ -321,4 +339,43 @@ func (o *orderUseCase) ExportOrder(ctx *fiber.Ctx, req dto.ExportOrderRequest) (
 	defer f.Close()
 
 	return f.Path, nil
+}
+
+func (o *orderUseCase) SyncOrder(ctx *fiber.Ctx, req dto.SyncOrderRequest) (dto.ImportOrderResponse, error) {
+	switch req.Source {
+	case "SAPO":
+		client := &http.Client{}
+		request, err := http.NewRequest("GET", "https://malo25.mysapo.net/admin/orders.json", nil)
+		if err != nil {
+			return dto.ImportOrderResponse{}, err
+		}
+		request.Header.Add("Content-Type", "application/json")
+		request.Header.Add("X-Sapo-Access-Token", "007eba624916497080f1c8ae3e3d03da")
+
+		res, err := client.Do(request)
+		if err != nil {
+			return dto.ImportOrderResponse{}, err
+		}
+		defer func() {
+			err := res.Body.Close()
+			if err != nil {
+				fmt.Printf("failed to closed connection: %v", err)
+			}
+		}()
+		var result dto.SapoOrdersResponse
+		err = json.NewDecoder(res.Body).Decode(&result)
+		if err != nil {
+			return dto.ImportOrderResponse{}, err
+		}
+		maloOrders := transform.ConvertSapoOrder(result.Orders)
+
+		resp, err := o.CheckOrderImport(ctx, maloOrders, req.Action, req.CheckDupCol)
+		if err != nil {
+			return dto.ImportOrderResponse{}, err
+		}
+		return resp, nil
+
+	default:
+		return dto.ImportOrderResponse{}, nil
+	}
 }

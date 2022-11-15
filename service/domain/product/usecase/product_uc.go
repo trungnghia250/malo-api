@@ -54,7 +54,12 @@ func (p *productUseCase) ListProduct(ctx *fiber.Ctx, req dto.ListProductRequest)
 
 func (p *productUseCase) CreateProduct(ctx *fiber.Ctx, data *model.Product) (*model.Product, error) {
 	data.CreatedAt = time.Now()
-	err := p.repo.NewProductRepo().CreateProduct(ctx, data)
+	productID, err := p.repo.NewCounterRepo().GetSequenceNextValue(ctx, "product_id")
+	if err != nil {
+		return nil, err
+	}
+	data.ProductID = fmt.Sprintf("O%d", productID)
+	err = p.repo.NewProductRepo().CreateProduct(ctx, data)
 	if err != nil {
 		return nil, err
 	}
