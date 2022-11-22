@@ -9,6 +9,7 @@ require (
 	github.com/labstack/echo/v4 v4.9.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.13.0
+	github.com/streadway/amqp v1.0.0
 	github.com/xuri/excelize/v2 v2.6.1
 	go.mongodb.org/mongo-driver v1.10.2
 )
