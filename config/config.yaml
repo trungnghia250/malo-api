@@ -11,7 +11,3 @@ encryption:
   jwt_exp: 2
   jwt_pol: 59a795909e65177c27fcdd87
   refresh_token_ttl: 1440 # 1440 hours = 60 days
-
-rabbit_instance:
-  amqp: amqps://ulbdpvhh:Ftem1dZ4dScEWb6Z0RrF_fyHu4e3q6DE@armadillo.rmq.cloudamqp.com/ulbdpvhh
-  exchange: campaign-streaming

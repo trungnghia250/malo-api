@@ -2,13 +2,11 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/trungnghia250/malo-api/config"
 	"github.com/trungnghia250/malo-api/database"
-	"github.com/trungnghia250/malo-api/rabitmq/handler"
 	customer_delivery "github.com/trungnghia250/malo-api/service/domain/customer/delivery"
 	customer_uc "github.com/trungnghia250/malo-api/service/domain/customer/usecase"
 	integrate_delivery "github.com/trungnghia250/malo-api/service/domain/integrate/delivery"
@@ -40,18 +38,6 @@ func main() {
 			fmt.Printf("failed to disconnect mongodb %v \n", err)
 		}
 	}()
-
-	configData, err := json.MarshalIndent(schema, "", "    ")
-	if err != nil {
-		log.Fatalf("failed to marshal indent schema, %v", err)
-	}
-	fmt.Printf("config: %s \n", configData)
-
-	// connect to queue
-	queue := handler.NewSession(&schema.RabbitMq)
-
-	useCase := handler.NewUseCase(mongoClient.Database("malo").Collection("campaign"), queue)
-	go useCase.Process()
 
 	repo := crm_repo.NewRepo(mongoClient)
 	//usecase
