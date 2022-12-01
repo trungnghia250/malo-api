@@ -12,13 +12,15 @@ import (
 var ctx = context.Background()
 
 const (
-	DatabaseMalo       = "malo"
-	CollectionCustomer = "customer"
-	CollectionUser     = "user"
-	CollectionProduct  = "product"
-	CollectionOrder    = "order"
-	CollectionCounter  = "counter"
-	CollectionPartner  = "partner"
+	DatabaseMalo            = "malo"
+	CollectionCustomer      = "customer"
+	CollectionUser          = "user"
+	CollectionProduct       = "product"
+	CollectionOrder         = "order"
+	CollectionCounter       = "counter"
+	CollectionPartner       = "partner"
+	CollectionCampaign      = "campaign"
+	CollectionCustomerGroup = "customer_group"
 )
 
 func ConnectMongo(user, pass, host string) *mongo.Client {

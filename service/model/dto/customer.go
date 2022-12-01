@@ -9,6 +9,10 @@ type GetCustomerByIDRequest struct {
 	CustomerID string `json:"customer_id" query:"customer_id"`
 }
 
+type GetCustomerGroupByIDRequest struct {
+	ID string `json:"id" query:"id"`
+}
+
 type GetCustomerByIDResponse struct {
 	CustomerID   string `json:"customer_id"`
 	CustomerName string `json:"customer_name"`
@@ -53,7 +57,11 @@ type ListCustomerResponse struct {
 }
 
 type DeleteCustomersRequest struct {
-	CustomerIDs []string `json:"customer_id" query:"customer_ids"`
+	CustomerIDs []string `json:"customer_ids" query:"customer_ids"`
+}
+
+type DeleteCustomerGroupsRequest struct {
+	IDs []string `json:"ids" query:"ids"`
 }
 
 type UpdateListCustomerRequest struct {
@@ -63,4 +71,15 @@ type UpdateListCustomerRequest struct {
 
 type ExportCustomerRequest struct {
 	CustomerIDs []string `json:"customer_ids" query:"customer_ids"`
+}
+
+type ListCustomerGroupRequest struct {
+	Limit  int32    `json:"limit,omitempty"`
+	Offset int32    `json:"offset,omitempty"`
+	IDs    []string `json:"ids,omitempty"`
+}
+
+type ListCustomerGroupResponse struct {
+	Count int32                 `json:"count"`
+	Data  []model.CustomerGroup `json:"data"`
 }

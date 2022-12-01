@@ -7,8 +7,12 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/trungnghia250/malo-api/config"
 	"github.com/trungnghia250/malo-api/database"
+	campaign_delivery "github.com/trungnghia250/malo-api/service/domain/campaign/delivery"
+	campaign_uc "github.com/trungnghia250/malo-api/service/domain/campaign/usecase"
 	customer_delivery "github.com/trungnghia250/malo-api/service/domain/customer/delivery"
 	customer_uc "github.com/trungnghia250/malo-api/service/domain/customer/usecase"
+	customer_group_delivery "github.com/trungnghia250/malo-api/service/domain/customer_group/delivery"
+	customer_group_usecase "github.com/trungnghia250/malo-api/service/domain/customer_group/usecase"
 	integrate_delivery "github.com/trungnghia250/malo-api/service/domain/integrate/delivery"
 	integrate_uc "github.com/trungnghia250/malo-api/service/domain/integrate/usecase"
 	order_delivery "github.com/trungnghia250/malo-api/service/domain/order/delivery"
@@ -46,6 +50,8 @@ func main() {
 	productUseCase := product_uc.NewProductUseCase(repo)
 	orderUseCase := order_uc.NewOrderUseCase(repo)
 	integrateUseCase := integrate_uc.NewIntegrateUseCase(repo)
+	campaignUseCase := campaign_uc.NewCampaignUseCase(repo)
+	customerGroupUseCase := customer_group_usecase.NewCustomerGroupUseCase(repo)
 
 	//handler
 	customerHandler := customer_delivery.NewCustomerHandler(customerUseCase)
@@ -53,6 +59,8 @@ func main() {
 	productHandler := product_delivery.NewProductHandler(productUseCase)
 	orderHandler := order_delivery.NewOrderHandler(orderUseCase)
 	integrateHandler := integrate_delivery.NewIntegrateHandler(integrateUseCase)
+	campaignHandler := campaign_delivery.NewCampaignHandler(campaignUseCase)
+	customerGroupHandler := customer_group_delivery.NewCustomerGroupHandler(customerGroupUseCase)
 
 	//router
 	router := fiber.New()
@@ -62,6 +70,8 @@ func main() {
 	productHandler.InternalProductAPIRoute(router)
 	orderHandler.InternalOrderAPIRoute(router)
 	integrateHandler.InternalIntegrateAPIRoute(router)
+	campaignHandler.InternalCampaignAPIRoute(router)
+	customerGroupHandler.InternalCustomerGroupAPIRoute(router)
 
 	router.Use(cors.New())
 

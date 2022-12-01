@@ -10,4 +10,6 @@ type PartnerConfig struct {
 	CreatedAt     time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	ModifiedAt    time.Time `json:"modified_at,omitempty" bson:"modified_at,omitempty"`
 	ModifiedBy    string    `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
+	StoreName     string    `json:"store_name,omitempty" bson:"store_name,omitempty"`
+	Logo          string    `json:"logo,omitempty" bson:"logo,omitempty"`
 }
