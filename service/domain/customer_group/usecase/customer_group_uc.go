@@ -10,7 +10,7 @@ import (
 )
 
 type ICustomerGroupUseCase interface {
-	GetCustomerGroupByID(ctx *fiber.Ctx, customerGroupID string) (*model.CustomerGroup, error)
+	GetCustomerGroupByID(ctx *fiber.Ctx, customerGroupID string) (dto.GetCustomerGroupResponse, error)
 	DeleteCustomerGroupsByID(ctx *fiber.Ctx, customerGroupIDs []string) error
 	ListCustomerGroup(ctx *fiber.Ctx, req dto.ListCustomerGroupRequest) ([]model.CustomerGroup, error)
 	CreateCustomerGroup(ctx *fiber.Ctx, data *model.CustomerGroup) (*model.CustomerGroup, error)
@@ -27,12 +27,25 @@ func NewCustomerGroupUseCase(repo repo.IRepo) ICustomerGroupUseCase {
 	}
 }
 
-func (c *customerGroupUseCase) GetCustomerGroupByID(ctx *fiber.Ctx, customerGroupID string) (*model.CustomerGroup, error) {
+func (c *customerGroupUseCase) GetCustomerGroupByID(ctx *fiber.Ctx, customerGroupID string) (dto.GetCustomerGroupResponse, error) {
 	customerGroup, err := c.repo.NewCustomerGroupRepo().GetCustomerGroupByID(ctx, customerGroupID)
 	if err != nil {
-		return nil, err
+		return dto.GetCustomerGroupResponse{}, err
 	}
-	return customerGroup, nil
+	customers, err := c.repo.NewCustomerRepo().ListCustomer(ctx, dto.ListCustomerRequest{
+		Limit:       int32(len(customerGroup.CustomerIDs)),
+		CustomerIDs: customerGroup.CustomerIDs,
+	})
+
+	return dto.GetCustomerGroupResponse{
+		ID:         customerGroup.ID,
+		GroupName:  customerGroup.GroupName,
+		Note:       customerGroup.Note,
+		CreatedAt:  customerGroup.CreatedAt,
+		ModifiedAt: customerGroup.ModifiedAt,
+		ModifiedBy: customerGroup.ModifiedBy,
+		Customers:  customers,
+	}, nil
 }
 
 func (c *customerGroupUseCase) DeleteCustomerGroupsByID(ctx *fiber.Ctx, customerGroupIDs []string) error {

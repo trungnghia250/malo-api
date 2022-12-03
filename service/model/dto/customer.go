@@ -83,3 +83,14 @@ type ListCustomerGroupResponse struct {
 	Count int32                 `json:"count"`
 	Data  []model.CustomerGroup `json:"data"`
 }
+
+type GetCustomerGroupResponse struct {
+	ID         string           `json:"_id,omitempty" bson:"_id,omitempty"`
+	GroupName  string           `json:"group_name,omitempty" bson:"group_name,omitempty"`
+	Note       string           `json:"note,omitempty" bson:"note,omitempty"`
+	CreatedAt  time.Time        `json:"created_at,omitempty" bson:"created_at,omitempty"`
+	ModifiedAt time.Time        `json:"modified_at,omitempty" bson:"modified_at,omitempty"`
+	ModifiedBy string           `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
+	TotalCount int32            `json:"totalCount,omitempty" bson:"totalCount,omitempty"`
+	Customers  []model.Customer `json:"customers,omitempty"`
+}

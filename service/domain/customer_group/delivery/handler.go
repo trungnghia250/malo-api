@@ -103,6 +103,17 @@ func (c *CustomerGroupHandler) CreateCustomerGroup(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	reqToken := ctx.GetReqHeaders()["X-Access-Token"]
+	if reqToken == "" {
+		return errors.New("token is required")
+	}
+	token, err := jwt.Parse(reqToken, nil)
+	if token == nil {
+		return errors.New("token not valid")
+	}
+	claims, _ := token.Claims.(jwt.MapClaims)
+
+	req.CreatedBy = claims["noc"].(string)
 	group, err := c.customerGroupUseCase.CreateCustomerGroup(ctx, req)
 	if err != nil {
 		return err
