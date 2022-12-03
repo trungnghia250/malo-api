@@ -115,10 +115,7 @@ func (c *campaignUseCase) CreateCampaign(ctx *fiber.Ctx, data *model.Campaign) (
 		smsRequest := sms.Request{
 			Receivers: receivers,
 			Content:   data.Message,
-		}
-
-		if data.SendAt > 0 {
-			smsRequest.SendAt = time.Unix(int64(data.SendAt), 0)
+			SendAt:    int32(data.SendAt),
 		}
 
 		_ = sms.Send(smsRequest)

@@ -10,7 +10,7 @@ import (
 type Request struct {
 	Receivers []string
 	Content   string
-	SendAt    time.Time
+	SendAt    int32
 }
 
 func Send(request Request) error {
@@ -23,7 +23,11 @@ func Send(request Request) error {
 	params := &api.CreateMessageParams{}
 	params.SetFrom("+15635002841")
 	params.SetBody(request.Content)
-	params.SetSendAt(request.SendAt)
+	if request.SendAt > 0 {
+		params.SetSendAt(time.Unix(int64(request.SendAt), 0))
+		params.SetMessagingServiceSid("MG28c99338dbe0159c1a609d0e9f2865db")
+		params.SetScheduleType("fixed")
+	}
 
 	for _, receiver := range request.Receivers {
 		params.SetTo(receiver)
