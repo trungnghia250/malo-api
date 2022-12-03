@@ -49,6 +49,7 @@ type ListCustomerRequest struct {
 	Email        string   `json:"email,omitempty"`
 	Source       []string `json:"source,omitempty" query:"source,omitempty"`
 	CustomerIDs  []string `json:"customer_ids,omitempty" query:"customer_ids,omitempty"`
+	ExceptIDs    []string `json:"except_ids,omitempty" query:"except_ids,omitempty"`
 }
 
 type ListCustomerResponse struct {

@@ -126,6 +126,11 @@ func (c *customerRepo) ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest)
 			"$in": req.CustomerIDs,
 		}
 	}
+	if len(req.ExceptIDs) > 0 {
+		matching["customer_id"] = bson.M{
+			"$nin": req.ExceptIDs,
+		}
+	}
 
 	cursor, err := c.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
