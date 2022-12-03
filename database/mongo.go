@@ -21,6 +21,7 @@ const (
 	CollectionPartner       = "partner"
 	CollectionCampaign      = "campaign"
 	CollectionCustomerGroup = "customer_group"
+	CollectionTemplate      = "template"
 )
 
 func ConnectMongo(user, pass, host string) *mongo.Client {

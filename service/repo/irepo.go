@@ -23,6 +23,7 @@ type IRepo interface {
 	NewPartnerRepo() IPartnerRepo
 	NewCampaignRepo() ICampaignRepo
 	NewCustomerGroupRepo() ICustomerGroupRepo
+	NewTemplateRepo() ITemplateRepo
 }
 
 func (r repo) NewCustomerRepo() ICustomerRepo {
@@ -55,4 +56,8 @@ func (r repo) NewCampaignRepo() ICampaignRepo {
 
 func (r repo) NewCustomerGroupRepo() ICustomerGroupRepo {
 	return NewCustomerGroupRepo(r.mgo)
+}
+
+func (r repo) NewTemplateRepo() ITemplateRepo {
+	return NewTemplateRepo(r.mgo)
 }

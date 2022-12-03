@@ -19,6 +19,8 @@ import (
 	order_uc "github.com/trungnghia250/malo-api/service/domain/order/usecase"
 	product_delivery "github.com/trungnghia250/malo-api/service/domain/product/delivery"
 	product_uc "github.com/trungnghia250/malo-api/service/domain/product/usecase"
+	"github.com/trungnghia250/malo-api/service/domain/template_message/delivery"
+	"github.com/trungnghia250/malo-api/service/domain/template_message/usecase"
 	user_delivery "github.com/trungnghia250/malo-api/service/domain/user/delivery"
 	user_uc "github.com/trungnghia250/malo-api/service/domain/user/usecase"
 	crm_repo "github.com/trungnghia250/malo-api/service/repo"
@@ -52,6 +54,7 @@ func main() {
 	integrateUseCase := integrate_uc.NewIntegrateUseCase(repo)
 	campaignUseCase := campaign_uc.NewCampaignUseCase(repo)
 	customerGroupUseCase := customer_group_usecase.NewCustomerGroupUseCase(repo)
+	templateUseCase := usecase.NewTemplateUseCase(repo)
 
 	//handler
 	customerHandler := customer_delivery.NewCustomerHandler(customerUseCase)
@@ -61,6 +64,7 @@ func main() {
 	integrateHandler := integrate_delivery.NewIntegrateHandler(integrateUseCase)
 	campaignHandler := campaign_delivery.NewCampaignHandler(campaignUseCase)
 	customerGroupHandler := customer_group_delivery.NewCustomerGroupHandler(customerGroupUseCase)
+	templateHandler := delivery.NewTemplateHandler(templateUseCase)
 
 	//router
 	router := fiber.New()
@@ -72,7 +76,7 @@ func main() {
 	integrateHandler.InternalIntegrateAPIRoute(router)
 	campaignHandler.InternalCampaignAPIRoute(router)
 	customerGroupHandler.InternalCustomerGroupAPIRoute(router)
-
+	templateHandler.InternalTemplateAPIRoute(router)
 	router.Use(cors.New())
 
 	port := os.Getenv("PORT")
