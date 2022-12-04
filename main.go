@@ -15,12 +15,14 @@ import (
 	customer_group_usecase "github.com/trungnghia250/malo-api/service/domain/customer_group/usecase"
 	integrate_delivery "github.com/trungnghia250/malo-api/service/domain/integrate/delivery"
 	integrate_uc "github.com/trungnghia250/malo-api/service/domain/integrate/usecase"
+	loyalty_delivery "github.com/trungnghia250/malo-api/service/domain/loyalty/delivery"
+	loyalty_uc "github.com/trungnghia250/malo-api/service/domain/loyalty/usecase"
 	order_delivery "github.com/trungnghia250/malo-api/service/domain/order/delivery"
 	order_uc "github.com/trungnghia250/malo-api/service/domain/order/usecase"
 	product_delivery "github.com/trungnghia250/malo-api/service/domain/product/delivery"
 	product_uc "github.com/trungnghia250/malo-api/service/domain/product/usecase"
-	"github.com/trungnghia250/malo-api/service/domain/template_message/delivery"
-	"github.com/trungnghia250/malo-api/service/domain/template_message/usecase"
+	template_delivery "github.com/trungnghia250/malo-api/service/domain/template_message/delivery"
+	template_uc "github.com/trungnghia250/malo-api/service/domain/template_message/usecase"
 	user_delivery "github.com/trungnghia250/malo-api/service/domain/user/delivery"
 	user_uc "github.com/trungnghia250/malo-api/service/domain/user/usecase"
 	crm_repo "github.com/trungnghia250/malo-api/service/repo"
@@ -54,7 +56,8 @@ func main() {
 	integrateUseCase := integrate_uc.NewIntegrateUseCase(repo)
 	campaignUseCase := campaign_uc.NewCampaignUseCase(repo)
 	customerGroupUseCase := customer_group_usecase.NewCustomerGroupUseCase(repo)
-	templateUseCase := usecase.NewTemplateUseCase(repo)
+	templateUseCase := template_uc.NewTemplateUseCase(repo)
+	loyaltyUseCase := loyalty_uc.NewLoyaltyUseCase(repo)
 
 	//handler
 	customerHandler := customer_delivery.NewCustomerHandler(customerUseCase)
@@ -64,7 +67,8 @@ func main() {
 	integrateHandler := integrate_delivery.NewIntegrateHandler(integrateUseCase)
 	campaignHandler := campaign_delivery.NewCampaignHandler(campaignUseCase)
 	customerGroupHandler := customer_group_delivery.NewCustomerGroupHandler(customerGroupUseCase)
-	templateHandler := delivery.NewTemplateHandler(templateUseCase)
+	templateHandler := template_delivery.NewTemplateHandler(templateUseCase)
+	loyaltyHandler := loyalty_delivery.NewLoyaltyHandler(loyaltyUseCase)
 
 	//router
 	router := fiber.New()
@@ -77,6 +81,7 @@ func main() {
 	campaignHandler.InternalCampaignAPIRoute(router)
 	customerGroupHandler.InternalCustomerGroupAPIRoute(router)
 	templateHandler.InternalTemplateAPIRoute(router)
+	loyaltyHandler.InternalLoyaltyAPIRoute(router)
 	router.Use(cors.New())
 
 	port := os.Getenv("PORT")

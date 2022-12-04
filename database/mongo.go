@@ -22,6 +22,10 @@ const (
 	CollectionCampaign      = "campaign"
 	CollectionCustomerGroup = "customer_group"
 	CollectionTemplate      = "template"
+	CollectionGift          = "gift"
+	CollectionVoucher       = "voucher"
+	CollectionVoucherUsage  = "voucher_usage"
+	CollectionRewardRedeem  = "reward_redeem"
 )
 
 func ConnectMongo(user, pass, host string) *mongo.Client {
