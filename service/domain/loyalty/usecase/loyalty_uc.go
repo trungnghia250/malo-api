@@ -21,6 +21,13 @@ type ILoyaltyUseCase interface {
 	ListRedeem(ctx *fiber.Ctx, req dto.ListRewardRedeemRequest) ([]model.RewardRedeem, error)
 	CreateRedeem(ctx *fiber.Ctx, data *model.RewardRedeem) (*model.RewardRedeem, error)
 	UpdateRedeem(ctx *fiber.Ctx, data *model.RewardRedeem) (*model.RewardRedeem, error)
+
+	//Voucher
+	GetVoucherByID(ctx *fiber.Ctx, ID string) (*model.Voucher, error)
+	DeleteVouchersByID(ctx *fiber.Ctx, IDs []string) error
+	ListVouchers(ctx *fiber.Ctx, req dto.ListVoucherRequest) ([]model.Voucher, error)
+	CreateVoucher(ctx *fiber.Ctx, data *model.Voucher) (*model.Voucher, error)
+	UpdateVoucher(ctx *fiber.Ctx, data *model.Voucher) (*model.Voucher, error)
 }
 
 type loyaltyUseCase struct {

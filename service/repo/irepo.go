@@ -27,6 +27,7 @@ type IRepo interface {
 	NewGiftRepo() IGiftRepo
 	NewRewardRedeem() IRewardRedeemRepo
 	NewHistoryPointRepo() IHistoryPointRepo
+	NewVoucherRepo() IVoucherRepo
 }
 
 func (r repo) NewCustomerRepo() ICustomerRepo {
@@ -75,4 +76,8 @@ func (r repo) NewRewardRedeem() IRewardRedeemRepo {
 
 func (r repo) NewHistoryPointRepo() IHistoryPointRepo {
 	return NewHistoryPointRepo(r.mgo)
+}
+
+func (r repo) NewVoucherRepo() IVoucherRepo {
+	return NewVoucherRepo(r.mgo)
 }
