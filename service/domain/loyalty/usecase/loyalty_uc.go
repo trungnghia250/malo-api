@@ -9,11 +9,18 @@ import (
 
 type ILoyaltyUseCase interface {
 	//Gift
-	GetProductByID(ctx *fiber.Ctx, ID string) (*model.Gift, error)
+	GetGiftByID(ctx *fiber.Ctx, ID string) (*model.Gift, error)
 	DeleteGiftsByID(ctx *fiber.Ctx, IDs []string) error
 	ListGift(ctx *fiber.Ctx, req dto.ListGiftRequest) ([]model.Gift, error)
 	CreateGift(ctx *fiber.Ctx, data *model.Gift) (*model.Gift, error)
 	UpdateGift(ctx *fiber.Ctx, data *model.Gift) (*model.Gift, error)
+
+	//Redeem
+	GetRedeemByID(ctx *fiber.Ctx, ID string) (*model.RewardRedeem, error)
+	DeleteRedeemsByID(ctx *fiber.Ctx, IDs []string) error
+	ListRedeem(ctx *fiber.Ctx, req dto.ListRewardRedeemRequest) ([]model.RewardRedeem, error)
+	CreateRedeem(ctx *fiber.Ctx, data *model.RewardRedeem) (*model.RewardRedeem, error)
+	UpdateRedeem(ctx *fiber.Ctx, data *model.RewardRedeem) (*model.RewardRedeem, error)
 }
 
 type loyaltyUseCase struct {

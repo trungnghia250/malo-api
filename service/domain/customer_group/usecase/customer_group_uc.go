@@ -13,7 +13,7 @@ type ICustomerGroupUseCase interface {
 	GetCustomerGroupByID(ctx *fiber.Ctx, customerGroupID string) (dto.GetCustomerGroupResponse, error)
 	DeleteCustomerGroupsByID(ctx *fiber.Ctx, customerGroupIDs []string) error
 	ListCustomerGroup(ctx *fiber.Ctx, req dto.ListCustomerGroupRequest) ([]model.CustomerGroup, error)
-	CreateCustomerGroup(ctx *fiber.Ctx, data *model.CustomerGroup) (*model.CustomerGroup, error)
+	CreateCustomerGroup(ctx *fiber.Ctx, req *dto.CreateCustomerGroup) (*model.CustomerGroup, error)
 	UpdateCustomerGroup(ctx *fiber.Ctx, data *model.CustomerGroup) (*model.CustomerGroup, error)
 }
 
@@ -62,14 +62,22 @@ func (c *customerGroupUseCase) ListCustomerGroup(ctx *fiber.Ctx, req dto.ListCus
 	return customerGroups, nil
 }
 
-func (c *customerGroupUseCase) CreateCustomerGroup(ctx *fiber.Ctx, data *model.CustomerGroup) (*model.CustomerGroup, error) {
-	data.CreatedAt = time.Now()
+func (c *customerGroupUseCase) CreateCustomerGroup(ctx *fiber.Ctx, req *dto.CreateCustomerGroup) (*model.CustomerGroup, error) {
+	req.Data.CreatedAt = time.Now()
 	customerGroupID, err := c.repo.NewCounterRepo().GetSequenceNextValue(ctx, "customer_group_id")
 	if err != nil {
 		return nil, err
 	}
-	data.ID = fmt.Sprintf("CG%d", customerGroupID)
-	err = c.repo.NewCustomerGroupRepo().CreateCustomerGroup(ctx, data)
+
+	customers, err := c.repo.NewCustomerRepo().ListCustomer(ctx, req.Filter)
+	var customerIDs []string
+	for _, customer := range customers {
+		customerIDs = append(customerIDs, customer.CustomerID)
+	}
+
+	req.Data.ID = fmt.Sprintf("CG%d", customerGroupID)
+	req.Data.CustomerIDs = customerIDs
+	err = c.repo.NewCustomerGroupRepo().CreateCustomerGroup(ctx, req.Data)
 	if err != nil {
 		return nil, err
 	}

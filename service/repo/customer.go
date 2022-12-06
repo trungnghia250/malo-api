@@ -18,6 +18,7 @@ type ICustomerRepo interface {
 	ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest) ([]model.Customer, error)
 	CountCustomer(ctx *fiber.Ctx) (int32, error)
 	UpdateListCustomers(ctx *fiber.Ctx, req dto.UpdateListCustomerRequest) error
+	GetCustomerByPhone(ctx *fiber.Ctx, Phone string) (resp *model.Customer, err error)
 }
 
 func NewCustomerRepo(mgo *mongo.Client) ICustomerRepo {
@@ -36,6 +37,14 @@ func (c *customerRepo) getCollection() *mongo.Collection {
 
 func (c *customerRepo) GetCustomerByID(ctx *fiber.Ctx, customerID string) (resp *model.Customer, err error) {
 	if err := c.getCollection().FindOne(ctx.Context(), bson.M{"customer_id": customerID}).Decode(&resp); err != nil {
+		return &model.Customer{}, err
+	}
+
+	return resp, nil
+}
+
+func (c *customerRepo) GetCustomerByPhone(ctx *fiber.Ctx, Phone string) (resp *model.Customer, err error) {
+	if err := c.getCollection().FindOne(ctx.Context(), bson.M{"phone_number": Phone}).Decode(&resp); err != nil {
 		return &model.Customer{}, err
 	}
 

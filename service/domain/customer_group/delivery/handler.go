@@ -98,7 +98,7 @@ func (c *CustomerGroupHandler) UpdateCustomerGroup(ctx *fiber.Ctx) error {
 }
 
 func (c *CustomerGroupHandler) CreateCustomerGroup(ctx *fiber.Ctx) error {
-	req := new(model.CustomerGroup)
+	req := new(dto.CreateCustomerGroup)
 	if err := ctx.BodyParser(req); err != nil {
 		return err
 	}
@@ -113,7 +113,7 @@ func (c *CustomerGroupHandler) CreateCustomerGroup(ctx *fiber.Ctx) error {
 	}
 	claims, _ := token.Claims.(jwt.MapClaims)
 
-	req.CreatedBy = claims["noc"].(string)
+	req.Data.CreatedBy = claims["noc"].(string)
 	group, err := c.customerGroupUseCase.CreateCustomerGroup(ctx, req)
 	if err != nil {
 		return err

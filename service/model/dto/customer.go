@@ -35,6 +35,8 @@ type Customer struct {
 	CreatedAt      time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	ModifiedAt     time.Time `json:"modified_at,omitempty" bson:"modified_at,omitempty"`
 	ModifiedBy     string    `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
+	RewardPoint    int32     `json:"reward_point,omitempty" bson:"reward_point,omitempty"`
+	RankPoint      int32     `json:"rank_point,omitempty" bson:"rank_point,omitempty"`
 }
 
 type ListCustomerRequest struct {
@@ -94,4 +96,9 @@ type GetCustomerGroupResponse struct {
 	ModifiedBy string           `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
 	TotalCount int32            `json:"totalCount,omitempty" bson:"totalCount,omitempty"`
 	Customers  []model.Customer `json:"customers,omitempty"`
+}
+
+type CreateCustomerGroup struct {
+	Data   *model.CustomerGroup `json:"data,omitempty"`
+	Filter ListCustomerRequest  `json:"filter,omitempty"`
 }

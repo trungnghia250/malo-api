@@ -22,4 +22,6 @@ type Customer struct {
 	ModifiedAt     time.Time          `json:"modified_at" bson:"modified_at"`
 	ModifiedBy     string             `json:"modified_by" bson:"modified_by"`
 	TotalCount     int32              `json:"totalCount"`
+	RewardPoint    int32              `json:"reward_point" bson:"reward_point"`
+	RankPoint      int32              `json:"rank_point" bson:"rank_point"`
 }

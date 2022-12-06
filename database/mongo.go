@@ -26,6 +26,7 @@ const (
 	CollectionVoucher       = "voucher"
 	CollectionVoucherUsage  = "voucher_usage"
 	CollectionRewardRedeem  = "reward_redeem"
+	CollectionHistoryPoint  = "history_point"
 )
 
 func ConnectMongo(user, pass, host string) *mongo.Client {

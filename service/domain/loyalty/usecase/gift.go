@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (l *loyaltyUseCase) GetProductByID(ctx *fiber.Ctx, ID string) (*model.Gift, error) {
+func (l *loyaltyUseCase) GetGiftByID(ctx *fiber.Ctx, ID string) (*model.Gift, error) {
 	gift, err := l.repo.NewGiftRepo().GetGiftByID(ctx, ID)
 	if err != nil {
 		return nil, err

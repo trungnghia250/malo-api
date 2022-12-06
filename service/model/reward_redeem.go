@@ -9,6 +9,7 @@ type RewardRedeem struct {
 	RewardPoint  int32     `json:"reward_point,omitempty" bson:"reward_point,omitempty"`
 	RewardType   string    `json:"reward_type,omitempty" bson:"reward_type,omitempty"`
 	GiftID       string    `json:"gift_id,omitempty" bson:"gift_id,omitempty"`
+	OrderID      string    `json:"order_id,omitempty" bson:"order_id,omitempty"`
 	RewardValue  int32     `json:"reward_value,omitempty" bson:"reward_value,omitempty"`
 	RedeemDate   time.Time `json:"redeem_date,omitempty" bson:"redeem_date,omitempty"`
 	Note         string    `json:"note,omitempty" bson:"note,omitempty"`
