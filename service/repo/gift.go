@@ -17,6 +17,7 @@ type IGiftRepo interface {
 	UpdateGiftByID(ctx *fiber.Ctx, data *model.Gift) error
 	DeleteGiftsByID(ctx *fiber.Ctx, ids []string) error
 	ListGift(ctx *fiber.Ctx, req dto.ListGiftRequest) ([]model.Gift, error)
+	ListGiftValidateCustomer(ctx *fiber.Ctx, point int32) (resp []model.Gift, err error)
 }
 
 func NewGiftRepo(mgo *mongo.Client) IGiftRepo {
@@ -155,4 +156,32 @@ func (g *giftRepo) ListGift(ctx *fiber.Ctx, req dto.ListGiftRequest) ([]model.Gi
 	}
 
 	return gifts, nil
+}
+
+func (g *giftRepo) ListGiftValidateCustomer(ctx *fiber.Ctx, point int32) (resp []model.Gift, err error) {
+	query := bson.M{
+		"status": "ACTIVE",
+		"start_at": bson.M{
+			"$lte": time.Now().Unix(),
+		},
+		"expire_at": bson.M{
+			"$gte": time.Now().Unix(),
+		},
+		"stock_amount": bson.M{
+			"$gt": 0,
+		},
+		"reward_point": bson.M{
+			"$lt": point,
+		},
+	}
+
+	results, err := g.getCollection().Find(ctx.Context(), query)
+	if err != nil {
+		return resp, err
+	}
+	if err = results.All(ctx.Context(), &resp); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }

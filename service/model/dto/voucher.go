@@ -45,3 +45,43 @@ type ListVoucherUsageResponse struct {
 	Count int32                `json:"count"`
 	Data  []model.VoucherUsage `json:"data"`
 }
+
+type ValidateVoucherRequest struct {
+	Phone string `json:"phone,omitempty" query:"phone,omitempty"`
+	Code  string `json:"code,omitempty" query:"code,omitempty"`
+}
+
+type ValidateVoucherResponse struct {
+	CustomerDetail      CustomerDetail  `json:"customer_detail"`
+	Vouchers            []VoucherDetail `json:"vouchers,omitempty"`
+	Gifts               []GiftDetail    `json:"gifts,omitempty"`
+	CheckVoucherMessage string          `json:"check_voucher_message,omitempty"`
+}
+
+type CustomerDetail struct {
+	Name         string `json:"name"`
+	Phone        string `json:"phone"`
+	Address      string `json:"address"`
+	RewardPoint  int32  `json:"reward_point"`
+	Gender       string `json:"gender"`
+	Email        string `json:"email"`
+	CustomerType string `json:"customer_type"`
+}
+
+type VoucherDetail struct {
+	Code             string `json:"code"`
+	DiscountAmount   int32  `json:"discount_amount"`
+	MinOrderAmount   int32  `json:"min_order_amount"`
+	StartAt          int32  `json:"start_date"`
+	ExpireAt         int32  `json:"expire_at"`
+	CustomerUsed     int32  `json:"customer_used"`
+	LimitPerCustomer int32  `json:"limit_per_customer,omitempty"`
+}
+
+type GiftDetail struct {
+	Name        string `json:"name"`
+	URL         string `json:"url"`
+	Price       int32  `json:"price"`
+	RewardPoint int32  `json:"reward_point"`
+	StockAmount int32  `json:"stock_amount"`
+}

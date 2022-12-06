@@ -35,6 +35,7 @@ type ILoyaltyUseCase interface {
 	ListVoucherUsages(ctx *fiber.Ctx, req dto.ListVoucherUsageRequest) ([]model.VoucherUsage, error)
 	UpdateVoucherUsage(ctx *fiber.Ctx, data *model.VoucherUsage) (*model.VoucherUsage, error)
 	CreateVoucherUsage(ctx *fiber.Ctx, data *model.VoucherUsage) (*model.VoucherUsage, error)
+	ValidateVoucher(ctx *fiber.Ctx, req dto.ValidateVoucherRequest) (dto.ValidateVoucherResponse, error)
 }
 
 type loyaltyUseCase struct {

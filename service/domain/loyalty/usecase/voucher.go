@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/model"
 	"github.com/trungnghia250/malo-api/service/model/dto"
@@ -48,4 +49,66 @@ func (l *loyaltyUseCase) UpdateVoucher(ctx *fiber.Ctx, data *model.Voucher) (*mo
 	}
 
 	return nil, nil
+}
+
+func (l *loyaltyUseCase) ValidateVoucher(ctx *fiber.Ctx, req dto.ValidateVoucherRequest) (dto.ValidateVoucherResponse, error) {
+	var res dto.ValidateVoucherResponse
+	customer, err := l.repo.NewCustomerRepo().GetCustomerByPhone(ctx, req.Phone)
+	if err != nil {
+		return dto.ValidateVoucherResponse{}, err
+	}
+
+	res.CustomerDetail = dto.CustomerDetail{
+		Name:         customer.CustomerName,
+		Phone:        customer.PhoneNumber,
+		Address:      customer.Address,
+		RewardPoint:  customer.RewardPoint,
+		Gender:       customer.Gender,
+		Email:        customer.Email,
+		CustomerType: customer.CustomerType,
+	}
+
+	groups, err := l.repo.NewCustomerGroupRepo().ListCustomerGroupByCustomerID(ctx, customer.CustomerID)
+	var groupIDs []string
+	for _, group := range groups {
+		groupIDs = append(groupIDs, group.ID)
+	}
+	vouchers, err := l.repo.NewVoucherRepo().ListValidateVoucherByGroupIDs(ctx, groupIDs)
+	if len(req.Code) > 0 {
+		res.CheckVoucherMessage = fmt.Sprintf("Mã %s không còn hoạt động", req.Code)
+	}
+	for _, voucher := range vouchers {
+		countUsed, _ := l.repo.NewVoucherUsageRepo().CountCustomerUseVoucher(ctx, customer.PhoneNumber, voucher.ID)
+		if voucher.ID == req.Code {
+			res.CheckVoucherMessage = fmt.Sprintf("Mã %s khách hàng hết số lần sử dụng", req.Code)
+		}
+		if countUsed < voucher.LimitPerCustomer {
+			res.Vouchers = append(res.Vouchers, dto.VoucherDetail{
+				Code:             voucher.ID,
+				DiscountAmount:   voucher.DiscountAmount,
+				MinOrderAmount:   voucher.MinOrderAmount,
+				StartAt:          voucher.StartAt,
+				ExpireAt:         voucher.ExpireAt,
+				CustomerUsed:     countUsed,
+				LimitPerCustomer: voucher.LimitPerCustomer,
+			})
+			if voucher.ID == req.Code {
+				res.CheckVoucherMessage = fmt.Sprintf("Mã %s khách hàng có thể sử dụng", req.Code)
+			}
+		}
+
+	}
+
+	gifts, _ := l.repo.NewGiftRepo().ListGiftValidateCustomer(ctx, customer.RewardPoint)
+	for _, gift := range gifts {
+		res.Gifts = append(res.Gifts, dto.GiftDetail{
+			Name:        gift.Name,
+			URL:         gift.ImageURL,
+			Price:       gift.Price,
+			RewardPoint: gift.RewardPoint,
+			StockAmount: gift.StockAmount,
+		})
+	}
+
+	return res, nil
 }

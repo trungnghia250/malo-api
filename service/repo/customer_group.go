@@ -15,6 +15,7 @@ type ICustomerGroupRepo interface {
 	UpdateCustomerGroupByID(ctx *fiber.Ctx, data *model.CustomerGroup) error
 	DeleteCustomerGroupByID(ctx *fiber.Ctx, ids []string) error
 	ListCustomerGroup(ctx *fiber.Ctx, req dto.ListCustomerGroupRequest) ([]model.CustomerGroup, error)
+	ListCustomerGroupByCustomerID(ctx *fiber.Ctx, customerID string) (resp []model.CustomerGroup, err error)
 }
 
 func NewCustomerGroupRepo(mgo *mongo.Client) ICustomerGroupRepo {
@@ -34,6 +35,18 @@ func (c *customerGroupRepo) getCollection() *mongo.Collection {
 func (c *customerGroupRepo) GetCustomerGroupByID(ctx *fiber.Ctx, ID string) (resp *model.CustomerGroup, err error) {
 	if err := c.getCollection().FindOne(ctx.Context(), bson.M{"_id": ID}).Decode(&resp); err != nil {
 		return &model.CustomerGroup{}, err
+	}
+
+	return resp, nil
+}
+
+func (c *customerGroupRepo) ListCustomerGroupByCustomerID(ctx *fiber.Ctx, customerID string) (resp []model.CustomerGroup, err error) {
+	results, err := c.getCollection().Find(ctx.Context(), bson.M{"customer_ids": customerID})
+	if err != nil {
+		return resp, err
+	}
+	if err = results.All(ctx.Context(), &resp); err != nil {
+		return resp, err
 	}
 
 	return resp, nil

@@ -259,6 +259,20 @@ func (l *LoyaltyHandler) ListVoucher(ctx *fiber.Ctx) error {
 	return ctx.JSON(response)
 }
 
+func (l *LoyaltyHandler) ValidateVoucher(ctx *fiber.Ctx) error {
+	req := new(dto.ValidateVoucherRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	response, err := l.loyaltyUseCase.ValidateVoucher(ctx, *req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(response)
+}
+
 func (l *LoyaltyHandler) DeleteVoucher(ctx *fiber.Ctx) error {
 	req := new(dto.DeleteVouchersRequest)
 	if err := ctx.QueryParser(req); err != nil {

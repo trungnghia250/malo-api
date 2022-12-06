@@ -17,6 +17,7 @@ type IVoucherUsageRepo interface {
 	UpdateVoucherUsageByID(ctx *fiber.Ctx, data *model.VoucherUsage) error
 	DeleteVoucherUsagesByID(ctx *fiber.Ctx, ids []string) error
 	ListVoucherUsages(ctx *fiber.Ctx, req dto.ListVoucherUsageRequest) ([]model.VoucherUsage, error)
+	CountCustomerUseVoucher(ctx *fiber.Ctx, phone, code string) (int32, error)
 }
 
 func NewVoucherUsageRepo(mgo *mongo.Client) IVoucherUsageRepo {
@@ -136,4 +137,16 @@ func (v *voucherUsageRepo) ListVoucherUsages(ctx *fiber.Ctx, req dto.ListVoucher
 	}
 
 	return usages, nil
+}
+
+func (v *voucherUsageRepo) CountCustomerUseVoucher(ctx *fiber.Ctx, phone, code string) (int32, error) {
+	query := bson.M{
+		"phone": phone,
+		"code":  code,
+	}
+	count, err := v.getCollection().CountDocuments(ctx.Context(), query)
+	if err != nil {
+		return 0, err
+	}
+	return int32(count), nil
 }

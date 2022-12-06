@@ -16,6 +16,7 @@ type IVoucherRepo interface {
 	UpdateVoucherByID(ctx *fiber.Ctx, data *model.Voucher) error
 	DeleteVouchersByID(ctx *fiber.Ctx, ids []string) error
 	ListVoucher(ctx *fiber.Ctx, req dto.ListVoucherRequest) ([]model.Voucher, error)
+	ListValidateVoucherByGroupIDs(ctx *fiber.Ctx, groupIDs []string) (resp []model.Voucher, err error)
 }
 
 func NewVoucherRepo(mgo *mongo.Client) IVoucherRepo {
@@ -153,4 +154,32 @@ func (v *voucherRepo) ListVoucher(ctx *fiber.Ctx, req dto.ListVoucherRequest) ([
 	}
 
 	return vouchers, nil
+}
+
+func (v *voucherRepo) ListValidateVoucherByGroupIDs(ctx *fiber.Ctx, groupIDs []string) (resp []model.Voucher, err error) {
+	query := bson.M{
+		"group_ids": bson.M{
+			"$in": groupIDs,
+		},
+		"status": "ACTIVE",
+		"start_at": bson.M{
+			"$lte": time.Now().Unix(),
+		},
+		"expire_at": bson.M{
+			"$gte": time.Now().Unix(),
+		},
+		"remain_amount": bson.M{
+			"$gt": 0,
+		},
+	}
+
+	results, err := v.getCollection().Find(ctx.Context(), query)
+	if err != nil {
+		return resp, err
+	}
+	if err = results.All(ctx.Context(), &resp); err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
