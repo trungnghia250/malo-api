@@ -25,7 +25,7 @@ type ILoyaltyUseCase interface {
 	//Voucher
 	GetVoucherByID(ctx *fiber.Ctx, ID string) (*model.Voucher, error)
 	DeleteVouchersByID(ctx *fiber.Ctx, IDs []string) error
-	ListVouchers(ctx *fiber.Ctx, req dto.ListVoucherRequest) ([]model.Voucher, error)
+	ListVouchers(ctx *fiber.Ctx, req dto.ListVoucherRequest) (resp dto.ListVoucherResponse, err error)
 	CreateVoucher(ctx *fiber.Ctx, data *model.Voucher) (*model.Voucher, error)
 	UpdateVoucher(ctx *fiber.Ctx, data *model.Voucher) (*model.Voucher, error)
 

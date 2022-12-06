@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/trungnghia250/malo-api/service/model"
+import (
+	"github.com/trungnghia250/malo-api/service/model"
+	"time"
+)
 
 type ListVoucherRequest struct {
 	Limit            int32    `json:"limit,omitempty" query:"limit,omitempty"`
@@ -17,8 +20,19 @@ type ListVoucherRequest struct {
 }
 
 type ListVoucherResponse struct {
-	Count int32           `json:"count"`
-	Data  []model.Voucher `json:"data"`
+	Count int32            `json:"count"`
+	Data  []VoucherInGroup `json:"data"`
+}
+
+type VoucherInGroup struct {
+	Code           string    `json:"code"`
+	GroupNames     []string  `json:"group_names"`
+	DiscountAmount int32     `json:"discount_amount"`
+	StartAt        int32     `json:"start_at"`
+	ExpireAt       int32     `json:"expire_at"`
+	Note           string    `json:"note"`
+	CreateAt       time.Time `json:"create_at"`
+	Status         string    `json:"status"`
 }
 
 type GetVoucherByIDRequest struct {

@@ -22,12 +22,40 @@ func (l *loyaltyUseCase) DeleteVouchersByID(ctx *fiber.Ctx, IDs []string) error 
 	return err
 }
 
-func (l *loyaltyUseCase) ListVouchers(ctx *fiber.Ctx, req dto.ListVoucherRequest) ([]model.Voucher, error) {
+func (l *loyaltyUseCase) ListVouchers(ctx *fiber.Ctx, req dto.ListVoucherRequest) (resp dto.ListVoucherResponse, err error) {
 	vouchers, err := l.repo.NewVoucherRepo().ListVoucher(ctx, req)
 	if err != nil {
-		return nil, err
+		return dto.ListVoucherResponse{}, err
 	}
-	return vouchers, nil
+	count := int32(0)
+	if len(vouchers) > 0 {
+		count = vouchers[0].TotalCount
+	}
+	resp.Count = count
+
+	for _, voucher := range vouchers {
+		groups, _ := l.repo.NewCustomerGroupRepo().ListCustomerGroup(ctx, dto.ListCustomerGroupRequest{
+			Limit: int32(len(voucher.GroupIDs)),
+			IDs:   voucher.GroupIDs,
+		})
+
+		var groupNames []string
+		for _, group := range groups {
+			groupNames = append(groupNames, group.GroupName)
+		}
+
+		resp.Data = append(resp.Data, dto.VoucherInGroup{
+			Code:           voucher.ID,
+			GroupNames:     groupNames,
+			DiscountAmount: voucher.DiscountAmount,
+			StartAt:        voucher.StartAt,
+			ExpireAt:       voucher.ExpireAt,
+			Note:           voucher.Note,
+			CreateAt:       voucher.CreatedAt,
+			Status:         voucher.Status,
+		})
+	}
+	return resp, nil
 }
 
 func (l *loyaltyUseCase) CreateVoucher(ctx *fiber.Ctx, data *model.Voucher) (*model.Voucher, error) {

@@ -241,19 +241,9 @@ func (l *LoyaltyHandler) ListVoucher(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	vouchers, err := l.loyaltyUseCase.ListVouchers(ctx, *req)
+	response, err := l.loyaltyUseCase.ListVouchers(ctx, *req)
 	if err != nil {
 		return err
-	}
-
-	count := int32(0)
-	if len(vouchers) > 0 {
-		count = vouchers[0].TotalCount
-	}
-
-	response := dto.ListVoucherResponse{
-		Count: count,
-		Data:  vouchers,
 	}
 
 	return ctx.JSON(response)
