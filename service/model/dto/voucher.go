@@ -28,3 +28,20 @@ type GetVoucherByIDRequest struct {
 type DeleteVouchersRequest struct {
 	IDs []string `json:"ids" query:"ids"`
 }
+
+type ListVoucherUsageRequest struct {
+	Limit          int32    `json:"limit,omitempty" query:"limit,omitempty"`
+	Offset         int32    `json:"offset,omitempty" query:"offset,omitempty"`
+	Code           []string `json:"code,omitempty" query:"code,omitempty"`
+	CustomerName   []string `json:"customer_name,omitempty" query:"customer_name,omitempty"`
+	Phone          []string `json:"phone,omitempty" query:"phone,omitempty"`
+	OrderID        []string `json:"order_id,omitempty" query:"order_id,omitempty"`
+	DiscountAmount []int32  `json:"discount_amount,omitempty" query:"discount_amount,omitempty"`
+	UsageDate      []int32  `json:"usage_date,omitempty" query:"usage_date,omitempty"`
+	CreatedAt      []int32  `json:"created_at,omitempty" query:"created_at,omitempty"`
+}
+
+type ListVoucherUsageResponse struct {
+	Count int32                `json:"count"`
+	Data  []model.VoucherUsage `json:"data"`
+}

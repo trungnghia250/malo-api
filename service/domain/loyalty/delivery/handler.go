@@ -320,3 +320,104 @@ func (l *LoyaltyHandler) CreateVoucher(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(redeem)
 }
+
+//Voucher_Usage
+func (l *LoyaltyHandler) GetVoucherUsage(ctx *fiber.Ctx) error {
+	req := new(dto.GetVoucherByIDRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	usage, err := l.loyaltyUseCase.GetVoucherUsageByID(ctx, req.ID)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(usage)
+}
+
+func (l *LoyaltyHandler) ListVoucherUsage(ctx *fiber.Ctx) error {
+	req := new(dto.ListVoucherUsageRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	usages, err := l.loyaltyUseCase.ListVoucherUsages(ctx, *req)
+	if err != nil {
+		return err
+	}
+
+	count := int32(0)
+	if len(usages) > 0 {
+		count = usages[0].TotalCount
+	}
+
+	response := dto.ListVoucherUsageResponse{
+		Count: count,
+		Data:  usages,
+	}
+
+	return ctx.JSON(response)
+}
+
+func (l *LoyaltyHandler) DeleteVoucherUsage(ctx *fiber.Ctx) error {
+	req := new(dto.DeleteVouchersRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	err := l.loyaltyUseCase.DeleteVoucherUsagesByID(ctx, req.IDs)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(dto.DefaultResponse{
+		StatusCode: fiber.StatusOK,
+	})
+}
+
+func (l *LoyaltyHandler) UpdateVoucherUsage(ctx *fiber.Ctx) error {
+	reqToken := ctx.GetReqHeaders()["X-Access-Token"]
+	if reqToken == "" {
+		return errors.New("token is required")
+	}
+	token, err := jwt.Parse(reqToken, nil)
+	if token == nil {
+		return errors.New("token not valid")
+	}
+	claims, _ := token.Claims.(jwt.MapClaims)
+	req := new(model.VoucherUsage)
+	if err := ctx.BodyParser(req); err != nil {
+		return err
+	}
+	req.ModifiedBy = claims["noc"].(string)
+	usage, err := l.loyaltyUseCase.UpdateVoucherUsage(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(usage)
+}
+
+func (l *LoyaltyHandler) CreateVoucherUsage(ctx *fiber.Ctx) error {
+	reqToken := ctx.GetReqHeaders()["X-Access-Token"]
+	if reqToken == "" {
+		return errors.New("token is required")
+	}
+	token, err := jwt.Parse(reqToken, nil)
+	if token == nil {
+		return errors.New("token not valid")
+	}
+	claims, _ := token.Claims.(jwt.MapClaims)
+	req := new(model.VoucherUsage)
+	if err := ctx.BodyParser(req); err != nil {
+		return err
+	}
+	req.CreatedBy = claims["noc"].(string)
+	usage, err := l.loyaltyUseCase.CreateVoucherUsage(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(usage)
+}

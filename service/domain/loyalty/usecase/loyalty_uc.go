@@ -28,6 +28,13 @@ type ILoyaltyUseCase interface {
 	ListVouchers(ctx *fiber.Ctx, req dto.ListVoucherRequest) ([]model.Voucher, error)
 	CreateVoucher(ctx *fiber.Ctx, data *model.Voucher) (*model.Voucher, error)
 	UpdateVoucher(ctx *fiber.Ctx, data *model.Voucher) (*model.Voucher, error)
+
+	//Voucher Usage
+	GetVoucherUsageByID(ctx *fiber.Ctx, ID string) (*model.VoucherUsage, error)
+	DeleteVoucherUsagesByID(ctx *fiber.Ctx, IDs []string) error
+	ListVoucherUsages(ctx *fiber.Ctx, req dto.ListVoucherUsageRequest) ([]model.VoucherUsage, error)
+	UpdateVoucherUsage(ctx *fiber.Ctx, data *model.VoucherUsage) (*model.VoucherUsage, error)
+	CreateVoucherUsage(ctx *fiber.Ctx, data *model.VoucherUsage) (*model.VoucherUsage, error)
 }
 
 type loyaltyUseCase struct {

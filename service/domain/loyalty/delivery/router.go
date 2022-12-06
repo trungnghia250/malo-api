@@ -23,4 +23,11 @@ func (l *LoyaltyHandler) InternalLoyaltyAPIRoute(router fiber.Router) {
 	router.Post("/loyalty/voucher", l.CreateVoucher)
 	router.Put("/loyalty/voucher", l.UpdateVoucher)
 	router.Get("/loyalty/voucher/list", l.ListVoucher)
+
+	//voucher_usage
+	router.Get("/loyalty/voucher_usage", l.GetVoucherUsage)
+	router.Delete("/loyalty/voucher_usage", l.DeleteVoucherUsage)
+	router.Post("/loyalty/voucher_usage", l.CreateVoucherUsage)
+	router.Put("/loyalty/voucher_usage", l.UpdateVoucherUsage)
+	router.Get("/loyalty/voucher_usage/list", l.ListVoucherUsage)
 }
