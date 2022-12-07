@@ -51,7 +51,7 @@ func (l *loyaltyUseCase) ListVouchers(ctx *fiber.Ctx, req dto.ListVoucherRequest
 			StartAt:        voucher.StartAt,
 			ExpireAt:       voucher.ExpireAt,
 			Note:           voucher.Note,
-			CreateAt:       voucher.CreatedAt,
+			CreatedAt:      voucher.CreatedAt,
 			Status:         voucher.Status,
 		})
 	}
