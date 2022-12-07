@@ -31,7 +31,7 @@ type VoucherInGroup struct {
 	StartAt        int32     `json:"start_at"`
 	ExpireAt       int32     `json:"expire_at"`
 	Note           string    `json:"note"`
-	CreateAt       time.Time `json:"create_at"`
+	CreatedAt      time.Time `json:"created_at"`
 	Status         string    `json:"status"`
 }
 
