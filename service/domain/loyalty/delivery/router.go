@@ -31,4 +31,8 @@ func (l *LoyaltyHandler) InternalLoyaltyAPIRoute(router fiber.Router) {
 	router.Post("/loyalty/voucher_usage", l.CreateVoucherUsage)
 	router.Put("/loyalty/voucher_usage", l.UpdateVoucherUsage)
 	router.Get("/loyalty/voucher_usage/list", l.ListVoucherUsage)
+
+	//earn_point and rank
+	router.Get("/loyalty/config", l.GetLoyaltyConfig)
+	router.Put("/loyalty/config", l.UpdateLoyaltyConfig)
 }

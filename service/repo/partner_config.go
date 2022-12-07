@@ -12,6 +12,8 @@ type IPartnerRepo interface {
 	GetPartnerConfig(ctx *fiber.Ctx, partner string) (resp *model.PartnerConfig, err error)
 	CreatePartnerConfig(ctx *fiber.Ctx, data *model.PartnerConfig) error
 	UpdatePartnerByID(ctx *fiber.Ctx, data *model.PartnerConfig) error
+	GetPartnerLoyaltyConfig(ctx *fiber.Ctx) (resp *model.LoyaltyConfig, err error)
+	UpdatePartnerLoyaltyConfig(ctx *fiber.Ctx, data *model.LoyaltyConfig) error
 }
 
 func NewPartnerRepo(mgo *mongo.Client) IPartnerRepo {
@@ -46,6 +48,24 @@ func (p *partnerRepo) CreatePartnerConfig(ctx *fiber.Ctx, data *model.PartnerCon
 
 func (p *partnerRepo) UpdatePartnerByID(ctx *fiber.Ctx, data *model.PartnerConfig) error {
 	_, err := p.getCollection().UpdateOne(ctx.Context(), bson.M{"_id": data.ID}, bson.M{
+		"$set": data,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *partnerRepo) GetPartnerLoyaltyConfig(ctx *fiber.Ctx) (resp *model.LoyaltyConfig, err error) {
+	if err := p.getCollection().FindOne(ctx.Context(), bson.M{"_id": "LOYALTY_CONFIG"}).Decode(&resp); err != nil {
+		return &model.LoyaltyConfig{}, err
+	}
+	return resp, nil
+}
+
+func (p *partnerRepo) UpdatePartnerLoyaltyConfig(ctx *fiber.Ctx, data *model.LoyaltyConfig) error {
+	_, err := p.getCollection().UpdateOne(ctx.Context(), bson.M{"_id": "LOYALTY_CONFIG"}, bson.M{
 		"$set": data,
 	})
 	if err != nil {

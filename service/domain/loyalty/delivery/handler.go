@@ -425,3 +425,26 @@ func (l *LoyaltyHandler) CreateVoucherUsage(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(usage)
 }
+
+//Loyalty config
+func (l *LoyaltyHandler) GetLoyaltyConfig(ctx *fiber.Ctx) error {
+	loyaltyConfig, err := l.loyaltyUseCase.GetLoyaltyConfig(ctx)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(loyaltyConfig)
+}
+
+func (l *LoyaltyHandler) UpdateLoyaltyConfig(ctx *fiber.Ctx) error {
+	req := new(model.LoyaltyConfig)
+	if err := ctx.BodyParser(req); err != nil {
+		return err
+	}
+	loyaltyConfig, err := l.loyaltyUseCase.UpdateLoyaltyConfig(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(loyaltyConfig)
+}
