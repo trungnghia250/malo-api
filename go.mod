@@ -7,9 +7,13 @@ require (
 	github.com/gofiber/fiber/v2 v2.40.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/labstack/echo/v4 v4.9.1
+	github.com/labstack/gommon v0.4.0
+	github.com/manucorporat/try v0.0.0-20170609134256-2a0c6b941d52
 	github.com/satori/go.uuid v1.2.0
 	github.com/sendgrid/sendgrid-go v3.12.0+incompatible
 	github.com/spf13/viper v1.14.0
+	github.com/streadway/amqp v1.0.0
+	github.com/twilio/twilio-go v1.2.2
 	github.com/xuri/excelize/v2 v2.6.1
 	go.mongodb.org/mongo-driver v1.11.0
 )
@@ -21,7 +25,6 @@ require (
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/klauspost/compress v1.15.9 // indirect
-	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
@@ -42,7 +45,6 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
-	github.com/twilio/twilio-go v1.2.2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.41.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect

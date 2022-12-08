@@ -10,3 +10,8 @@ type Rank struct {
 	Title        string `json:"title,omitempty" bson:"title,omitempty"`
 	MinimumScore int32  `json:"minimum_score" bson:"minimum_score"`
 }
+
+type RankPointConfig struct {
+	Point []int32 `json:"point"`
+	Rank  []int32 `json:"rank"`
+}

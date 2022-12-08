@@ -24,6 +24,17 @@ type Schema struct {
 		JWTPol          string `mapstructure:"jwt_pol"`
 		RefreshTokenTTL int    `mapstructure:"refresh_token_ttl"`
 	} `mapstructure:"encryption"`
+
+	RabbitMq RabbitMQ `mapstructure:"rabbit_instance"`
+}
+
+type RabbitMQ struct {
+	AMQP         string `mapstructure:"amqp"`
+	Exchange     string `mapstructure:"exchange"`
+	RoutingKey   string `mapstructure:"routing_key"`
+	Queue        string `mapstructure:"queue"`
+	Tags         string `mapstructure:"tag"`
+	TimeOutRetry int    `mapstructure:"timeout_retry"`
 }
 
 var Config Schema
