@@ -6,22 +6,22 @@ import (
 )
 
 type Customer struct {
-	ID             primitive.ObjectID `json:"_id" bson:"_id"`
-	CustomerID     string             `bson:"customer_id" json:"customer_id"`
-	CustomerName   string             `bson:"customer_name" json:"customer_name"`
-	Gender         string             `bson:"gender" json:"gender"`
-	PhoneNumber    string             `bson:"phone_number" json:"phone_number"`
-	Email          string             `bson:"email" json:"email"`
-	Address        string             `json:"address" bson:"address"`
-	DateOfBirth    time.Time          `json:"date_of_birth" bson:"date_of_birth"`
-	CustomerType   string             `json:"customer_type" bson:"customer_type"`
-	CustomerSource string             `json:"customer_source" bson:"customer_source"`
-	Tags           []string           `json:"tags" bson:"tags"`
-	Note           string             `json:"note" bson:"note"`
-	CreatedAt      time.Time          `json:"created_at" bson:"created_at"`
-	ModifiedAt     time.Time          `json:"modified_at" bson:"modified_at"`
-	ModifiedBy     string             `json:"modified_by" bson:"modified_by"`
-	TotalCount     int32              `json:"totalCount"`
-	RewardPoint    int32              `json:"reward_point" bson:"reward_point"`
-	RankPoint      int32              `json:"rank_point" bson:"rank_point"`
+	ID             primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
+	CustomerID     string             `bson:"customer_id,omitempty" json:"customer_id,omitempty"`
+	CustomerName   string             `bson:"customer_name,omitempty" json:"customer_name,omitempty"`
+	Gender         string             `bson:"gender,omitempty" json:"gender,omitempty"`
+	PhoneNumber    string             `bson:"phone_number,omitempty" json:"phone_number,omitempty"`
+	Email          string             `bson:"email,omitempty" json:"email,omitempty"`
+	Address        string             `json:"address,omitempty" bson:"address,omitempty"`
+	DateOfBirth    time.Time          `json:"date_of_birth,omitempty" bson:"date_of_birth,omitempty"`
+	CustomerType   string             `json:"customer_type,omitempty" bson:"customer_type,omitempty"`
+	CustomerSource string             `json:"customer_source,omitempty" bson:"customer_source,omitempty"`
+	Tags           []string           `json:"tags,omitempty" bson:"tags,omitempty"`
+	Note           string             `json:"note,omitempty" bson:"note,omitempty"`
+	CreatedAt      time.Time          `json:"created_at,omitempty" bson:"created_at,omitempty"`
+	ModifiedAt     time.Time          `json:"modified_at,omitempty" bson:"modified_at,omitempty"`
+	ModifiedBy     string             `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
+	TotalCount     int32              `json:"totalCount,omitempty"`
+	RewardPoint    int32              `json:"reward_point,omitempty" bson:"reward_point,omitempty"`
+	RankPoint      int32              `json:"rank_point,omitempty" bson:"rank_point,omitempty"`
 }
