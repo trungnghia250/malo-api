@@ -93,6 +93,7 @@ type VoucherDetail struct {
 }
 
 type GiftDetail struct {
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	URL         string `json:"url"`
 	Price       int32  `json:"price"`
