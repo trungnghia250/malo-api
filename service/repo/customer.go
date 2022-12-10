@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type ICustomerRepo interface {
@@ -19,6 +20,7 @@ type ICustomerRepo interface {
 	CountCustomer(ctx *fiber.Ctx) (int32, error)
 	UpdateListCustomers(ctx *fiber.Ctx, req dto.UpdateListCustomerRequest) error
 	GetCustomerByPhone(ctx *fiber.Ctx, Phone string) (resp *model.Customer, err error)
+	UpsertCustomer(ctx *fiber.Ctx, query bson.M, order dto.Customer) (int32, int32, error)
 }
 
 func NewCustomerRepo(mgo *mongo.Client) ICustomerRepo {
@@ -186,4 +188,14 @@ func (c *customerRepo) UpdateListCustomers(ctx *fiber.Ctx, req dto.UpdateListCus
 	}
 
 	return nil
+}
+
+func (c *customerRepo) UpsertCustomer(ctx *fiber.Ctx, query bson.M, order dto.Customer) (int32, int32, error) {
+	opts := options.Update().SetUpsert(true)
+	result, err := c.getCollection().UpdateOne(ctx.Context(), query, order, opts)
+	if err != nil {
+		return 0, 0, err
+	}
+
+	return int32(result.UpsertedCount), int32(result.ModifiedCount), nil
 }

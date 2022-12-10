@@ -7,6 +7,7 @@ import (
 	"github.com/trungnghia250/malo-api/service/model/dto"
 	"github.com/trungnghia250/malo-api/service/repo"
 	"github.com/xuri/excelize/v2"
+	"strings"
 	"time"
 )
 
@@ -19,6 +20,7 @@ type ICustomerUseCase interface {
 	CountCustomer(ctx *fiber.Ctx) (int32, error)
 	UpdateCustomerTags(ctx *fiber.Ctx, data dto.UpdateListCustomerRequest) error
 	ExportCustomer(ctx *fiber.Ctx, req dto.ExportCustomerRequest) (string, error)
+	ImportCustomer(ctx *fiber.Ctx, req dto.ImportCustomerRequest) (dto.ImportCustomerResponse, error)
 }
 
 type customerUseCase struct {
@@ -149,4 +151,112 @@ func (c *customerUseCase) ExportCustomer(ctx *fiber.Ctx, req dto.ExportCustomerR
 	defer f.Close()
 
 	return f.Path, nil
+}
+
+func (c *customerUseCase) ImportCustomer(ctx *fiber.Ctx, req dto.ImportCustomerRequest) (dto.ImportCustomerResponse, error) {
+	file, err := req.File.Open()
+	if err != nil {
+		return dto.ImportCustomerResponse{}, err
+	}
+	defer file.Close()
+
+	excelFile, err := excelize.OpenReader(file)
+
+	rows, err := excelFile.GetRows("customer")
+	if err != nil {
+		return dto.ImportCustomerResponse{}, err
+	}
+	var listCustomer []dto.Customer
+
+	for _, row := range rows[1:] {
+		dob, _ := time.Parse("2006/01/02", row[7])
+		var tags []string
+		if len(row[8]) > 0 {
+			tags = strings.Split(row[8], ",")
+		}
+		var gender string
+		if strings.ToLower(row[2]) == "nam" {
+			gender = "male"
+		} else {
+			gender = "female"
+		}
+
+		thisCustomer := dto.Customer{
+			CustomerName:   row[1],
+			Gender:         gender,
+			PhoneNumber:    row[3],
+			Email:          row[4],
+			Address:        row[5],
+			Province:       row[6],
+			DateOfBirth:    dob,
+			CustomerSource: row[9],
+			Tags:           tags,
+			Note:           dataEndLine(row),
+			CreatedAt:      time.Now(),
+		}
+		listCustomer = append(listCustomer, thisCustomer)
+
+	}
+
+	resp, err := c.CheckCustomerImport(ctx, listCustomer)
+	if err != nil {
+		return dto.ImportCustomerResponse{}, err
+	}
+	return resp, nil
+}
+
+func dataEndLine(data []string) string {
+	if len(data) < 11 {
+		return ""
+	}
+	return data[10]
+}
+
+func (c *customerUseCase) CheckCustomerImport(ctx *fiber.Ctx, data []dto.Customer) (dto.ImportCustomerResponse, error) {
+	totalInsert := int32(0)
+	totalUpdate := int32(0)
+	totalIgnore := int32(0)
+	var customerIDs []string
+	for _, customer := range data {
+		cus, _ := c.repo.NewCustomerRepo().GetCustomerByPhone(ctx, customer.PhoneNumber)
+		if cus.PhoneNumber == "" {
+			customerID, _ := c.repo.NewCounterRepo().GetSequenceNextValue(ctx, "customer_id")
+			customer.CustomerID = fmt.Sprintf("C%d", customerID)
+			_ = c.repo.NewCustomerRepo().CreateCustomer(ctx, &customer)
+			customerIDs = append(customerIDs, customer.CustomerID)
+			totalInsert += 1
+			continue
+		}
+		customerIDs = append(customerIDs, cus.CustomerID)
+		_ = c.repo.NewCustomerRepo().UpdateCustomerByID(ctx, &customer)
+		totalUpdate += 1
+	}
+
+	if len(customerIDs) == 0 {
+		return dto.ImportCustomerResponse{
+			Scan:    int32(len(data)),
+			Success: totalInsert + totalUpdate,
+			Insert:  totalInsert,
+			Update:  totalUpdate,
+			Ignore:  totalIgnore,
+			Data:    nil,
+		}, nil
+	}
+
+	customers, err := c.repo.NewCustomerRepo().ListCustomer(ctx, dto.ListCustomerRequest{
+		CustomerIDs: customerIDs,
+		Limit:       100,
+	})
+	if err != nil {
+		return dto.ImportCustomerResponse{}, err
+	}
+	resp := dto.ImportCustomerResponse{
+		Scan:    int32(len(data)),
+		Success: totalInsert + totalUpdate,
+		Insert:  totalInsert,
+		Update:  totalUpdate,
+		Ignore:  totalIgnore,
+		Data:    customers,
+	}
+	return resp, nil
 }

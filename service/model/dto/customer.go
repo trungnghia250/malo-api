@@ -2,6 +2,7 @@ package dto
 
 import (
 	"github.com/trungnghia250/malo-api/service/model"
+	"mime/multipart"
 	"time"
 )
 
@@ -102,4 +103,17 @@ type GetCustomerGroupResponse struct {
 type CreateCustomerGroup struct {
 	Data   *model.CustomerGroup `json:"data,omitempty"`
 	Filter ListCustomerRequest  `json:"filter,omitempty"`
+}
+
+type ImportCustomerRequest struct {
+	File *multipart.FileHeader `form:"file"`
+}
+
+type ImportCustomerResponse struct {
+	Scan    int32            `json:"scan"`
+	Success int32            `json:"success"`
+	Insert  int32            `json:"insert"`
+	Update  int32            `json:"update"`
+	Ignore  int32            `json:"ignore"`
+	Data    []model.Customer `json:"data"`
 }

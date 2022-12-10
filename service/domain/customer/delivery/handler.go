@@ -139,3 +139,21 @@ func (c *CustomerHandler) ExportCustomer(ctx *fiber.Ctx) error {
 
 	return ctx.SendFile(file)
 }
+
+func (c *CustomerHandler) ImportCustomer(ctx *fiber.Ctx) error {
+	req := new(dto.ImportCustomerRequest)
+	if err := ctx.BodyParser(req); err != nil {
+		return err
+	}
+	file, err := ctx.FormFile("file")
+	if err != nil {
+		return errors.New("upload file failed")
+	}
+	req.File = file
+	result, err := c.customerUseCase.ImportCustomer(ctx, *req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(result)
+}
