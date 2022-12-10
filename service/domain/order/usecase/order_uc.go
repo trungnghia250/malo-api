@@ -112,13 +112,13 @@ func (o *orderUseCase) ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (
 	for _, row := range rows[1:] {
 		if row[0] == "" {
 			tempOrder.Items = append(tempOrder.Items, dto.Item{
-				ProductName:    row[9],
-				SKU:            row[8],
-				Quantity:       convertStringToInt32(row[10]),
-				UnitPrice:      convertStringToInt32(row[11]),
-				TotalDiscount:  convertStringToInt32(row[12]),
-				TotalTaxAmount: convertStringToInt32(row[13]),
-				Subtotal:       convertStringToInt32(row[14]),
+				ProductName:    row[10],
+				SKU:            row[9],
+				Quantity:       convertStringToInt32(row[11]),
+				UnitPrice:      convertStringToInt32(row[12]),
+				TotalDiscount:  convertStringToInt32(row[13]),
+				TotalTaxAmount: convertStringToInt32(row[14]),
+				Subtotal:       convertStringToInt32(row[15]),
 			})
 			continue
 		}
@@ -126,13 +126,13 @@ func (o *orderUseCase) ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (
 			listOrder = append(listOrder, tempOrder)
 		}
 		status := ""
-		if row[21] == "open" {
+		if row[22] == "open" {
 			status = "processing"
 		}
-		if row[21] == "closed" {
+		if row[22] == "closed" {
 			status = "success"
 		}
-		if row[21] == "cancelled" {
+		if row[22] == "cancelled" {
 			status = "cancel"
 		}
 		thisOrder := dto.Order{
@@ -145,21 +145,21 @@ func (o *orderUseCase) ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (
 			Status:       status,
 			Items: []dto.Item{
 				{
-					ProductName:    row[9],
-					SKU:            row[8],
-					Quantity:       convertStringToInt32(row[10]),
-					UnitPrice:      convertStringToInt32(row[11]),
-					TotalDiscount:  convertStringToInt32(row[12]),
-					TotalTaxAmount: convertStringToInt32(row[13]),
-					Subtotal:       convertStringToInt32(row[14]),
+					ProductName:    row[10],
+					SKU:            row[9],
+					Quantity:       convertStringToInt32(row[11]),
+					UnitPrice:      convertStringToInt32(row[12]),
+					TotalDiscount:  convertStringToInt32(row[13]),
+					TotalTaxAmount: convertStringToInt32(row[14]),
+					Subtotal:       convertStringToInt32(row[15]),
 				},
 			},
-			VoucherCode:          row[15],
-			TotalLineItemsAmount: convertStringToInt32(row[16]),
-			ShippingPrice:        convertStringToInt32(row[17]),
-			TotalDiscount:        convertStringToInt32(row[18]),
-			TotalTaxAmount:       convertStringToInt32(row[19]),
-			TotalOrderAmount:     convertStringToInt32(row[20]),
+			VoucherCode:          row[16],
+			TotalLineItemsAmount: convertStringToInt32(row[17]),
+			ShippingPrice:        convertStringToInt32(row[18]),
+			TotalDiscount:        convertStringToInt32(row[19]),
+			TotalTaxAmount:       convertStringToInt32(row[20]),
+			TotalOrderAmount:     convertStringToInt32(row[21]),
 			Note:                 dataEndLine(row),
 			CreatedAt:            time.Now(),
 			ModifiedAt:           time.Now(),
@@ -247,10 +247,10 @@ func convertStringToInt32(data string) int32 {
 }
 
 func dataEndLine(data []string) string {
-	if len(data) < 23 {
+	if len(data) < 24 {
 		return ""
 	}
-	return data[22]
+	return data[23]
 }
 
 func (o *orderUseCase) ExportOrder(ctx *fiber.Ctx, req dto.ExportOrderRequest) (string, error) {
