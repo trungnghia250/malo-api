@@ -6,6 +6,7 @@ type Voucher struct {
 	ID               string    `json:"_id,omitempty" bson:"_id,omitempty"`
 	GroupIDs         []string  `json:"group_ids,omitempty" bson:"group_ids,omitempty"`
 	DiscountAmount   int32     `json:"discount_amount,omitempty" bson:"discount_amount,omitempty"`
+	DiscountPercent  int32     `json:"discount_percent,omitempty" bson:"discount_percent,omitempty"`
 	MinOrderAmount   int32     `json:"min_order_amount,omitempty" bson:"min_order_amount,omitempty"`
 	RemainAmount     int32     `json:"remain_amount,omitempty" bson:"remain_amount,omitempty"`
 	UsedAmount       int32     `json:"used_amount,omitempty" bson:"used_amount,omitempty"`
