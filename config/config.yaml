@@ -19,3 +19,8 @@ rabbit_instance:
   queue: order-queue
   tag: MALO
   timeout_retry: 3
+
+aws:
+  region: ap-southeast-2
+  access_key_id: AKIA3JWXSCUR7Z2W6KHK
+  secret_access_id: PMlQggqLz0w31GmA3Cu8cZCAeXegf88nPHiZh5LX

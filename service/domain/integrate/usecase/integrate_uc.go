@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/model"
 	"github.com/trungnghia250/malo-api/service/repo"
+	"github.com/trungnghia250/malo-api/service/sender/s3"
 	"strings"
 	"time"
 )
@@ -12,6 +13,8 @@ type IIntegrateUseCase interface {
 	GetPartnerConfig(ctx *fiber.Ctx, partner string) (*model.PartnerConfig, error)
 	CreatePartnerConfig(ctx *fiber.Ctx, data *model.PartnerConfig) (*model.PartnerConfig, error)
 	UpdatePartnerConfig(ctx *fiber.Ctx, data *model.PartnerConfig) (*model.PartnerConfig, error)
+
+	Upload(ctx *fiber.Ctx, request *model.UploadRequest) (string, error)
 }
 
 type integrateUseCase struct {
@@ -54,4 +57,13 @@ func (i *integrateUseCase) UpdatePartnerConfig(ctx *fiber.Ctx, data *model.Partn
 	}
 
 	return nil, nil
+}
+
+func (i *integrateUseCase) Upload(ctx *fiber.Ctx, request *model.UploadRequest) (string, error) {
+	location, err := s3.UploadImage(request.File, "proof")
+	if err != nil {
+		return "", err
+	}
+
+	return location, nil
 }

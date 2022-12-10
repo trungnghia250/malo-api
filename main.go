@@ -49,7 +49,9 @@ func main() {
 			fmt.Printf("failed to disconnect mongodb %v \n", err)
 		}
 	}()
-
+	if err = database.ConnectAws(); err != nil {
+		log.Fatal(err)
+	}
 	repo := crm_repo.NewRepo(mongoClient)
 	//usecase
 	customerUseCase := customer_uc.NewCustomerUseCase(repo)

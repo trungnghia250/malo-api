@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"mime/multipart"
+	"time"
+)
 
 type PartnerConfig struct {
 	ID            string    `json:"_id" bson:"_id"`
@@ -12,4 +15,8 @@ type PartnerConfig struct {
 	ModifiedBy    string    `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
 	StoreName     string    `json:"store_name,omitempty" bson:"store_name,omitempty"`
 	Logo          string    `json:"logo,omitempty" bson:"logo,omitempty"`
+}
+
+type UploadRequest struct {
+	File *multipart.FileHeader `form:"file"`
 }

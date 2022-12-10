@@ -26,6 +26,12 @@ type Schema struct {
 	} `mapstructure:"encryption"`
 
 	RabbitMq RabbitMQ `mapstructure:"rabbit_instance"`
+
+	Aws struct {
+		Region      string `mapstructure:"region"`
+		AccessKeyID string `mapstructure:"access_key_id"`
+		SecretKeyID string `mapstructure:"secret_access_id"`
+	} `mapstructure:"aws"`
 }
 
 type RabbitMQ struct {

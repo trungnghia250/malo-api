@@ -70,3 +70,23 @@ func (i *IntegrateHandler) CreateConfigPartner(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(config)
 }
+
+func (i *IntegrateHandler) Upload(ctx *fiber.Ctx) error {
+	req := new(model.UploadRequest)
+	if err := ctx.BodyParser(req); err != nil {
+		return err
+	}
+	file, err := ctx.FormFile("file")
+	if err != nil {
+		return errors.New("upload file failed")
+	}
+	req.File = file
+	url, err := i.integrateUseCase.Upload(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(dto.UploadResponse{
+		URL: url,
+	})
+}
