@@ -16,6 +16,7 @@ type Order struct {
 	PhoneNumber          string    `json:"phone_number,omitempty" bson:"phone_number,omitempty"`
 	Email                string    `json:"email,omitempty" bson:"email,omitempty"`
 	Address              string    `json:"address,omitempty" bson:"address,omitempty"`
+	Province             string    `json:"province,omitempty" bson:"province,omitempty"`
 	Source               string    `json:"source,omitempty" bson:"source,omitempty"`
 	Status               string    `json:"status,omitempty" bson:"status,omitempty"`
 	Items                []Item    `json:"line_items,omitempty" bson:"line_items,omitempty"`

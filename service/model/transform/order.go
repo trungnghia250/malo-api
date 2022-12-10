@@ -48,6 +48,7 @@ func ConvertSapoOrder(sapoOrders []model.SapoOrder) []dto.Order {
 			Address:              fmt.Sprintf("%s, %s, %s", order.ShippingAddress.Address1, order.ShippingAddress.City, order.ShippingAddress.Province),
 			Source:               "SAPO",
 			Status:               status,
+			Province:             order.ShippingAddress.Province,
 			Items:                orderItems,
 			VoucherCode:          voucherCode,
 			TotalLineItemsAmount: int32(order.TotalLineItemsPrice),

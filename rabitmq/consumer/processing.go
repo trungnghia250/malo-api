@@ -64,6 +64,7 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 				PhoneNumber:    order.PhoneNumber,
 				Email:          order.Email,
 				Address:        order.Address,
+				Province:       order.Province,
 				CustomerType:   customerType,
 				CustomerSource: order.Source,
 				CreatedAt:      time.Now(),
