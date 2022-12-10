@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/model"
@@ -61,7 +62,12 @@ func (l *loyaltyUseCase) ListVouchers(ctx *fiber.Ctx, req dto.ListVoucherRequest
 func (l *loyaltyUseCase) CreateVoucher(ctx *fiber.Ctx, data *model.Voucher) (*model.Voucher, error) {
 	data.CreatedAt = time.Now()
 
-	err := l.repo.NewVoucherRepo().CreateVoucher(ctx, data)
+	_, err := l.GetVoucherByID(ctx, data.ID)
+	if err.Error() != "mongo: no documents in result" {
+		return nil, errors.New("Voucher Code đã tồn tại trong hệ thống")
+	}
+
+	err = l.repo.NewVoucherRepo().CreateVoucher(ctx, data)
 	if err != nil {
 		return nil, err
 	}
