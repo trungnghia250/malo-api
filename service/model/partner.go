@@ -15,6 +15,15 @@ type PartnerConfig struct {
 	ModifiedBy    string    `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
 	StoreName     string    `json:"store_name,omitempty" bson:"store_name,omitempty"`
 	Logo          string    `json:"logo,omitempty" bson:"logo,omitempty"`
+
+	From             string `json:"from,omitempty" bson:"from,omitempty"`
+	MessageServiceID string `json:"message_service_id,omitempty" bson:"message_service_id,omitempty"`
+	AccountID        string `json:"account_id,omitempty" bson:"account_id,omitempty"`
+	AuthenToken      string `json:"authen_token,omitempty" bson:"authen_token,omitempty"`
+
+	SendgridKey string `json:"sendgrid_key,omitempty" bson:"sendgrid_key,omitempty"`
+	Address     string `json:"address,omitempty" bson:"address,omitempty"`
+	Name        string `json:"name,omitempty" bson:"name,omitempty"`
 }
 
 type UploadRequest struct {
