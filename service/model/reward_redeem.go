@@ -12,6 +12,7 @@ type RewardRedeem struct {
 	OrderID      string    `json:"order_id,omitempty" bson:"order_id,omitempty"`
 	RewardValue  int32     `json:"reward_value,omitempty" bson:"reward_value,omitempty"`
 	RedeemDate   time.Time `json:"redeem_date,omitempty" bson:"redeem_date,omitempty"`
+	ProofURL     string    `json:"proof_url,omitempty" bson:"proof_url,omitempty"`
 	Note         string    `json:"note,omitempty" bson:"note,omitempty"`
 	CreatedAt    time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	ModifiedAt   time.Time `json:"modified_at,omitempty" bson:"modified_at,omitempty"`

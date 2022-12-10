@@ -11,6 +11,7 @@ type VoucherUsage struct {
 	Phone          string    `json:"phone,omitempty" bson:"phone,omitempty"`
 	OrderID        string    `json:"order_id,omitempty" bson:"order_id,omitempty"`
 	DiscountAmount int32     `json:"discount_amount,omitempty" bson:"discount_amount,omitempty"`
+	ProofURL       string    `json:"proof_url,omitempty" bson:"proof_url,omitempty"`
 	Note           string    `json:"note,omitempty" bson:"note,omitempty"`
 	UsedDate       int32     `json:"used_date,omitempty" bson:"used_date,omitempty"`
 	CreatedAt      time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
