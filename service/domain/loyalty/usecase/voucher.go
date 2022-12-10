@@ -133,7 +133,7 @@ func (l *loyaltyUseCase) ValidateVoucher(ctx *fiber.Ctx, req dto.ValidateVoucher
 
 	}
 
-	gifts, _ := l.repo.NewGiftRepo().ListGiftValidateCustomer(ctx, customer.RewardPoint)
+	gifts, _ := l.repo.NewGiftRepo().ListGiftValidateCustomer(ctx, customer.RewardPoint, groupIDs)
 	for _, gift := range gifts {
 		res.Gifts = append(res.Gifts, dto.GiftDetail{
 			ID:          gift.ID,

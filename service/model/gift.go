@@ -4,6 +4,7 @@ import "time"
 
 type Gift struct {
 	ID            string    `json:"_id,omitempty" bson:"_id,omitempty"`
+	GroupIDs      []string  `json:"group_ids,omitempty" bson:"group_ids,omitempty"`
 	Name          string    `json:"name,omitempty" bson:"name,omitempty"`
 	SKU           string    `json:"sku,omitempty" bson:"sku,omitempty"`
 	ImageURL      string    `json:"image_url,omitempty" bson:"image_url,omitempty"`
