@@ -120,3 +120,27 @@ func (c *CampaignHandler) CreateCampaign(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(campaign)
 }
+
+func (c *CampaignHandler) CancelScheduleCampaign(ctx *fiber.Ctx) error {
+	reqToken := ctx.GetReqHeaders()["X-Access-Token"]
+	if reqToken == "" {
+		return errors.New("token is required")
+	}
+	token, err := jwt.Parse(reqToken, nil)
+	if token == nil {
+		return errors.New("token not valid")
+	}
+	claims, _ := token.Claims.(jwt.MapClaims)
+	req := new(model.Campaign)
+	if err := ctx.BodyParser(req); err != nil {
+		return err
+	}
+
+	req.ModifiedBy = claims["noc"].(string)
+	customer, err := c.campaignUseCase.CancelCampaign(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(customer)
+}

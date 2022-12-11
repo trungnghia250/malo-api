@@ -19,6 +19,7 @@ type ICampaignUseCase interface {
 	ListCampaign(ctx *fiber.Ctx, req dto.ListCampaignRequest) ([]model.Campaign, error)
 	UpdateCampaign(ctx *fiber.Ctx, data *model.Campaign) (*model.Campaign, error)
 	CreateCampaign(ctx *fiber.Ctx, data *model.Campaign) (*model.Campaign, error)
+	CancelCampaign(ctx *fiber.Ctx, data *model.Campaign) (*model.Campaign, error)
 }
 
 type campaignUseCase struct {
@@ -60,10 +61,6 @@ func (c *campaignUseCase) CreateCampaign(ctx *fiber.Ctx, data *model.Campaign) (
 		return nil, err
 	}
 	data.ID = fmt.Sprintf("CP%d", campaignID)
-	err = c.repo.NewCampaignRepo().CreateCampaign(ctx, data)
-	if err != nil {
-		return nil, err
-	}
 
 	groups, _ := c.repo.NewCustomerGroupRepo().ListCustomerGroup(ctx, dto.ListCustomerGroupRequest{
 		IDs:   data.CustomerGroupIDs,
@@ -83,6 +80,13 @@ func (c *campaignUseCase) CreateCampaign(ctx *fiber.Ctx, data *model.Campaign) (
 		Limit:       100,
 	})
 
+	if data.Type == "NOW" {
+		data.Status = "DELIVERED"
+	}
+	if data.Type == "LATER" {
+		data.Status = "SCHEDULED"
+	}
+
 	if data.Channel == "email" {
 		var personalizations []*mail.Personalization
 		for _, customer := range customers {
@@ -100,10 +104,11 @@ func (c *campaignUseCase) CreateCampaign(ctx *fiber.Ctx, data *model.Campaign) (
 			mail2.WithMessageHTML(data.Message),
 		}
 
-		err = mail2.Send(personalizations, mailOpt...)
+		batchID, err := mail2.Send(personalizations, mailOpt...)
 		if err != nil {
 			return nil, err
 		}
+		data.BatchID = batchID
 	}
 
 	if data.Channel == "sms" {
@@ -118,15 +123,46 @@ func (c *campaignUseCase) CreateCampaign(ctx *fiber.Ctx, data *model.Campaign) (
 			SendAt:    int32(data.SendAt),
 		}
 
-		_ = sms.Send(smsRequest)
+		messageSIDs, _ := sms.Send(smsRequest)
+		data.MessageSIDs = messageSIDs
 	}
 
+	err = c.repo.NewCampaignRepo().CreateCampaign(ctx, data)
+	if err != nil {
+		return nil, err
+	}
 	return nil, nil
 }
 
 func (c *campaignUseCase) UpdateCampaign(ctx *fiber.Ctx, data *model.Campaign) (*model.Campaign, error) {
 	data.ModifiedAt = time.Now()
 
+	err := c.repo.NewCampaignRepo().UpdateCampaignByID(ctx, data)
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func (c *campaignUseCase) CancelCampaign(ctx *fiber.Ctx, data *model.Campaign) (*model.Campaign, error) {
+	data.ModifiedAt = time.Now()
+
+	if data.Channel == "email" {
+		err := mail2.CancelScheduled(data.BatchID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if data.Channel == "sms" {
+		err := sms.Cancel(data.MessageSIDs)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	data.Status = "CANCELLED"
 	err := c.repo.NewCampaignRepo().UpdateCampaignByID(ctx, data)
 	if err != nil {
 		return nil, err

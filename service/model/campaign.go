@@ -10,6 +10,8 @@ type Campaign struct {
 	Status           string    `json:"status,omitempty" bson:"status,omitempty"`
 	SendAt           int       `json:"send_at,omitempty" bson:"send_at,omitempty"`
 	Note             string    `json:"note,omitempty" bson:"note,omitempty"`
+	BatchID          string    `json:"batch_id,omitempty" bson:"batch_id,omitempty"`
+	MessageSIDs      []string  `json:"message_sids,omitempty" bson:"message_sids,omitempty"`
 	VoucherCode      string    `json:"voucher_code,omitempty" bson:"voucher_code,omitempty"`
 	CustomerGroupIDs []string  `json:"customer_group_ids,omitempty" bson:"customer_group_ids,omitempty"`
 	Message          string    `json:"message,omitempty" bson:"message,omitempty"`
