@@ -69,7 +69,14 @@ func (c *customerGroupUseCase) CreateCustomerGroup(ctx *fiber.Ctx, req *dto.Crea
 		return nil, err
 	}
 
-	customers, err := c.repo.NewCustomerRepo().ListCustomer(ctx, req.Filter)
+	queryCustomers := req.Filter
+	if len(req.Data.CustomerIDs) > 0 {
+		queryCustomers = dto.ListCustomerRequest{
+			Limit:       int32(len(req.Data.CustomerIDs)),
+			CustomerIDs: req.Data.CustomerIDs,
+		}
+	}
+	customers, err := c.repo.NewCustomerRepo().ListCustomer(ctx, queryCustomers)
 	var customerIDs []string
 	for _, customer := range customers {
 		customerIDs = append(customerIDs, customer.CustomerID)
