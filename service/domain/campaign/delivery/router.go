@@ -11,5 +11,5 @@ func (c *CampaignHandler) InternalCampaignAPIRoute(router fiber.Router) {
 	router.Put("/campaign", c.UpdateCampaign)
 	router.Get("/campaign/list", c.ListCampaign)
 
-	router.Put("/campaign", c.CancelScheduleCampaign)
+	router.Put("/campaign/cancel", c.CancelScheduleCampaign)
 }
