@@ -151,6 +151,11 @@ func (o *orderRepo) ListOrder(ctx *fiber.Ctx, req dto.ListOrderRequest) ([]model
 			"$in": req.OrderIDs,
 		}
 	}
+
+	if req.Limit == 0 {
+		req.Limit = 1000
+	}
+
 	cursor, err := o.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},

@@ -75,7 +75,8 @@ type UpdateListCustomerRequest struct {
 }
 
 type ExportCustomerRequest struct {
-	CustomerIDs []string `json:"customer_ids" query:"customer_ids"`
+	CustomerIDs []string `json:"customer_ids,omitempty" query:"customer_ids,omitempty"`
+	Filter      string   `json:"filter,omitempty" query:"filter,omitempty"`
 }
 
 type ListCustomerGroupRequest struct {

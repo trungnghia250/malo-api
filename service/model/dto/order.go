@@ -86,7 +86,8 @@ type DeleteOrdersRequest struct {
 }
 
 type ExportOrderRequest struct {
-	OrderIDs []string `json:"order_ids" query:"order_ids"`
+	OrderIDs []string `json:"order_ids,omitempty" query:"order_ids,omitempty"`
+	Filter   string   `json:"filter,omitempty" query:"filter,omitempty"`
 }
 
 type ExportOrderResponse struct {

@@ -254,10 +254,20 @@ func dataEndLine(data []string) string {
 }
 
 func (o *orderUseCase) ExportOrder(ctx *fiber.Ctx, req dto.ExportOrderRequest) (string, error) {
-	orders, err := o.repo.NewOrderRepo().ListOrder(ctx, dto.ListOrderRequest{
-		OrderIDs: req.OrderIDs,
-		Limit:    int32(len(req.OrderIDs)),
-	})
+	query := dto.ListOrderRequest{}
+
+	if len(req.Filter) > 0 {
+		json.Unmarshal([]byte(req.Filter), &query)
+	}
+
+	if len(req.OrderIDs) > 0 {
+		query = dto.ListOrderRequest{
+			OrderIDs: req.OrderIDs,
+			Limit:    int32(len(req.OrderIDs)),
+		}
+	}
+
+	orders, err := o.repo.NewOrderRepo().ListOrder(ctx, query)
 	if err != nil {
 		return "", err
 	}

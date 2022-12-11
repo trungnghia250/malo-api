@@ -143,6 +143,10 @@ func (c *customerRepo) ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest)
 		}
 	}
 
+	if req.Limit == 0 {
+		req.Limit = 1000
+	}
+
 	cursor, err := c.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},

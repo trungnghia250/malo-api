@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/model"
@@ -100,10 +101,20 @@ func (c *customerUseCase) UpdateCustomerTags(ctx *fiber.Ctx, data dto.UpdateList
 }
 
 func (c *customerUseCase) ExportCustomer(ctx *fiber.Ctx, req dto.ExportCustomerRequest) (string, error) {
-	customers, err := c.repo.NewCustomerRepo().ListCustomer(ctx, dto.ListCustomerRequest{
-		CustomerIDs: req.CustomerIDs,
-		Limit:       int32(len(req.CustomerIDs)),
-	})
+	query := dto.ListCustomerRequest{}
+
+	if len(req.Filter) > 0 {
+		json.Unmarshal([]byte(req.Filter), &query)
+	}
+
+	if len(req.CustomerIDs) > 0 {
+		query = dto.ListCustomerRequest{
+			CustomerIDs: req.CustomerIDs,
+			Limit:       int32(len(req.CustomerIDs)),
+		}
+	}
+
+	customers, err := c.repo.NewCustomerRepo().ListCustomer(ctx, query)
 	if err != nil {
 		return "", err
 	}
