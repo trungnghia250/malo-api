@@ -29,6 +29,8 @@ type IRepo interface {
 	NewHistoryPointRepo() IHistoryPointRepo
 	NewVoucherRepo() IVoucherRepo
 	NewVoucherUsageRepo() IVoucherUsageRepo
+	NewCustomerReportRepo() ICustomerReportRepo
+	NewProductReportRepo() IProductReportRepo
 }
 
 func (r repo) NewCustomerRepo() ICustomerRepo {
@@ -85,4 +87,12 @@ func (r repo) NewVoucherRepo() IVoucherRepo {
 
 func (r repo) NewVoucherUsageRepo() IVoucherUsageRepo {
 	return NewVoucherUsageRepo(r.mgo)
+}
+
+func (r repo) NewCustomerReportRepo() ICustomerReportRepo {
+	return NewCustomerReportRepo(r.mgo)
+}
+
+func (r repo) NewProductReportRepo() IProductReportRepo {
+	return NewProductReportRepo(r.mgo)
 }

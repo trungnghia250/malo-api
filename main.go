@@ -23,6 +23,8 @@ import (
 	order_uc "github.com/trungnghia250/malo-api/service/domain/order/usecase"
 	product_delivery "github.com/trungnghia250/malo-api/service/domain/product/delivery"
 	product_uc "github.com/trungnghia250/malo-api/service/domain/product/usecase"
+	"github.com/trungnghia250/malo-api/service/domain/report/delivery"
+	report_uc "github.com/trungnghia250/malo-api/service/domain/report/usecase"
 	template_delivery "github.com/trungnghia250/malo-api/service/domain/template_message/delivery"
 	template_uc "github.com/trungnghia250/malo-api/service/domain/template_message/usecase"
 	user_delivery "github.com/trungnghia250/malo-api/service/domain/user/delivery"
@@ -63,6 +65,7 @@ func main() {
 	customerGroupUseCase := customer_group_usecase.NewCustomerGroupUseCase(repo)
 	templateUseCase := template_uc.NewTemplateUseCase(repo)
 	loyaltyUseCase := loyalty_uc.NewLoyaltyUseCase(repo)
+	reportUseCase := report_uc.NewReportUseCase(repo)
 
 	//handler
 	customerHandler := customer_delivery.NewCustomerHandler(customerUseCase)
@@ -74,6 +77,7 @@ func main() {
 	customerGroupHandler := customer_group_delivery.NewCustomerGroupHandler(customerGroupUseCase)
 	templateHandler := template_delivery.NewTemplateHandler(templateUseCase)
 	loyaltyHandler := loyalty_delivery.NewLoyaltyHandler(loyaltyUseCase)
+	reportHandler := delivery.NewReportHandler(reportUseCase)
 
 	//router
 	router := fiber.New()
@@ -87,6 +91,7 @@ func main() {
 	customerGroupHandler.InternalCustomerGroupAPIRoute(router)
 	templateHandler.InternalTemplateAPIRoute(router)
 	loyaltyHandler.InternalLoyaltyAPIRoute(router)
+	reportHandler.InternalReportAPIRoute(router)
 	router.Use(cors.New())
 
 	mongoDB := database.NewMongoDB("order", "customer", "product",

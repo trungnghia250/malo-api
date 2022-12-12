@@ -1,6 +1,10 @@
 package delivery
 
-import "github.com/trungnghia250/malo-api/service/domain/product/usecase"
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/trungnghia250/malo-api/service/domain/report/usecase"
+	"github.com/trungnghia250/malo-api/service/model/dto"
+)
 
 type ReportHandler struct {
 	reportUseCase usecase.IReportUseCase
@@ -10,4 +14,18 @@ func NewReportHandler(reportUseCase usecase.IReportUseCase) *ReportHandler {
 	return &ReportHandler{
 		reportUseCase: reportUseCase,
 	}
+}
+
+func (r *ReportHandler) GetReport(ctx *fiber.Ctx) error {
+	req := new(dto.GetReportRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	result, err := r.reportUseCase.GetReportByCategory(ctx, *req)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(result)
 }
