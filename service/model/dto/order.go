@@ -49,16 +49,16 @@ type ListOrderResponse struct {
 }
 
 type ListOrderRequest struct {
-	Limit                int32    `json:"limit,omitempty"`
-	Offset               int32    `json:"offset,omitempty"`
+	Limit                int32    `json:"limit,omitempty" query:"limit,omitempty"`
+	Offset               int32    `json:"offset,omitempty" query:"offset,omitempty"`
 	CustomerName         []string `json:"customer_name,omitempty" query:"customer_name,omitempty"`
-	Email                string   `json:"email,omitempty"`
-	Source               []string `json:"source,omitempty"`
+	Email                string   `json:"email,omitempty" query:"email,omitempty"`
+	Source               []string `json:"source,omitempty" query:"source,omitempty"`
 	TotalLineItemsAmount []int32  `json:"total_line_items_amount,omitempty" query:"total_line_items_amount,omitempty"`
 	TotalDiscount        []int32  `json:"total_discount,omitempty" query:"total_discount,omitempty"`
 	TotalOrderAmount     []int32  `json:"total_order_amount,omitempty" query:"total_order_amount,omitempty"`
-	Phone                string   `json:"phone,omitempty"`
-	Address              string   `json:"address,omitempty"`
+	Phone                string   `json:"phone,omitempty" query:"phone,omitempty"`
+	Address              string   `json:"address,omitempty" query:"address,omitempty"`
 	VoucherCode          string   `json:"voucher_code,omitempty" query:"voucher_code,omitempty"`
 	ShippingPrice        []int32  `json:"shipping_price,omitempty" query:"shipping_price,omitempty"`
 	TotalTax             []int32  `json:"total_tax,omitempty" query:"total_tax,omitempty"`

@@ -42,15 +42,15 @@ type Customer struct {
 }
 
 type ListCustomerRequest struct {
-	Limit        int32    `json:"limit,omitempty"`
-	Offset       int32    `json:"offset,omitempty"`
+	Limit        int32    `json:"limit,omitempty" query:"limit,omitempty"`
+	Offset       int32    `json:"offset,omitempty" query:"offset,omitempty"`
 	CustomerName []string `json:"customer_name,omitempty" query:"customer_name,omitempty"`
-	Phone        string   `json:"phone,omitempty"`
-	Address      string   `json:"address,omitempty"`
+	Phone        string   `json:"phone,omitempty" query:"phone,omitempty"`
+	Address      string   `json:"address,omitempty" query:"address,omitempty"`
 	CustomerType []string `json:"customer_type,omitempty" query:"customer_type,omitempty"`
 	Tags         []string `json:"tags,omitempty" query:"tags,omitempty"`
-	Gender       string   `json:"gender,omitempty"`
-	Email        string   `json:"email,omitempty"`
+	Gender       string   `json:"gender,omitempty" query:"gender,omitempty"`
+	Email        string   `json:"email,omitempty" query:"email,omitempty"`
 	Source       []string `json:"source,omitempty" query:"source,omitempty"`
 	CustomerIDs  []string `json:"customer_ids,omitempty" query:"customer_ids,omitempty"`
 	ExceptIDs    []string `json:"except_ids,omitempty" query:"except_ids,omitempty"`
