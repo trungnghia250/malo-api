@@ -90,7 +90,7 @@ func main() {
 	router.Use(cors.New())
 
 	mongoDB := database.NewMongoDB("order", "customer", "product",
-		"counter", "history_point", "partner")
+		"counter", "history_point", "partner", "customer_report", "product_report")
 	loyaltyConfig, _ := mongoDB.GetLoyaltyConfig()
 	var rankConfig []int32
 	for _, rank := range loyaltyConfig.Ranks {

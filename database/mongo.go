@@ -17,21 +17,23 @@ import (
 var ctx = context.Background()
 
 const (
-	DatabaseMalo            = "malo"
-	CollectionCustomer      = "customer"
-	CollectionUser          = "user"
-	CollectionProduct       = "product"
-	CollectionOrder         = "order"
-	CollectionCounter       = "counter"
-	CollectionPartner       = "partner"
-	CollectionCampaign      = "campaign"
-	CollectionCustomerGroup = "customer_group"
-	CollectionTemplate      = "template"
-	CollectionGift          = "gift"
-	CollectionVoucher       = "voucher"
-	CollectionVoucherUsage  = "voucher_usage"
-	CollectionRewardRedeem  = "reward_redeem"
-	CollectionHistoryPoint  = "history_point"
+	DatabaseMalo             = "malo"
+	CollectionCustomer       = "customer"
+	CollectionUser           = "user"
+	CollectionProduct        = "product"
+	CollectionOrder          = "order"
+	CollectionCounter        = "counter"
+	CollectionPartner        = "partner"
+	CollectionCampaign       = "campaign"
+	CollectionCustomerGroup  = "customer_group"
+	CollectionTemplate       = "template"
+	CollectionGift           = "gift"
+	CollectionVoucher        = "voucher"
+	CollectionVoucherUsage   = "voucher_usage"
+	CollectionRewardRedeem   = "reward_redeem"
+	CollectionHistoryPoint   = "history_point"
+	CollectionCustomerReport = "customer_report"
+	CollectionProductReport  = "product_report"
 )
 
 var (
@@ -58,25 +60,29 @@ func ConnectMongo(user, pass, host string) *mongo.Client {
 }
 
 // NewMongoDB returns a new layer database instance
-func NewMongoDB(order, customer, product, count, history, partner string) *MogoDB {
+func NewMongoDB(order, customer, product, count, history, partner, customerReport, productReport string) *MogoDB {
 	return &MogoDB{
-		Order:        MgoDatabase.Collection(order),
-		Customer:     MgoDatabase.Collection(customer),
-		Product:      MgoDatabase.Collection(product),
-		Count:        MgoDatabase.Collection(count),
-		HistoryPoint: MgoDatabase.Collection(history),
-		Partner:      MgoDatabase.Collection(partner),
+		Order:          MgoDatabase.Collection(order),
+		Customer:       MgoDatabase.Collection(customer),
+		Product:        MgoDatabase.Collection(product),
+		Count:          MgoDatabase.Collection(count),
+		HistoryPoint:   MgoDatabase.Collection(history),
+		Partner:        MgoDatabase.Collection(partner),
+		CustomerReport: MgoDatabase.Collection(customerReport),
+		ProductReport:  MgoDatabase.Collection(productReport),
 	}
 }
 
 // MogoDB hold layer struct
 type MogoDB struct {
-	Order        *mongo.Collection
-	Customer     *mongo.Collection
-	Product      *mongo.Collection
-	Count        *mongo.Collection
-	HistoryPoint *mongo.Collection
-	Partner      *mongo.Collection
+	Order          *mongo.Collection
+	Customer       *mongo.Collection
+	Product        *mongo.Collection
+	Count          *mongo.Collection
+	HistoryPoint   *mongo.Collection
+	Partner        *mongo.Collection
+	CustomerReport *mongo.Collection
+	ProductReport  *mongo.Collection
 }
 
 // ChangeStream implement
@@ -205,6 +211,60 @@ func (mg *MogoDB) UpdateProductByID(data *model.Product) error {
 	}
 	_ = mg.Product.FindOneAndUpdate(context.TODO(), bson.M{"sku": data.SKU}, bson.M{
 		"$set": data,
+	}, &opt)
+
+	return nil
+}
+
+func (mg *MogoDB) UpsertCustomerReport(data *model.CustomerReport) error {
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+
+	_ = mg.CustomerReport.FindOneAndUpdate(context.TODO(), bson.M{"date": data.Date, "phone": data.Phone}, bson.M{
+		"$set": bson.M{
+			"phone": data.Phone,
+			"date":  data.Date,
+			"name":  data.Name,
+			"email": data.Email,
+		},
+		"$inc": bson.M{
+			"total_orders":      data.TotalOrders,
+			"success_orders":    data.SuccessOrders,
+			"processing_orders": data.ProcessOrders,
+			"cancel_orders":     data.CancelOrders,
+			"revenue":           data.Revenue,
+		},
+	}, &opt)
+
+	return nil
+}
+
+func (mg *MogoDB) UpsertProductReport(data *model.ProductReport) error {
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
+	}
+
+	_ = mg.ProductReport.FindOneAndUpdate(context.TODO(), bson.M{"date": data.Date, "sku": data.SKU}, bson.M{
+		"$set": bson.M{
+			"sku":  data.SKU,
+			"date": data.Date,
+			"name": data.Name,
+		},
+		"$inc": bson.M{
+			"total_sales":       data.TotalSales,
+			"total_orders":      data.TotalOrders,
+			"success_orders":    data.SuccessOrders,
+			"processing_orders": data.ProcessOrders,
+			"cancel_orders":     data.CancelOrders,
+			"revenue":           data.Revenue,
+		},
 	}, &opt)
 
 	return nil
