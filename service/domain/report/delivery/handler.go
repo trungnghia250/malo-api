@@ -31,3 +31,21 @@ func (r *ReportHandler) GetReport(ctx *fiber.Ctx) error {
 	}
 	return ctx.JSON(result)
 }
+
+func (r *ReportHandler) GetDashboard(ctx *fiber.Ctx) error {
+	req := new(dto.GetDashBoardRequest)
+	if err := ctx.QueryParser(req); err != nil {
+		return err
+	}
+
+	result, err := r.reportUseCase.GetReportByCategory(ctx, dto.GetReportRequest{
+		Type:      "customer",
+		StartTime: req.StartTime,
+		EndTime:   req.EndTime,
+	})
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(result)
+}

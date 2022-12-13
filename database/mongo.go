@@ -237,6 +237,7 @@ func (mg *MogoDB) UpsertCustomerReport(data *model.CustomerReport) error {
 			"processing_orders": data.ProcessOrders,
 			"cancel_orders":     data.CancelOrders,
 			"revenue":           data.Revenue,
+			"new":               data.New,
 		},
 	}, &opt)
 

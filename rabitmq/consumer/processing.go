@@ -18,7 +18,7 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 	if obj.OPType == "insert" {
 		order, _ := mgo.GetOrderByObjectID(obj.Key.ID)
 		customer, products := extractCustomerAndProduct(order, config, mgo)
-		var cancel, success, process, revenue int32
+		var cancel, success, process, revenue, isNew int32
 		if order.Status == "cancel" {
 			cancel = 1
 		}
@@ -28,6 +28,9 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 		}
 		if order.Status == "processing" {
 			process = 1
+		}
+		if customer.IsNew {
+			isNew = 1
 		}
 		customerReport := model.CustomerReport{
 			Phone:         customer.PhoneNumber,
@@ -39,6 +42,7 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 			ProcessOrders: process,
 			CancelOrders:  cancel,
 			Revenue:       revenue,
+			New:           isNew,
 		}
 		mgo.UpsertCustomerReport(&customerReport)
 
@@ -127,11 +131,18 @@ func extractCustomerAndProduct(order *model.Order, config model.RankPointConfig,
 			ModifiedAt:     time.Now(),
 			RewardPoint:    point,
 			RankPoint:      point,
+			IsNew:          true,
 		}
 		mgo.CreateCustomer(&customerRes)
 	} else {
+		customer, _ := mgo.GetCustomerByPhone(order.PhoneNumber)
+		customerRes = model.Customer{
+			CustomerName: order.CustomerName,
+			PhoneNumber:  order.PhoneNumber,
+			Email:        order.Email,
+			IsNew:        false,
+		}
 		if order.Status == "success" {
-			customer, _ := mgo.GetCustomerByPhone(order.PhoneNumber)
 			customerType := customer.CustomerType
 			for index, rank := range config.Rank {
 				if order.TotalOrderAmount/config.Point[0]*config.Point[1]+customer.RankPoint < rank {
@@ -153,11 +164,6 @@ func extractCustomerAndProduct(order *model.Order, config model.RankPointConfig,
 				RankPoint:    order.TotalOrderAmount/config.Point[0]*config.Point[1] + customer.RankPoint,
 			}
 			mgo.UpdateCustomerByID(&updateCustomer)
-			customerRes = model.Customer{
-				CustomerName: order.CustomerName,
-				PhoneNumber:  order.PhoneNumber,
-				Email:        order.Email,
-			}
 		}
 	}
 

@@ -34,13 +34,14 @@ func (r *reportUseCase) GetReportByCategory(ctx *fiber.Ctx, req dto.GetReportReq
 			return nil, err
 		}
 
-		var orders, success, process, cancel, revenue int32
+		var orders, success, process, cancel, revenue, isNew int32
 		for _, report := range reports {
 			orders += report.TotalOrders
 			success += report.SuccessOrders
 			process += report.ProcessingOrders
 			cancel += report.CancelOrders
 			revenue += report.TotalRevenue
+			isNew += report.New
 		}
 		if req.Export {
 			f := excelize.NewFile()
@@ -101,6 +102,8 @@ func (r *reportUseCase) GetReportByCategory(ctx *fiber.Ctx, req dto.GetReportReq
 				ProcessingOrders: process,
 				CancelOrders:     cancel,
 				TotalRevenue:     revenue,
+				New:              isNew,
+				Return:           int32(len(reports)) - isNew,
 			},
 		}, nil
 	case "product":
@@ -186,6 +189,9 @@ func (r *reportUseCase) GetReportByCategory(ctx *fiber.Ctx, req dto.GetReportReq
 }
 
 func ListCustomerReportsPaginate(records []dto.CustomerReport, limit, offset int32) []dto.CustomerReport {
+	if limit == 0 && offset == 0 {
+		return records
+	}
 	if offset > int32(len(records)) {
 		offset = int32(len(records))
 	}
@@ -197,6 +203,9 @@ func ListCustomerReportsPaginate(records []dto.CustomerReport, limit, offset int
 }
 
 func ListProductReportsPaginate(records []dto.ProductReport, limit, offset int32) []dto.ProductReport {
+	if limit == 0 && offset == 0 {
+		return records
+	}
 	if offset > int32(len(records)) {
 		offset = int32(len(records))
 	}

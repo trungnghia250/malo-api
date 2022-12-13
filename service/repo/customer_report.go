@@ -97,6 +97,7 @@ func (c *customerReportRepo) GetCustomerReport(ctx *fiber.Ctx, start, end time.T
 			"success_orders":    bson.M{"$sum": "$success_orders"},
 			"processing_orders": bson.M{"$sum": "$processing_orders"},
 			"total_revenue":     bson.M{"$sum": "$revenue"},
+			"new":               bson.M{"$sum": "$new"},
 		}}},
 		bson.D{{"$match", filter}},
 	})

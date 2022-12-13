@@ -25,4 +25,5 @@ type Customer struct {
 	TotalCount     int32              `json:"totalCount,omitempty"`
 	RewardPoint    int32              `json:"reward_point,omitempty" bson:"reward_point,omitempty"`
 	RankPoint      int32              `json:"rank_point,omitempty" bson:"rank_point,omitempty"`
+	IsNew          bool
 }
