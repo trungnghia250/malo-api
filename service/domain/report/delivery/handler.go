@@ -26,6 +26,8 @@ func (r *ReportHandler) GetReport(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-
+	if req.Export {
+		return ctx.SendFile(result.(string))
+	}
 	return ctx.JSON(result)
 }

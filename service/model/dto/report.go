@@ -18,11 +18,22 @@ type CustomerReportResponse struct {
 }
 
 type GetReportRequest struct {
-	Type      string `json:"type" query:"type"`
-	StartTime string `json:"start_time" query:"start_time"`
-	EndTime   string `json:"end_time" query:"end_time"`
-	Limit     int32  `json:"limit,omitempty" query:"limit,omitempty"`
-	Offset    int32  `json:"offset,omitempty" query:"offset,omitempty"`
+	Type            string   `json:"type" query:"type"`
+	StartTime       string   `json:"start_time" query:"start_time"`
+	EndTime         string   `json:"end_time" query:"end_time"`
+	Limit           int32    `json:"limit,omitempty" query:"limit,omitempty"`
+	Offset          int32    `json:"offset,omitempty" query:"offset,omitempty"`
+	Name            []string `json:"name,omitempty" query:"name,omitempty"`
+	SKU             []string `json:"sku,omitempty" query:"sku,omitempty"`
+	Phone           []string `json:"phone,omitempty" query:"phone,omitempty"`
+	Email           []string `json:"email,omitempty" query:"email,omitempty"`
+	TotalOrders     []int32  `json:"total_orders,omitempty" query:"total_orders,omitempty"`
+	TotalSales      []int32  `json:"total_sales,omitempty" query:"total_sales,omitempty"`
+	TotalSuccess    []int32  `json:"total_success,omitempty" query:"total_success,omitempty"`
+	TotalProcessing []int32  `json:"total_processing,omitempty" query:"total_processing,omitempty"`
+	TotalCancel     []int32  `json:"total_cancel,omitempty" query:"total_cancel,omitempty"`
+	TotalRevenue    []int32  `json:"total_revenue,omitempty" query:"total_revenue,omitempty"`
+	Export          bool     `json:"export,omitempty" query:"export,omitempty"`
 }
 
 type ProductReport struct {
