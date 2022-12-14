@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"time"
 )
 
 type IProductRepo interface {
@@ -99,6 +100,14 @@ func (p *productRepo) ListProduct(ctx *fiber.Ctx, req dto.ListProductRequest) ([
 			"$in": req.ProductIDs,
 		}
 	}
+
+	if len(req.CreatedAt) > 0 {
+		matching["created_at"] = bson.M{
+			"$gte": time.Unix(int64(req.CreatedAt[0]), 0),
+			"$lte": time.Unix(int64(req.CreatedAt[1]), 0),
+		}
+	}
+
 	cursor, err := p.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},

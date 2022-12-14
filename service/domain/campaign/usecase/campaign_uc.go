@@ -127,6 +127,9 @@ func (c *campaignUseCase) CreateCampaign(ctx *fiber.Ctx, data *model.Campaign) (
 		data.MessageSIDs = messageSIDs
 	}
 
+	if data.SendAt == 0 {
+		data.SendAt = int(time.Now().Unix())
+	}
 	err = c.repo.NewCampaignRepo().CreateCampaign(ctx, data)
 	if err != nil {
 		return nil, err

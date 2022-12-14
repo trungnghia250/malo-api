@@ -13,6 +13,7 @@ type ListProductRequest struct {
 	Category   []string `json:"category,omitempty"`
 	Name       []string `json:"name,omitempty"`
 	ProductIDs []string `query:"product_ids,omitempty"`
+	CreatedAt  []int32  `query:"created_at,omitempty"`
 }
 
 type ListProductResponse struct {

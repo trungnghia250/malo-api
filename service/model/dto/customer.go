@@ -54,6 +54,7 @@ type ListCustomerRequest struct {
 	Source       []string `json:"source,omitempty" query:"source,omitempty"`
 	CustomerIDs  []string `json:"customer_ids,omitempty" query:"customer_ids,omitempty"`
 	ExceptIDs    []string `json:"except_ids,omitempty" query:"except_ids,omitempty"`
+	CreatedAt    []int32  `json:"created_at,omitempty" query:"created_at,omitempty"`
 }
 
 type ListCustomerResponse struct {
@@ -80,9 +81,11 @@ type ExportCustomerRequest struct {
 }
 
 type ListCustomerGroupRequest struct {
-	Limit  int32    `json:"limit,omitempty"`
-	Offset int32    `json:"offset,omitempty"`
-	IDs    []string `json:"ids,omitempty"`
+	Limit     int32    `json:"limit,omitempty"`
+	Offset    int32    `json:"offset,omitempty"`
+	IDs       []string `json:"ids,omitempty"`
+	Name      []string `json:"name,omitempty"`
+	CreatedAt []int32  `json:"created_at,omitempty"`
 }
 
 type ListCustomerGroupResponse struct {

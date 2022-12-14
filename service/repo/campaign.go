@@ -7,6 +7,7 @@ import (
 	"github.com/trungnghia250/malo-api/service/model/dto"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"time"
 )
 
 type ICampaignRepo interface {
@@ -74,6 +75,23 @@ func (c *campaignRepo) DeleteCampaignByID(ctx *fiber.Ctx, ids []string) error {
 
 func (c *campaignRepo) ListCampaign(ctx *fiber.Ctx, req dto.ListCampaignRequest) ([]model.Campaign, error) {
 	matching := bson.M{}
+	if len(req.CreatedAt) > 0 {
+		matching["created_at"] = bson.M{
+			"$gte": time.Unix(int64(req.CreatedAt[0]), 0),
+			"$lte": time.Unix(int64(req.CreatedAt[1]), 0),
+		}
+	}
+
+	if len(req.Status) > 0 {
+		matching["status"] = req.Status
+	}
+
+	if len(req.SendAt) > 0 {
+		matching["send_at"] = bson.M{
+			"$gte": req.SendAt[0],
+			"$lte": req.SendAt[1],
+		}
+	}
 
 	cursor, err := c.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},

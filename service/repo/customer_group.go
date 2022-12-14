@@ -6,7 +6,9 @@ import (
 	"github.com/trungnghia250/malo-api/service/model"
 	"github.com/trungnghia250/malo-api/service/model/dto"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"time"
 )
 
 type ICustomerGroupRepo interface {
@@ -78,6 +80,7 @@ func (c *customerGroupRepo) DeleteCustomerGroupByID(ctx *fiber.Ctx, ids []string
 			"$in": ids,
 		},
 	})
+
 	if err != nil {
 		return err
 	}
@@ -90,6 +93,23 @@ func (c *customerGroupRepo) ListCustomerGroup(ctx *fiber.Ctx, req dto.ListCustom
 	if len(req.IDs) > 0 {
 		matching["_id"] = bson.M{
 			"$in": req.IDs,
+		}
+	}
+
+	if len(req.CreatedAt) > 0 {
+		matching["created_at"] = bson.M{
+			"$gte": time.Unix(int64(req.CreatedAt[0]), 0),
+			"$lte": time.Unix(int64(req.CreatedAt[1]), 0),
+		}
+	}
+
+	nameQuery := bson.A{}
+	for _, name := range req.Name {
+		nameQuery = append(nameQuery, primitive.Regex{Pattern: name})
+	}
+	if len(req.Name) > 0 {
+		matching["group_name"] = bson.D{
+			{"$in", nameQuery},
 		}
 	}
 

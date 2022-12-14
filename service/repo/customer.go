@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"time"
 )
 
 type ICustomerRepo interface {
@@ -145,6 +146,13 @@ func (c *customerRepo) ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest)
 
 	if req.Limit == 0 {
 		req.Limit = 1000
+	}
+
+	if len(req.CreatedAt) > 0 {
+		matching["created_at"] = bson.M{
+			"$gte": time.Unix(int64(req.CreatedAt[0]), 0),
+			"$lte": time.Unix(int64(req.CreatedAt[1]), 0),
+		}
 	}
 
 	cursor, err := c.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
