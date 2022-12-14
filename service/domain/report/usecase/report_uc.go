@@ -218,7 +218,7 @@ func (r *reportUseCase) GetDashboard(ctx *fiber.Ctx, req dto.GetDashBoardRequest
 			TotalOrders:  orders,
 			TotalRevenue: revenue,
 			New:          isNew,
-			Return:       int32(len(reports)) - isNew,
+			Return:       comeback,
 		},
 	}, nil
 
