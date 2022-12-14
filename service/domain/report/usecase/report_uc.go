@@ -198,7 +198,7 @@ func (r *reportUseCase) GetDashboard(ctx *fiber.Ctx, req dto.GetDashBoardRequest
 		return nil, err
 	}
 
-	var orders, revenue, isNew int32
+	var orders, revenue, isNew, comeback int32
 	for i, report := range reports {
 		orders += report.TotalOrders
 		//success += report.SuccessOrders
@@ -207,6 +207,7 @@ func (r *reportUseCase) GetDashboard(ctx *fiber.Ctx, req dto.GetDashBoardRequest
 		revenue += report.TotalRevenue
 		isNew += report.New
 		reports[i].Return = report.TotalOrders - report.New
+		comeback += reports[i].Return
 	}
 
 	return dto.CustomerReportResponse{
