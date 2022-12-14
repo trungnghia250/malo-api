@@ -11,6 +11,7 @@ import (
 
 type IReportUseCase interface {
 	GetReportByCategory(ctx *fiber.Ctx, req dto.GetReportRequest) (interface{}, error)
+	GetDashboard(ctx *fiber.Ctx, req dto.GetDashBoardRequest) (interface{}, error)
 }
 
 type reportUseCase struct {
@@ -186,6 +187,40 @@ func (r *reportUseCase) GetReportByCategory(ctx *fiber.Ctx, req dto.GetReportReq
 	}
 
 	return nil, nil
+}
+
+func (r *reportUseCase) GetDashboard(ctx *fiber.Ctx, req dto.GetDashBoardRequest) (interface{}, error) {
+	end, _ := time.Parse("02/01/2006", req.EndTime)
+	start, _ := time.Parse("02/01/2006", req.StartTime)
+
+	reports, err := r.repo.NewCustomerReportRepo().GetDashboard(ctx, start, end)
+	if err != nil {
+		return nil, err
+	}
+
+	var orders, revenue, isNew int32
+	for i, report := range reports {
+		orders += report.TotalOrders
+		//success += report.SuccessOrders
+		//process += report.ProcessingOrders
+		//cancel += report.CancelOrders
+		revenue += report.TotalRevenue
+		isNew += report.New
+		reports[i].Return = report.TotalOrders - report.New
+	}
+
+	return dto.CustomerReportResponse{
+		Data:  reports,
+		Count: int32(len(reports)),
+		Total: dto.CustomerReport{
+			Name:         "Tổng cộng",
+			TotalOrders:  orders,
+			TotalRevenue: revenue,
+			New:          isNew,
+			Return:       int32(len(reports)) - isNew,
+		},
+	}, nil
+
 }
 
 func ListCustomerReportsPaginate(records []dto.CustomerReport, limit, offset int32) []dto.CustomerReport {

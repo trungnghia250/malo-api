@@ -38,11 +38,7 @@ func (r *ReportHandler) GetDashboard(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	result, err := r.reportUseCase.GetReportByCategory(ctx, dto.GetReportRequest{
-		Type:      "customer",
-		StartTime: req.StartTime,
-		EndTime:   req.EndTime,
-	})
+	result, err := r.reportUseCase.GetDashboard(ctx, *req)
 	if err != nil {
 		return err
 	}

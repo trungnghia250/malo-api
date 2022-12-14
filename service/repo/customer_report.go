@@ -12,6 +12,7 @@ import (
 
 type ICustomerReportRepo interface {
 	GetCustomerReport(ctx *fiber.Ctx, start, end time.Time, req dto.GetReportRequest) ([]dto.CustomerReport, error)
+	GetDashboard(ctx *fiber.Ctx, start, end time.Time) ([]dto.CustomerReport, error)
 }
 
 func NewCustomerReportRepo(mgo *mongo.Client) ICustomerReportRepo {
@@ -100,6 +101,39 @@ func (c *customerReportRepo) GetCustomerReport(ctx *fiber.Ctx, start, end time.T
 			"new":               bson.M{"$sum": "$new"},
 		}}},
 		bson.D{{"$match", filter}},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	customers := make([]dto.CustomerReport, 0)
+	if err := cursor.All(ctx.Context(), &customers); err != nil {
+		return nil, err
+	}
+
+	return customers, nil
+}
+
+func (c *customerReportRepo) GetDashboard(ctx *fiber.Ctx, start, end time.Time) ([]dto.CustomerReport, error) {
+	matching := bson.M{
+		"date": bson.M{
+			"$gte": start,
+			"$lte": end,
+		},
+	}
+
+	cursor, err := c.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
+		bson.D{{"$match", matching}},
+		bson.D{{"$group", bson.M{
+			"_id":          bson.M{"$dateToString": bson.M{"format": "%d-%m-%Y", "date": "$date"}},
+			"total_orders": bson.M{"$sum": "$total_orders"},
+			//"cancel_orders":     bson.M{"$sum": "$cancel_orders"},
+			//"success_orders":    bson.M{"$sum": "$success_orders"},
+			//"processing_orders": bson.M{"$sum": "$processing_orders"},
+			"total_revenue": bson.M{"$sum": "$revenue"},
+			"new":           bson.M{"$sum": "$new"},
+		}}},
 	})
 
 	if err != nil {
