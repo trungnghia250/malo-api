@@ -27,6 +27,18 @@ func (l *loyaltyUseCase) ListGift(ctx *fiber.Ctx, req dto.ListGiftRequest) ([]mo
 	if err != nil {
 		return nil, err
 	}
+	for i, gift := range gifts {
+		groups, _ := l.repo.NewCustomerGroupRepo().ListCustomerGroup(ctx, dto.ListCustomerGroupRequest{
+			Limit: int32(len(gift.GroupIDs)),
+			IDs:   gift.GroupIDs,
+		})
+
+		var groupNames []string
+		for _, group := range groups {
+			groupNames = append(groupNames, group.GroupName)
+		}
+		gifts[i].GroupNames = groupNames
+	}
 	return gifts, nil
 }
 

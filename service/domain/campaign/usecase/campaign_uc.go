@@ -51,6 +51,18 @@ func (c *campaignUseCase) ListCampaign(ctx *fiber.Ctx, req dto.ListCampaignReque
 	if err != nil {
 		return nil, err
 	}
+	for i, campaign := range campaigns {
+		groups, _ := c.repo.NewCustomerGroupRepo().ListCustomerGroup(ctx, dto.ListCustomerGroupRequest{
+			Limit: int32(len(campaign.CustomerGroupIDs)),
+			IDs:   campaign.CustomerGroupIDs,
+		})
+
+		var groupNames []string
+		for _, group := range groups {
+			groupNames = append(groupNames, group.GroupName)
+		}
+		campaigns[i].CustomerGroupIDs = groupNames
+	}
 	return campaigns, nil
 }
 

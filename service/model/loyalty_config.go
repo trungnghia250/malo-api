@@ -1,9 +1,10 @@
 package model
 
 type LoyaltyConfig struct {
-	Formula    []int32 `json:"formula,omitempty" bson:"formula,omitempty"`
-	PointCycle string  `json:"point_cycle,omitempty" bson:"point_cycle,omitempty"`
-	Ranks      []Rank  `json:"ranks,omitempty" bson:"ranks,omitempty"`
+	ConvertRate []int32 `json:"convert_rate,omitempty" bson:"convert_rate,omitempty"`
+	Formula     []int32 `json:"formula,omitempty" bson:"formula,omitempty"`
+	PointCycle  string  `json:"point_cycle,omitempty" bson:"point_cycle,omitempty"`
+	Ranks       []Rank  `json:"ranks,omitempty" bson:"ranks,omitempty"`
 }
 
 type Rank struct {
