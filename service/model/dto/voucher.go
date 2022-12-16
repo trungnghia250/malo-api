@@ -58,6 +58,7 @@ type ListVoucherUsageRequest struct {
 type ListVoucherUsageResponse struct {
 	Count int32                `json:"count"`
 	Data  []model.VoucherUsage `json:"data"`
+	Total int32                `json:"total"`
 }
 
 type ValidateVoucherRequest struct {

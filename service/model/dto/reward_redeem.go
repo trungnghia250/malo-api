@@ -11,6 +11,7 @@ type ListRewardRedeemRequest struct {
 type ListRewardRedeemResponse struct {
 	Count int32                `json:"count"`
 	Data  []model.RewardRedeem `json:"data"`
+	Total model.RewardRedeem   `json:"total"`
 }
 
 type GetRewardRedeemByIDRequest struct {

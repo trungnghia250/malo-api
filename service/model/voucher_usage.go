@@ -19,4 +19,5 @@ type VoucherUsage struct {
 	ModifiedBy     string    `json:"modified_by,omitempty" bson:"modified_by,omitempty"`
 	CreatedBy      string    `json:"created_by,omitempty" bson:"created_by,omitempty"`
 	TotalCount     int32     `json:"totalCount,omitempty" bson:"totalCount,omitempty"`
+	TotalDiscount  int32     `json:"total_discount,omitempty" bson:"total_discount,omitempty"`
 }

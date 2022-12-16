@@ -122,7 +122,9 @@ func (v *voucherUsageRepo) ListVoucherUsages(ctx *fiber.Ctx, req dto.ListVoucher
 	cursor, err := v.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},
-		bson.D{{"$setWindowFields", bson.D{{"output", bson.D{{"totalCount", bson.D{{"$count", bson.M{}}}}}}}}},
+		bson.D{{"$setWindowFields", bson.D{{"output",
+			bson.D{{"totalCount", bson.D{{"$count", bson.M{}}}},
+				{"total_discount", bson.M{"$sum": "$discount_amount"}}}}}}},
 		bson.D{{"$skip", req.Offset}},
 		bson.D{{"$limit", req.Limit}},
 	})
