@@ -14,7 +14,7 @@ type Customer struct {
 	Email          string             `bson:"email,omitempty" json:"email,omitempty"`
 	Address        string             `json:"address,omitempty" bson:"address,omitempty"`
 	Province       string             `json:"province,omitempty" bson:"province,omitempty"`
-	DateOfBirth    time.Time          `json:"date_of_birth,omitempty" bson:"date_of_birth,omitempty"`
+	DateOfBirth    *time.Time         `json:"date_of_birth,omitempty" bson:"date_of_birth,omitempty"`
 	CustomerType   string             `json:"customer_type,omitempty" bson:"customer_type,omitempty"`
 	CustomerSource string             `json:"customer_source,omitempty" bson:"customer_source,omitempty"`
 	Tags           []string           `json:"tags,omitempty" bson:"tags,omitempty"`
