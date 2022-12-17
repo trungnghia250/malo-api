@@ -61,7 +61,7 @@ func (c *campaignUseCase) ListCampaign(ctx *fiber.Ctx, req dto.ListCampaignReque
 		for _, group := range groups {
 			groupNames = append(groupNames, group.GroupName)
 		}
-		campaigns[i].CustomerGroupIDs = groupNames
+		campaigns[i].GroupNames = groupNames
 	}
 	return campaigns, nil
 }
