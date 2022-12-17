@@ -19,5 +19,6 @@ type Mgostream struct {
 		DB   string `bson:"db" json:"db"`
 		Coll string `bson:"coll" json:"coll"`
 	} `bson:"ns" json:"ns"`
-	EventTime time.Time `bson:"clusterTime" json:"event_time"`
+	EventTime                time.Time              `bson:"clusterTime" json:"event_time"`
+	FullDocumentBeforeChange map[string]interface{} `bson:"fullDocumentBeforeChange" json:"before_change"`
 }

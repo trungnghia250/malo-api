@@ -89,7 +89,7 @@ type MogoDB struct {
 func ChangeStream(collection *mongo.Collection, pipeline interface{}, s func(*mongo.ChangeStream)) {
 	ctx := context.Background()
 	cso := options.ChangeStream()
-	cso.SetFullDocument(options.UpdateLookup)
+	cso.SetFullDocumentBeforeChange(options.WhenAvailable)
 	cur, _ := collection.Watch(ctx, pipeline, cso)
 
 	defer cur.Close(ctx)

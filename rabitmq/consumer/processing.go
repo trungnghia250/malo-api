@@ -67,6 +67,53 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 		}
 	}
 
+	if obj.OPType == "update" {
+		oldStatus := obj.FullDocumentBeforeChange["status"].(string)
+		order, _ := mgo.GetOrderByObjectID(obj.Key.ID)
+		if oldStatus == "processing" && order.Status == "success" {
+			go func() {
+				_ = mgo.UpsertCustomerReport(&model.CustomerReport{
+					Phone:         order.PhoneNumber,
+					Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
+					SuccessOrders: 1,
+					ProcessOrders: -1,
+					Revenue:       order.TotalOrderAmount,
+				})
+			}()
+			go func() {
+				for _, item := range order.Items {
+					_ = mgo.UpsertProductReport(&model.ProductReport{
+						Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
+						SKU:           item.SKU,
+						TotalSales:    item.Quantity,
+						SuccessOrders: 1,
+						ProcessOrders: -1,
+						Revenue:       item.Subtotal,
+					})
+				}
+			}()
+		}
+		if oldStatus == "processing" && order.Status == "cancel" {
+			go func() {
+				_ = mgo.UpsertCustomerReport(&model.CustomerReport{
+					Phone:         order.PhoneNumber,
+					Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
+					CancelOrders:  1,
+					ProcessOrders: -1,
+				})
+			}()
+			go func() {
+				for _, item := range order.Items {
+					_ = mgo.UpsertProductReport(&model.ProductReport{
+						Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
+						SKU:           item.SKU,
+						CancelOrders:  1,
+						ProcessOrders: -1,
+					})
+				}
+			}()
+		}
+	}
 	return nil
 }
 
