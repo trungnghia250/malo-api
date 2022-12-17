@@ -97,6 +97,8 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 			go func() {
 				_ = mgo.UpsertCustomerReport(&model.CustomerReport{
 					Phone:         order.PhoneNumber,
+					Name:          order.CustomerName,
+					Email:         order.Email,
 					Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
 					CancelOrders:  1,
 					ProcessOrders: -1,
@@ -107,6 +109,7 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 					_ = mgo.UpsertProductReport(&model.ProductReport{
 						Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
 						SKU:           item.SKU,
+						Name:          item.ProductName,
 						CancelOrders:  1,
 						ProcessOrders: -1,
 					})
