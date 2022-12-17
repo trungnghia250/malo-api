@@ -37,6 +37,7 @@ func (l *loyaltyUseCase) CreateVoucherUsage(ctx *fiber.Ctx, data *model.VoucherU
 	}
 	data.ID = fmt.Sprintf("VU%d", usageID)
 	data.CreatedAt = time.Now()
+	data.UsedDate = int32(time.Now().Unix())
 	err = l.repo.NewVoucherUsageRepo().CreateVoucherUsage(ctx, data)
 	if err != nil {
 		return nil, err
