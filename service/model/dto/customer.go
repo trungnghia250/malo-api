@@ -32,7 +32,7 @@ type Customer struct {
 	DateOfBirth    time.Time `json:"date_of_birth,omitempty" bson:"date_of_birth,omitempty"`
 	CustomerType   string    `json:"customer_type,omitempty" bson:"customer_type,omitempty"`
 	CustomerSource string    `json:"customer_source,omitempty" bson:"customer_source,omitempty"`
-	Tags           []string  `json:"tags,omitempty" bson:"tags,omitempty"`
+	Tags           []string  `json:"tags" bson:"tags"`
 	Note           string    `json:"note,omitempty" bson:"note,omitempty"`
 	CreatedAt      time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	ModifiedAt     time.Time `json:"modified_at,omitempty" bson:"modified_at,omitempty"`
