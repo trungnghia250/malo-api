@@ -126,13 +126,13 @@ func (o *orderUseCase) ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (
 			listOrder = append(listOrder, tempOrder)
 		}
 		status := ""
-		if row[22] == "open" {
+		if row[22] == "Đang xử lý" {
 			status = "processing"
 		}
-		if row[22] == "closed" {
+		if row[22] == "Đã hoàn thành" {
 			status = "success"
 		}
-		if row[22] == "cancelled" {
+		if row[22] == "Đã huỷ" {
 			status = "cancel"
 		}
 		thisOrder := dto.Order{
