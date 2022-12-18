@@ -355,7 +355,11 @@ func (o *orderUseCase) SyncOrder(ctx *fiber.Ctx, req dto.SyncOrderRequest) (dto.
 	switch req.Source {
 	case "SAPO":
 		client := &http.Client{}
-		request, err := http.NewRequest("GET", "https://malo25.mysapo.net/admin/orders.json", nil)
+		url := "https://malo25.mysapo.net/admin/orders.json"
+		if len(req.StartTime) > 0 {
+			url += fmt.Sprintf("?created_on_min=%s&created_on_max=%s", req.StartTime, req.EndTime)
+		}
+		request, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			return dto.ImportOrderResponse{}, err
 		}

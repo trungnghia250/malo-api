@@ -96,8 +96,8 @@ type ExportOrderResponse struct {
 
 type SyncOrderRequest struct {
 	Source      string `json:"source,omitempty"`
-	StartTime   string `query:"start_time,omitempty"`
-	EndTime     string `query:"end_time,omitempty"`
+	StartTime   string `json:"start_time,omitempty"`
+	EndTime     string `json:"end_time,omitempty"`
 	CheckDupCol string `json:"check_dup_col"`
 	ArrayCol    []string
 	Action      string `json:"action"`

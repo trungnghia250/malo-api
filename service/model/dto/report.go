@@ -35,7 +35,7 @@ type GetReportRequest struct {
 	TotalProcessing []int32  `json:"total_processing,omitempty" query:"total_processing,omitempty"`
 	TotalCancel     []int32  `json:"total_cancel,omitempty" query:"total_cancel,omitempty"`
 	TotalRevenue    []int32  `json:"total_revenue,omitempty" query:"total_revenue,omitempty"`
-	Export          bool     `json:"export,omitempty" query:"export,omitempty"`
+	Export          bool     `json:"export" query:"export"`
 }
 
 type ProductReport struct {
