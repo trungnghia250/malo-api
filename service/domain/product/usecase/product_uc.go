@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/model"
@@ -53,6 +54,10 @@ func (p *productUseCase) ListProduct(ctx *fiber.Ctx, req dto.ListProductRequest)
 }
 
 func (p *productUseCase) CreateProduct(ctx *fiber.Ctx, data *model.Product) (*model.Product, error) {
+	productCheck, _ := p.repo.NewProductRepo().GetProductBySKU(ctx, data.SKU)
+	if len(productCheck.SKU) > 0 {
+		return nil, errors.New("SKU đã tồn tại")
+	}
 	data.CreatedAt = time.Now()
 	productID, err := p.repo.NewCounterRepo().GetSequenceNextValue(ctx, "product_id")
 	if err != nil {

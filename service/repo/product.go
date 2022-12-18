@@ -18,6 +18,7 @@ type IProductRepo interface {
 	UpdateProductByID(ctx *fiber.Ctx, data *model.Product) error
 	DeleteProductByID(ctx *fiber.Ctx, ids []string) error
 	CountProduct(ctx *fiber.Ctx) (int32, error)
+	GetProductBySKU(ctx *fiber.Ctx, sku string) (resp *model.Product, err error)
 }
 
 func NewProductRepo(mgo *mongo.Client) IProductRepo {
@@ -36,6 +37,14 @@ func (p *productRepo) getCollection() *mongo.Collection {
 
 func (p *productRepo) GetProductByID(ctx *fiber.Ctx, productID string) (resp *model.Product, err error) {
 	if err := p.getCollection().FindOne(ctx.Context(), bson.M{"product_id": productID}).Decode(&resp); err != nil {
+		return &model.Product{}, err
+	}
+
+	return resp, nil
+}
+
+func (p *productRepo) GetProductBySKU(ctx *fiber.Ctx, sku string) (resp *model.Product, err error) {
+	if err := p.getCollection().FindOne(ctx.Context(), bson.M{"sku": sku}).Decode(&resp); err != nil {
 		return &model.Product{}, err
 	}
 
