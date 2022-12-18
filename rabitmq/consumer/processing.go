@@ -137,11 +137,16 @@ func extractCustomerAndProduct(order *model.Order, config model.RankPointConfig,
 		mgo.CreateHistoryPoint(&history)
 	}
 	for _, item := range order.Items {
+		var sales, revenue int32
+		if order.Status == "success" {
+			sales = item.Quantity
+			revenue = item.Subtotal
+		}
 		products = append(products, model.Product{
 			ProductName: item.ProductName,
 			SKU:         item.SKU,
-			Sale:        item.Quantity,
-			Revenue:     item.Subtotal,
+			Sale:        sales,
+			Revenue:     revenue,
 		})
 		mgo.UpdateProductByID(&model.Product{
 			ProductName: item.ProductName,
