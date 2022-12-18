@@ -17,6 +17,7 @@ type IVoucherRepo interface {
 	DeleteVouchersByID(ctx *fiber.Ctx, ids []string) error
 	ListVoucher(ctx *fiber.Ctx, req dto.ListVoucherRequest) ([]model.Voucher, error)
 	ListValidateVoucherByGroupIDs(ctx *fiber.Ctx, groupIDs []string) (resp []model.Voucher, err error)
+	RemoveCustomerGroup(ctx *fiber.Ctx, groupIDs []string) error
 }
 
 func NewVoucherRepo(mgo *mongo.Client) IVoucherRepo {
@@ -182,4 +183,16 @@ func (v *voucherRepo) ListValidateVoucherByGroupIDs(ctx *fiber.Ctx, groupIDs []s
 	}
 
 	return resp, nil
+}
+
+func (v *voucherRepo) RemoveCustomerGroup(ctx *fiber.Ctx, groupIDs []string) error {
+	_, err := v.getCollection().UpdateMany(ctx.Context(), bson.M{}, bson.M{
+		"$pull": bson.M{
+			"group_ids": bson.M{
+				"$in": groupIDs,
+			},
+		},
+	})
+
+	return err
 }

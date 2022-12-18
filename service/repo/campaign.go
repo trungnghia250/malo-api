@@ -16,6 +16,7 @@ type ICampaignRepo interface {
 	CreateCampaign(ctx *fiber.Ctx, data *model.Campaign) error
 	UpdateCampaignByID(ctx *fiber.Ctx, data *model.Campaign) error
 	DeleteCampaignByID(ctx *fiber.Ctx, ids []string) error
+	RemoveCustomerGroup(ctx *fiber.Ctx, groupIDs []string) error
 }
 
 func NewCampaignRepo(mgo *mongo.Client) ICampaignRepo {
@@ -111,4 +112,16 @@ func (c *campaignRepo) ListCampaign(ctx *fiber.Ctx, req dto.ListCampaignRequest)
 	}
 
 	return products, nil
+}
+
+func (c *campaignRepo) RemoveCustomerGroup(ctx *fiber.Ctx, groupIDs []string) error {
+	_, err := c.getCollection().UpdateMany(ctx.Context(), bson.M{}, bson.M{
+		"$pull": bson.M{
+			"customer_group_ids": bson.M{
+				"$in": groupIDs,
+			},
+		},
+	})
+
+	return err
 }

@@ -18,6 +18,7 @@ type IGiftRepo interface {
 	DeleteGiftsByID(ctx *fiber.Ctx, ids []string) error
 	ListGift(ctx *fiber.Ctx, req dto.ListGiftRequest) ([]model.Gift, error)
 	ListGiftValidateCustomer(ctx *fiber.Ctx, point int32, groupIDs []string) (resp []model.Gift, err error)
+	RemoveCustomerGroup(ctx *fiber.Ctx, groupIDs []string) error
 }
 
 func NewGiftRepo(mgo *mongo.Client) IGiftRepo {
@@ -187,4 +188,16 @@ func (g *giftRepo) ListGiftValidateCustomer(ctx *fiber.Ctx, point int32, groupID
 	}
 
 	return resp, nil
+}
+
+func (g *giftRepo) RemoveCustomerGroup(ctx *fiber.Ctx, groupIDs []string) error {
+	_, err := g.getCollection().UpdateMany(ctx.Context(), bson.M{}, bson.M{
+		"$pull": bson.M{
+			"group_ids": bson.M{
+				"$in": groupIDs,
+			},
+		},
+	})
+
+	return err
 }

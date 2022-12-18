@@ -50,7 +50,9 @@ func (c *customerGroupUseCase) GetCustomerGroupByID(ctx *fiber.Ctx, customerGrou
 
 func (c *customerGroupUseCase) DeleteCustomerGroupsByID(ctx *fiber.Ctx, customerGroupIDs []string) error {
 	err := c.repo.NewCustomerGroupRepo().DeleteCustomerGroupByID(ctx, customerGroupIDs)
-
+	_ = c.repo.NewGiftRepo().RemoveCustomerGroup(ctx, customerGroupIDs)
+	_ = c.repo.NewCampaignRepo().RemoveCustomerGroup(ctx, customerGroupIDs)
+	_ = c.repo.NewVoucherRepo().RemoveCustomerGroup(ctx, customerGroupIDs)
 	return err
 }
 
