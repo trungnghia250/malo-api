@@ -82,7 +82,7 @@ func (g *giftRepo) ListGift(ctx *fiber.Ctx, req dto.ListGiftRequest) ([]model.Gi
 	for _, name := range req.Name {
 		nameQuery = append(nameQuery, primitive.Regex{Pattern: name})
 	}
-	if len(req.SKU) > 0 {
+	if len(req.Name) > 0 {
 		matching["name"] = bson.D{
 			{"$in", nameQuery},
 		}
@@ -102,6 +102,12 @@ func (g *giftRepo) ListGift(ctx *fiber.Ctx, req dto.ListGiftRequest) ([]model.Gi
 	if len(req.Category) > 0 {
 		matching["category"] = bson.M{
 			"$in": req.Category,
+		}
+	}
+
+	if len(req.SKU) > 0 {
+		matching["sku"] = bson.M{
+			"$in": req.SKU,
 		}
 	}
 
@@ -129,6 +135,13 @@ func (g *giftRepo) ListGift(ctx *fiber.Ctx, req dto.ListGiftRequest) ([]model.Gi
 		matching["used_amount"] = bson.M{
 			"$gte": req.UsedAmount[0],
 			"$lte": req.UsedAmount[1],
+		}
+	}
+
+	if len(req.RewardPoint) > 0 {
+		matching["reward_point"] = bson.M{
+			"$gte": req.RewardPoint[0],
+			"$lte": req.RewardPoint[1],
 		}
 	}
 
