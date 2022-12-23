@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/trungnghia250/malo-api/service/model/dto"
 	"github.com/trungnghia250/malo-api/service/repo"
+	"github.com/trungnghia250/malo-api/utils"
 	"github.com/xuri/excelize/v2"
 	"time"
 )
@@ -209,7 +210,7 @@ func (r *reportUseCase) GetDashboard(ctx *fiber.Ctx, req dto.GetDashBoardRequest
 		reports[i].Return = report.TotalOrders - report.New
 		comeback += reports[i].Return
 	}
-
+	totalReturn, _ := r.repo.NewCustomerReportRepo().GetReturn(ctx, start, end)
 	return dto.CustomerReportResponse{
 		Data:  reports,
 		Count: int32(len(reports)),
@@ -218,7 +219,7 @@ func (r *reportUseCase) GetDashboard(ctx *fiber.Ctx, req dto.GetDashBoardRequest
 			TotalOrders:  orders,
 			TotalRevenue: revenue,
 			New:          isNew,
-			Return:       comeback,
+			Return:       totalReturn - isNew,
 		},
 	}, nil
 
@@ -253,13 +254,12 @@ func ListProductReportsPaginate(records []dto.ProductReport, limit, offset int32
 }
 
 func ComebackCustomer(data []dto.CustomerReport) int32 {
-	res := make(map[string]int32)
-	for _, report := range data {
-		if _, ok := res[report.Phone]; ok {
-			continue
-		} else {
-			res[report.Phone] = 1
+	var customer []string
+	for _, record := range data {
+		if !utils.IsStringContains(customer, record.Name) {
+			customer = append(customer, record.Name)
 		}
 	}
-	return int32(len(res))
+
+	return int32(len(customer))
 }

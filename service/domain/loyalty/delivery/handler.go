@@ -352,14 +352,16 @@ func (l *LoyaltyHandler) ListVoucherUsage(ctx *fiber.Ctx) error {
 	}
 
 	count := int32(0)
+	total := int32(0)
 	if len(usages) > 0 {
 		count = usages[0].TotalCount
+		total = usages[0].TotalDiscount
 	}
 
 	response := dto.ListVoucherUsageResponse{
 		Count: count,
 		Data:  usages,
-		Total: usages[0].TotalDiscount,
+		Total: total,
 	}
 
 	return ctx.JSON(response)

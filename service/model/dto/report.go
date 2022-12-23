@@ -10,7 +10,7 @@ type CustomerReport struct {
 	CancelOrders     int32  `json:"cancel_orders,omitempty" bson:"cancel_orders,omitempty"`
 	TotalRevenue     int32  `json:"total_revenue,omitempty" bson:"total_revenue,omitempty"`
 	New              int32  `json:"new" bson:"new,omitempty"`
-	Return           int32  `json:"return"`
+	Return           int32  `json:"return" bson:"return"`
 }
 
 type CustomerReportResponse struct {

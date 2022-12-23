@@ -13,6 +13,7 @@ import (
 type ICustomerReportRepo interface {
 	GetCustomerReport(ctx *fiber.Ctx, start, end time.Time, req dto.GetReportRequest) ([]dto.CustomerReport, error)
 	GetDashboard(ctx *fiber.Ctx, start, end time.Time) ([]dto.CustomerReport, error)
+	GetReturn(ctx *fiber.Ctx, start, end time.Time) (res int32, err error)
 }
 
 func NewCustomerReportRepo(mgo *mongo.Client) ICustomerReportRepo {
@@ -147,4 +148,20 @@ func (c *customerReportRepo) GetDashboard(ctx *fiber.Ctx, start, end time.Time) 
 	}
 
 	return customers, nil
+}
+
+func (c *customerReportRepo) GetReturn(ctx *fiber.Ctx, start, end time.Time) (res int32, err error) {
+	matching := bson.M{
+		"date": bson.M{
+			"$gte": start,
+			"$lte": end,
+		},
+	}
+
+	cursor, err := c.getCollection().Distinct(ctx.Context(), "phone", matching)
+	if err != nil {
+		return 0, err
+	}
+
+	return int32(len(cursor)), nil
 }
