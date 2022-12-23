@@ -45,6 +45,7 @@ func (l *loyaltyUseCase) CreateRedeem(ctx *fiber.Ctx, data *model.RewardRedeem) 
 
 	switch data.RewardType {
 	case "gift":
+		data.GiftID = "GIFT1"
 		gift, _ := l.repo.NewGiftRepo().GetGiftByID(ctx, "GIFT1")
 		if gift.StockAmount == 0 {
 			return nil, errors.New("Số lượng phần thưởng đã hết")
