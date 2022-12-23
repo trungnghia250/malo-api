@@ -43,6 +43,8 @@ func (v *voucherRepo) GetVoucherByID(ctx *fiber.Ctx, ID string) (resp *model.Vou
 }
 
 func (v *voucherRepo) CreateVoucher(ctx *fiber.Ctx, data *model.Voucher) error {
+	data.RemainAmount = data.LimitUsage
+	data.UsedAmount = 0
 	_, err := v.getCollection().InsertOne(ctx.Context(), data)
 	if err != nil {
 		return err
