@@ -7,8 +7,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/trungnghia250/malo-api/config"
 	"github.com/trungnghia250/malo-api/database"
-	consumers "github.com/trungnghia250/malo-api/rabitmq/consumer"
-	amqp "github.com/trungnghia250/malo-api/rabitmq/producer"
 	campaign_delivery "github.com/trungnghia250/malo-api/service/domain/campaign/delivery"
 	campaign_uc "github.com/trungnghia250/malo-api/service/domain/campaign/usecase"
 	customer_delivery "github.com/trungnghia250/malo-api/service/domain/customer/delivery"
@@ -29,7 +27,6 @@ import (
 	template_uc "github.com/trungnghia250/malo-api/service/domain/template_message/usecase"
 	user_delivery "github.com/trungnghia250/malo-api/service/domain/user/delivery"
 	user_uc "github.com/trungnghia250/malo-api/service/domain/user/usecase"
-	"github.com/trungnghia250/malo-api/service/model"
 	crm_repo "github.com/trungnghia250/malo-api/service/repo"
 	"log"
 	"os"
@@ -94,26 +91,26 @@ func main() {
 	reportHandler.InternalReportAPIRoute(router)
 	router.Use(cors.New())
 
-	mongoDB := database.NewMongoDB("order", "customer", "product",
-		"counter", "history_point", "partner", "customer_report", "product_report")
-	loyaltyConfig, _ := mongoDB.GetLoyaltyConfig()
-	var rankConfig []int32
-	for _, rank := range loyaltyConfig.Ranks {
-		rankConfig = append(rankConfig, rank.MinimumScore)
-	}
-	configRankPoint := model.RankPointConfig{
-		Point: loyaltyConfig.Formula,
-		Rank:  rankConfig,
-	}
-
-	go amqp.OrderStream(mongoClient.Database("malo").Collection("order"))
-	go consumers.RunConsumer(config.Config.RabbitMq.AMQP,
-		config.Config.RabbitMq.Tags,
-		config.Config.RabbitMq.Exchange,
-		"direct",
-		config.Config.RabbitMq.Queue,
-		config.Config.RabbitMq.RoutingKey,
-		mongoDB, configRankPoint)
+	//mongoDB := database.NewMongoDB("order", "customer", "product",
+	//	"counter", "history_point", "partner", "customer_report", "product_report")
+	//loyaltyConfig, _ := mongoDB.GetLoyaltyConfig()
+	//var rankConfig []int32
+	//for _, rank := range loyaltyConfig.Ranks {
+	//	rankConfig = append(rankConfig, rank.MinimumScore)
+	//}
+	//configRankPoint := model.RankPointConfig{
+	//	Point: loyaltyConfig.Formula,
+	//	Rank:  rankConfig,
+	//}
+	//
+	//go amqp.OrderStream(mongoClient.Database("malo").Collection("order"))
+	//go consumers.RunConsumer(config.Config.RabbitMq.AMQP,
+	//	config.Config.RabbitMq.Tags,
+	//	config.Config.RabbitMq.Exchange,
+	//	"direct",
+	//	config.Config.RabbitMq.Queue,
+	//	config.Config.RabbitMq.RoutingKey,
+	//	mongoDB, configRankPoint)
 
 	port := os.Getenv("PORT")
 	if err != nil {
