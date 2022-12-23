@@ -365,7 +365,7 @@ func (o *orderUseCase) SyncOrder(ctx *fiber.Ctx, req dto.SyncOrderRequest) (dto.
 	switch req.Source {
 	case "SAPO":
 		client := &http.Client{}
-		url := "https://malo25.mysapo.net/admin/orders.json"
+		url := "https://malo-crm-01.mysapo.net/admin/orders.json"
 		if len(req.StartTime) > 0 {
 			url += fmt.Sprintf("?created_on_min=%s&created_on_max=%s", req.StartTime, req.EndTime)
 		}
@@ -374,7 +374,7 @@ func (o *orderUseCase) SyncOrder(ctx *fiber.Ctx, req dto.SyncOrderRequest) (dto.
 			return dto.ImportOrderResponse{}, err
 		}
 		request.Header.Add("Content-Type", "application/json")
-		request.Header.Add("X-Sapo-Access-Token", "007eba624916497080f1c8ae3e3d03da")
+		request.Header.Add("X-Sapo-Access-Token", "c6ae34981fc84b539984975460b5342a")
 
 		res, err := client.Do(request)
 		if err != nil {
