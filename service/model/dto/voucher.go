@@ -25,14 +25,17 @@ type ListVoucherResponse struct {
 }
 
 type VoucherInGroup struct {
-	Code           string    `json:"code"`
-	GroupNames     []string  `json:"group_names"`
-	DiscountAmount int32     `json:"discount_amount"`
-	StartAt        int32     `json:"start_at"`
-	ExpireAt       int32     `json:"expire_at"`
-	Note           string    `json:"note"`
-	CreatedAt      time.Time `json:"created_at"`
-	Status         string    `json:"status"`
+	Code            string    `json:"code"`
+	GroupNames      []string  `json:"group_names"`
+	DiscountAmount  int32     `json:"discount_amount"`
+	StartAt         int32     `json:"start_at"`
+	ExpireAt        int32     `json:"expire_at"`
+	Note            string    `json:"note"`
+	CreatedAt       time.Time `json:"created_at"`
+	Status          string    `json:"status"`
+	DiscountPercent int32     `json:"discount_percent"`
+	UsedAmount      int32     `json:"used_amount"`
+	RemainAmount    int32     `json:"remain_amount"`
 }
 
 type GetVoucherByIDRequest struct {

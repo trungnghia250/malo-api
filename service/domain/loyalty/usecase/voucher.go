@@ -46,14 +46,17 @@ func (l *loyaltyUseCase) ListVouchers(ctx *fiber.Ctx, req dto.ListVoucherRequest
 		}
 
 		resp.Data = append(resp.Data, dto.VoucherInGroup{
-			Code:           voucher.ID,
-			GroupNames:     groupNames,
-			DiscountAmount: voucher.DiscountAmount,
-			StartAt:        voucher.StartAt,
-			ExpireAt:       voucher.ExpireAt,
-			Note:           voucher.Note,
-			CreatedAt:      voucher.CreatedAt,
-			Status:         voucher.Status,
+			Code:            voucher.ID,
+			GroupNames:      groupNames,
+			DiscountAmount:  voucher.DiscountAmount,
+			StartAt:         voucher.StartAt,
+			ExpireAt:        voucher.ExpireAt,
+			Note:            voucher.Note,
+			CreatedAt:       voucher.CreatedAt,
+			Status:          voucher.Status,
+			DiscountPercent: voucher.DiscountPercent,
+			UsedAmount:      voucher.UsedAmount,
+			RemainAmount:    voucher.RemainAmount,
 		})
 	}
 	return resp, nil
