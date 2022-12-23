@@ -150,6 +150,9 @@ func (mg *MogoDB) GetSequenceNextValue(seqName string) (int32, error) {
 }
 
 func (mg *MogoDB) CreateCustomer(data *model.Customer) error {
+	if len(data.Tags) == 0 {
+		data.Tags = []string{}
+	}
 	_, err := mg.Customer.InsertOne(context.TODO(), data)
 	if err != nil {
 		return err
