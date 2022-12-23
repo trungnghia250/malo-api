@@ -171,7 +171,7 @@ func extractCustomerAndProduct(order *model.Order, config model.RankPointConfig,
 					}
 					break
 				}
-				customerType = "platinum"
+				customerType = "diamond"
 			}
 		}
 
@@ -212,7 +212,7 @@ func extractCustomerAndProduct(order *model.Order, config model.RankPointConfig,
 					}
 					break
 				}
-				customerType = "platinum"
+				customerType = "diamond"
 			}
 			updateCustomer := dto.Customer{
 				CustomerID:   customer.CustomerID,

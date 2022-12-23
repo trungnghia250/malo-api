@@ -104,7 +104,7 @@ func (r *reportUseCase) GetReportByCategory(ctx *fiber.Ctx, req dto.GetReportReq
 				CancelOrders:     cancel,
 				TotalRevenue:     revenue,
 				New:              isNew,
-				Return:           int32(len(reports)) - isNew,
+				Return:           ComebackCustomer(reports) - isNew,
 			},
 		}, nil
 	case "product":
@@ -250,4 +250,16 @@ func ListProductReportsPaginate(records []dto.ProductReport, limit, offset int32
 		end = int32(len(records))
 	}
 	return records[offset:end]
+}
+
+func ComebackCustomer(data []dto.CustomerReport) int32 {
+	res := make(map[string]int32)
+	for _, report := range data {
+		if _, ok := res[report.Phone]; ok {
+			continue
+		} else {
+			res[report.Phone] = 1
+		}
+	}
+	return int32(len(res))
 }
