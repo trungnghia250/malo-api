@@ -34,7 +34,7 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 		}
 		customerReport := model.CustomerReport{
 			Phone:         customer.PhoneNumber,
-			Date:          time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, time.Now().Location()),
+			Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
 			Name:          customer.CustomerName,
 			Email:         customer.Email,
 			TotalOrders:   1,
@@ -53,7 +53,7 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 				sales = product.Sale
 			}
 			productReport := model.ProductReport{
-				Date:          time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, time.Now().Location()),
+				Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
 				SKU:           product.SKU,
 				Name:          product.ProductName,
 				TotalSales:    sales,

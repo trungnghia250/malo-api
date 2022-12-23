@@ -135,12 +135,14 @@ func (o *orderUseCase) ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (
 		if row[22] == "Đã huỷ" {
 			status = "cancel"
 		}
+		createdAt, _ := time.Parse("02/01/2006", row[23])
 		thisOrder := dto.Order{
 			OrderID:      row[1],
 			CustomerName: row[3],
 			PhoneNumber:  row[5],
 			Email:        row[6],
 			Address:      row[7],
+			Province:     row[8],
 			Source:       row[2],
 			Status:       status,
 			Items: []dto.Item{
@@ -161,7 +163,7 @@ func (o *orderUseCase) ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (
 			TotalTaxAmount:       convertStringToInt32(row[20]),
 			TotalOrderAmount:     convertStringToInt32(row[21]),
 			Note:                 dataEndLine(row),
-			CreatedAt:            time.Now(),
+			CreatedAt:            createdAt,
 			ModifiedAt:           time.Now(),
 		}
 		tempOrder = thisOrder
@@ -247,10 +249,10 @@ func convertStringToInt32(data string) int32 {
 }
 
 func dataEndLine(data []string) string {
-	if len(data) < 24 {
+	if len(data) < 25 {
 		return ""
 	}
-	return data[23]
+	return data[24]
 }
 
 func (o *orderUseCase) ExportOrder(ctx *fiber.Ctx, req dto.ExportOrderRequest) (string, error) {

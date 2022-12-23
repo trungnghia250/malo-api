@@ -202,7 +202,7 @@ func (o *orderRepo) CheckOrderExist(ctx *fiber.Ctx, query bson.M) (bool, error) 
 
 func (o *orderRepo) UpsertOrder(ctx *fiber.Ctx, query bson.M, order dto.Order) (int32, int32, error) {
 	opts := options.Update().SetUpsert(true)
-	result, err := o.getCollection().UpdateOne(ctx.Context(), query, order, opts)
+	result, err := o.getCollection().UpdateOne(ctx.Context(), query, bson.M{"$set": order}, opts)
 	if err != nil {
 		return 0, 0, err
 	}
