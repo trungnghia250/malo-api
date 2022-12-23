@@ -94,6 +94,7 @@ func (l *loyaltyUseCase) CreateRedeem(ctx *fiber.Ctx, data *model.RewardRedeem) 
 
 	data.CreatedAt = time.Now()
 	data.ID = fmt.Sprintf("REDEEM%d", redeemID)
+	data.RedeemDate = time.Now()
 	err = l.repo.NewRewardRedeem().CreateRedeem(ctx, data)
 	if err != nil {
 		return nil, err
