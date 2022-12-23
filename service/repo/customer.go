@@ -22,6 +22,8 @@ type ICustomerRepo interface {
 	UpdateListCustomers(ctx *fiber.Ctx, req dto.UpdateListCustomerRequest) error
 	GetCustomerByPhone(ctx *fiber.Ctx, Phone string) (resp *model.Customer, err error)
 	UpsertCustomer(ctx *fiber.Ctx, query bson.M, order dto.Customer) (int32, int32, error)
+	CreateCustomerImport(ctx *fiber.Ctx, data *dto.CustomerImport) error
+	UpdateCustomerImport(ctx *fiber.Ctx, data *dto.CustomerImport) error
 }
 
 func NewCustomerRepo(mgo *mongo.Client) ICustomerRepo {
@@ -63,7 +65,27 @@ func (c *customerRepo) CreateCustomer(ctx *fiber.Ctx, data *dto.Customer) error 
 	return nil
 }
 
+func (c *customerRepo) CreateCustomerImport(ctx *fiber.Ctx, data *dto.CustomerImport) error {
+	_, err := c.getCollection().InsertOne(ctx.Context(), data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *customerRepo) UpdateCustomerByID(ctx *fiber.Ctx, data *dto.Customer) error {
+	_, err := c.getCollection().UpdateOne(ctx.Context(), bson.M{"customer_id": data.CustomerID}, bson.M{
+		"$set": data,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *customerRepo) UpdateCustomerImport(ctx *fiber.Ctx, data *dto.CustomerImport) error {
 	_, err := c.getCollection().UpdateOne(ctx.Context(), bson.M{"customer_id": data.CustomerID}, bson.M{
 		"$set": data,
 	})

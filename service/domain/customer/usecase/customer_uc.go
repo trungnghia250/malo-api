@@ -177,7 +177,7 @@ func (c *customerUseCase) ImportCustomer(ctx *fiber.Ctx, req dto.ImportCustomerR
 	if err != nil {
 		return dto.ImportCustomerResponse{}, err
 	}
-	var listCustomer []dto.Customer
+	var listCustomer []dto.CustomerImport
 
 	for _, row := range rows[1:] {
 		dob, _ := time.Parse("2006/01/02", row[7])
@@ -188,7 +188,7 @@ func (c *customerUseCase) ImportCustomer(ctx *fiber.Ctx, req dto.ImportCustomerR
 			gender = "female"
 		}
 
-		thisCustomer := dto.Customer{
+		thisCustomer := dto.CustomerImport{
 			CustomerName:   row[1],
 			Gender:         gender,
 			PhoneNumber:    row[3],
@@ -223,7 +223,7 @@ func dataEndLine(data []string) string {
 	return data[10]
 }
 
-func (c *customerUseCase) CheckCustomerImport(ctx *fiber.Ctx, data []dto.Customer) (dto.ImportCustomerResponse, error) {
+func (c *customerUseCase) CheckCustomerImport(ctx *fiber.Ctx, data []dto.CustomerImport) (dto.ImportCustomerResponse, error) {
 	totalInsert := int32(0)
 	totalUpdate := int32(0)
 	totalIgnore := int32(0)
@@ -233,13 +233,13 @@ func (c *customerUseCase) CheckCustomerImport(ctx *fiber.Ctx, data []dto.Custome
 		if cus.PhoneNumber == "" {
 			customerID, _ := c.repo.NewCounterRepo().GetSequenceNextValue(ctx, "customer_id")
 			customer.CustomerID = fmt.Sprintf("C%d", customerID)
-			_ = c.repo.NewCustomerRepo().CreateCustomer(ctx, &customer)
+			_ = c.repo.NewCustomerRepo().CreateCustomerImport(ctx, &customer)
 			customerIDs = append(customerIDs, customer.CustomerID)
 			totalInsert += 1
 			continue
 		}
 		customerIDs = append(customerIDs, cus.CustomerID)
-		_ = c.repo.NewCustomerRepo().UpdateCustomerByID(ctx, &customer)
+		_ = c.repo.NewCustomerRepo().UpdateCustomerImport(ctx, &customer)
 		totalUpdate += 1
 	}
 
