@@ -181,10 +181,6 @@ func (c *customerUseCase) ImportCustomer(ctx *fiber.Ctx, req dto.ImportCustomerR
 
 	for _, row := range rows[1:] {
 		dob, _ := time.Parse("2006/01/02", row[7])
-		var tags []string
-		if len(row[8]) > 0 {
-			tags = strings.Split(row[8], ",")
-		}
 		var gender string
 		if strings.ToLower(row[2]) == "nam" {
 			gender = "male"
@@ -201,9 +197,13 @@ func (c *customerUseCase) ImportCustomer(ctx *fiber.Ctx, req dto.ImportCustomerR
 			Province:       row[6],
 			DateOfBirth:    dob,
 			CustomerSource: row[9],
-			Tags:           tags,
 			Note:           dataEndLine(row),
 			CreatedAt:      time.Now(),
+		}
+		var tags []string
+		if len(row[8]) > 0 {
+			tags = strings.Split(row[8], ",")
+			thisCustomer.Tags = tags
 		}
 		listCustomer = append(listCustomer, thisCustomer)
 
