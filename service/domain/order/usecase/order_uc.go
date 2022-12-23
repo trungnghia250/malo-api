@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -135,12 +136,19 @@ func (o *orderUseCase) ImportOrder(ctx *fiber.Ctx, req dto.ImportOrderRequest) (
 		if row[22] == "Đã huỷ" {
 			status = "cancel"
 		}
+		var gender string
+		if strings.ToLower(row[4]) == "nam" {
+			gender = "male"
+		} else {
+			gender = "female"
+		}
 		createdAt, _ := time.Parse("02/01/2006", row[23])
 		thisOrder := dto.Order{
 			OrderID:      row[1],
 			CustomerName: row[3],
 			PhoneNumber:  row[5],
 			Email:        row[6],
+			Gender:       gender,
 			Address:      row[7],
 			Province:     row[8],
 			Source:       row[2],
