@@ -1,9 +1,9 @@
 mongodb:
-  host: malo.evyys.mongodb.net
+  host: malo.8gkpr.mongodb.net
   port: 27017
   database: malo
-  user: mongoadmin
-  pass: mongoadmin
+  user: shoes_store
+  pass: admin
 
 encryption:
   signning_method: HS256
