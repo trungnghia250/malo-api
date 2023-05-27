@@ -13,7 +13,7 @@ encryption:
   refresh_token_ttl: 1440 # 1440 hours = 60 days
 
 rabbit_instance:
-  amqp: amqps://vgqjxjxp:Mkg2PfcfYONHNTSvhrKj3Z2_vmD8utND@armadillo.rmq.cloudamqp.com/vgqjxjxp
+  amqp: amqps://zvxkuyav:pGg-S6eemfqgpA9mIA27rfJVRfYUe5Sz@armadillo.rmq.cloudamqp.com/zvxkuyav
   exchange: order-streaming
   routing_key: insert,update
   queue: order-queue
