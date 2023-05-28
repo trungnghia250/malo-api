@@ -1,8 +1,8 @@
 mongodb:
-  host: malo.8gkpr.mongodb.net
+  host: malo2.wg7rb.mongodb.net
   port: 27017
   database: malo
-  user: shoes_store
+  user: malo
   pass: admin
 
 encryption:
