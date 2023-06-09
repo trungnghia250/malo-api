@@ -29,6 +29,20 @@ func (r *reportUseCase) GetReportByCategory(ctx *fiber.Ctx, req dto.GetReportReq
 	end, _ := time.Parse("02/01/2006", req.EndTime)
 	start, _ := time.Parse("02/01/2006", req.StartTime)
 
+	if len(req.GroupID) > 0 {
+		group, _ := r.repo.NewCustomerGroupRepo().GetCustomerGroupByID(ctx, req.GroupID)
+		customers, _ := r.repo.NewCustomerRepo().ListCustomer(ctx, dto.ListCustomerRequest{
+			Limit:       int32(len(group.CustomerIDs)),
+			Offset:      0,
+			CustomerIDs: group.CustomerIDs,
+		})
+		var phones []string
+		for _, customer := range customers {
+			phones = append(phones, customer.PhoneNumber)
+		}
+		req.Phone = phones
+	}
+
 	switch req.Type {
 	case "customer":
 		reports, err := r.repo.NewCustomerReportRepo().GetCustomerReport(ctx, start, end, req)
@@ -193,8 +207,53 @@ func (r *reportUseCase) GetReportByCategory(ctx *fiber.Ctx, req dto.GetReportReq
 func (r *reportUseCase) GetDashboard(ctx *fiber.Ctx, req dto.GetDashBoardRequest) (interface{}, error) {
 	end, _ := time.Parse("02/01/2006", req.EndTime)
 	start, _ := time.Parse("02/01/2006", req.StartTime)
+	var phones []string
 
-	reports, err := r.repo.NewCustomerReportRepo().GetDashboard(ctx, start, end)
+	if len(req.GroupID) > 0 {
+		groups, _ := r.repo.NewCustomerGroupRepo().ListCustomerGroup(ctx, dto.ListCustomerGroupRequest{
+			Limit:  int32(len(req.GroupID)),
+			Offset: 0,
+			IDs:    req.GroupID,
+		})
+
+		for _, group := range groups {
+			req.CustomerID = append(req.CustomerID, group.CustomerIDs...)
+		}
+	}
+
+	if len(req.CustomerID) > 0 {
+		customers, _ := r.repo.NewCustomerRepo().ListCustomer(ctx, dto.ListCustomerRequest{
+			Limit:       int32(len(req.CustomerID)),
+			Offset:      0,
+			CustomerIDs: req.CustomerID,
+		})
+		for _, customer := range customers {
+			phones = append(phones, customer.PhoneNumber)
+		}
+	}
+
+	if req.Type == "product" {
+		reports, err := r.repo.NewProductReportRepo().GetDashboard(ctx, start, end, phones)
+		if err != nil {
+			return nil, err
+		}
+		var orders, revenue int32
+		for _, report := range reports {
+			orders += report.TotalOrders
+			revenue += report.TotalRevenue
+		}
+		return dto.CustomerReportResponse{
+			Data:  reports,
+			Count: int32(len(reports)),
+			Total: dto.CustomerReport{
+				Name:         "Tổng cộng",
+				TotalOrders:  orders,
+				TotalRevenue: revenue,
+			},
+		}, nil
+	}
+
+	reports, err := r.repo.NewCustomerReportRepo().GetDashboard(ctx, start, end, phones)
 	if err != nil {
 		return nil, err
 	}

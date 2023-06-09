@@ -12,7 +12,7 @@ import (
 
 type ICustomerReportRepo interface {
 	GetCustomerReport(ctx *fiber.Ctx, start, end time.Time, req dto.GetReportRequest) ([]dto.CustomerReport, error)
-	GetDashboard(ctx *fiber.Ctx, start, end time.Time) ([]dto.CustomerReport, error)
+	GetDashboard(ctx *fiber.Ctx, start, end time.Time, phones []string) ([]dto.CustomerReport, error)
 	GetReturn(ctx *fiber.Ctx, start, end time.Time) (res int32, err error)
 }
 
@@ -116,12 +116,18 @@ func (c *customerReportRepo) GetCustomerReport(ctx *fiber.Ctx, start, end time.T
 	return customers, nil
 }
 
-func (c *customerReportRepo) GetDashboard(ctx *fiber.Ctx, start, end time.Time) ([]dto.CustomerReport, error) {
+func (c *customerReportRepo) GetDashboard(ctx *fiber.Ctx, start, end time.Time, phones []string) ([]dto.CustomerReport, error) {
 	matching := bson.M{
 		"date": bson.M{
 			"$gte": start,
 			"$lte": end,
 		},
+	}
+
+	if len(phones) > 0 {
+		matching["phone"] = bson.M{
+			"$in": phones,
+		}
 	}
 
 	cursor, err := c.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{

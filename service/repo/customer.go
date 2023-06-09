@@ -177,6 +177,13 @@ func (c *customerRepo) ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest)
 		}
 	}
 
+	if req.Revenue[0] > 0 {
+		matching["rank_point"] = bson.M{
+			"$gte": req.Revenue[0] / 1000,
+			"$lte": req.Revenue[1] / 1000,
+		}
+	}
+
 	cursor, err := c.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
 		bson.D{{"$match", matching}},
 		bson.D{{"$sort", bson.D{{"created_at", -1}}}},

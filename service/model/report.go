@@ -25,4 +25,5 @@ type ProductReport struct {
 	ProcessOrders int32     `json:"processing_orders,omitempty" bson:"processing_orders,omitempty"`
 	CancelOrders  int32     `json:"cancel_orders,omitempty" bson:"cancel_orders,omitempty"`
 	Revenue       int32     `json:"revenue,omitempty" bson:"revenue,omitempty"`
+	Phone         string    `json:"phone,omitempty" bson:"phone,omitempty"`
 }

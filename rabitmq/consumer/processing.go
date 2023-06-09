@@ -56,6 +56,7 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 				Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
 				SKU:           product.SKU,
 				Name:          product.ProductName,
+				Phone:         order.PhoneNumber,
 				TotalSales:    sales,
 				TotalOrders:   1,
 				SuccessOrders: success,
@@ -88,6 +89,7 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 						Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
 						SKU:           item.SKU,
 						Name:          item.ProductName,
+						Phone:         order.PhoneNumber,
 						TotalSales:    item.Quantity,
 						SuccessOrders: 1,
 						ProcessOrders: -1,
@@ -113,6 +115,7 @@ func processing(data []byte, mgo *database.MogoDB, config model.RankPointConfig)
 						Date:          time.Date(order.CreatedAt.Year(), order.CreatedAt.Month(), order.CreatedAt.Day(), 0, 0, 0, 0, order.CreatedAt.Location()),
 						SKU:           item.SKU,
 						Name:          item.ProductName,
+						Phone:         order.PhoneNumber,
 						CancelOrders:  1,
 						ProcessOrders: -1,
 					})

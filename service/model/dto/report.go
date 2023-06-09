@@ -36,6 +36,7 @@ type GetReportRequest struct {
 	TotalCancel     []int32  `json:"total_cancel,omitempty" query:"total_cancel,omitempty"`
 	TotalRevenue    []int32  `json:"total_revenue,omitempty" query:"total_revenue,omitempty"`
 	Export          bool     `json:"export" query:"export"`
+	GroupID         string   `json:"group_id,omitempty" query:"group_id,omitempty"`
 }
 
 type ProductReport struct {
@@ -56,6 +57,9 @@ type ProductReportResponse struct {
 }
 
 type GetDashBoardRequest struct {
-	StartTime string `json:"start_time" query:"start_time"`
-	EndTime   string `json:"end_time" query:"end_time"`
+	StartTime  string   `json:"start_time" query:"start_time"`
+	EndTime    string   `json:"end_time" query:"end_time"`
+	CustomerID []string `json:"customer_id,omitempty" query:"customer_id,omitempty"`
+	GroupID    []string `json:"group_id,omitempty" query:"group_id,omitempty"`
+	Type       string   `json:"type,omitempty" query:"type,omitempty"`
 }

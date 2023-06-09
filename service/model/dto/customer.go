@@ -75,6 +75,7 @@ type ListCustomerRequest struct {
 	CustomerIDs  []string `json:"customer_ids,omitempty" query:"customer_ids,omitempty"`
 	ExceptIDs    []string `json:"except_ids,omitempty" query:"except_ids,omitempty"`
 	CreatedAt    []int32  `json:"created_at,omitempty" query:"created_at,omitempty"`
+	Revenue      []int32  `json:"revenue,omitempty" query:"revenue,omitempty"`
 }
 
 type ListCustomerResponse struct {

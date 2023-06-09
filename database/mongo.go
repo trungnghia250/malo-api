@@ -255,11 +255,12 @@ func (mg *MogoDB) UpsertProductReport(data *model.ProductReport) error {
 		Upsert:         &upsert,
 	}
 
-	_ = mg.ProductReport.FindOneAndUpdate(context.TODO(), bson.M{"date": data.Date, "sku": data.SKU}, bson.M{
+	_ = mg.ProductReport.FindOneAndUpdate(context.TODO(), bson.M{"date": data.Date, "sku": data.SKU, "phone": data.Phone}, bson.M{
 		"$set": bson.M{
-			"sku":  data.SKU,
-			"date": data.Date,
-			"name": data.Name,
+			"sku":   data.SKU,
+			"date":  data.Date,
+			"name":  data.Name,
+			"phone": data.Phone,
 		},
 		"$inc": bson.M{
 			"total_sales":       data.TotalSales,

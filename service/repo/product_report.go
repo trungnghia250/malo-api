@@ -12,6 +12,7 @@ import (
 
 type IProductReportRepo interface {
 	GetProductReport(ctx *fiber.Ctx, start, end time.Time, req dto.GetReportRequest) ([]dto.ProductReport, error)
+	GetDashboard(ctx *fiber.Ctx, start, end time.Time, phones []string) ([]dto.CustomerReport, error)
 }
 
 func NewProductReportRepo(mgo *mongo.Client) IProductReportRepo {
@@ -34,6 +35,12 @@ func (p *productReportRepo) GetProductReport(ctx *fiber.Ctx, start, end time.Tim
 			"$gte": start,
 			"$lte": end,
 		},
+	}
+
+	if len(req.Phone) > 0 {
+		matching["phone"] = bson.M{
+			"$in": req.Phone,
+		}
 	}
 
 	filter := bson.M{}
@@ -99,6 +106,7 @@ func (p *productReportRepo) GetProductReport(ctx *fiber.Ctx, start, end time.Tim
 			"total_sales":       bson.M{"$sum": "$total_orders"},
 			"total_revenue":     bson.M{"$sum": "$revenue"},
 		}}},
+		bson.D{{"$match", filter}},
 	})
 
 	if err != nil {
@@ -111,4 +119,44 @@ func (p *productReportRepo) GetProductReport(ctx *fiber.Ctx, start, end time.Tim
 	}
 
 	return products, nil
+}
+
+func (p *productReportRepo) GetDashboard(ctx *fiber.Ctx, start, end time.Time, phones []string) ([]dto.CustomerReport, error) {
+	matching := bson.M{
+		"date": bson.M{
+			"$gte": start,
+			"$lte": end,
+		},
+	}
+
+	if len(phones) > 0 {
+		matching["phone"] = bson.M{
+			"$in": phones,
+		}
+	}
+
+	cursor, err := p.getCollection().Aggregate(ctx.Context(), mongo.Pipeline{
+		bson.D{{"$match", matching}},
+		bson.D{{"$group", bson.M{
+			"_id":          bson.M{"$dateToString": bson.M{"format": "%d-%m-%Y", "date": "$date"}},
+			"total_orders": bson.M{"$sum": "$total_orders"},
+			//"cancel_orders":     bson.M{"$sum": "$cancel_orders"},
+			//"success_orders":    bson.M{"$sum": "$success_orders"},
+			//"processing_orders": bson.M{"$sum": "$processing_orders"},
+			"total_revenue": bson.M{"$sum": "$revenue"},
+			"new":           bson.M{"$sum": "$new"},
+		}}},
+		bson.D{{"$sort", bson.M{"_id": 1}}},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	customers := make([]dto.CustomerReport, 0)
+	if err := cursor.All(ctx.Context(), &customers); err != nil {
+		return nil, err
+	}
+
+	return customers, nil
 }
