@@ -103,7 +103,7 @@ func (p *productReportRepo) GetProductReport(ctx *fiber.Ctx, start, end time.Tim
 			"cancel_orders":     bson.M{"$sum": "$cancel_orders"},
 			"success_orders":    bson.M{"$sum": "$success_orders"},
 			"processing_orders": bson.M{"$sum": "$processing_orders"},
-			"total_sales":       bson.M{"$sum": "$total_orders"},
+			"total_sales":       bson.M{"$sum": "$total_sales"},
 			"total_revenue":     bson.M{"$sum": "$revenue"},
 		}}},
 		bson.D{{"$match", filter}},
