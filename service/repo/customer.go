@@ -177,7 +177,7 @@ func (c *customerRepo) ListCustomer(ctx *fiber.Ctx, req dto.ListCustomerRequest)
 		}
 	}
 
-	if req.Revenue[0] > 0 {
+	if len(req.Revenue) > 0 {
 		matching["rank_point"] = bson.M{
 			"$gte": req.Revenue[0] / 1000,
 			"$lte": req.Revenue[1] / 1000,
