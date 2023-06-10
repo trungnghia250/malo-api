@@ -21,4 +21,6 @@ type Campaign struct {
 	ModifiedAt       time.Time `json:"modified_at,omitempty" bson:"modified_at,omitempty"`
 	CreatedAt        time.Time `json:"created_at,omitempty" bson:"created_at,omitempty"`
 	GroupNames       []string  `json:"group_names,omitempty"`
+	StartAt          int32     `json:"start_at,omitempty" bson:"start_at,omitempty"`
+	ExpireAt         int32     `json:"expire_at,omitempty" bson:"expire_at,omitempty"`
 }
