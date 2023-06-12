@@ -201,7 +201,7 @@ func (r *reportUseCase) GetReportByCategory(ctx *fiber.Ctx, req dto.GetReportReq
 		}, nil
 	}
 
-	return "", nil
+	return nil, nil
 }
 
 func (r *reportUseCase) GetDashboard(ctx *fiber.Ctx, req dto.GetDashBoardRequest) (interface{}, error) {
