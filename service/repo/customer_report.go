@@ -140,8 +140,9 @@ func (c *customerReportRepo) GetDashboard(ctx *fiber.Ctx, start, end time.Time, 
 			//"processing_orders": bson.M{"$sum": "$processing_orders"},
 			"total_revenue": bson.M{"$sum": "$revenue"},
 			"new":           bson.M{"$sum": "$new"},
+			"date":          bson.M{"$first": "$date"},
 		}}},
-		bson.D{{"$sort", bson.M{"_id": 1}}},
+		bson.D{{"$sort", bson.M{"date": 1}}},
 	})
 
 	if err != nil {
